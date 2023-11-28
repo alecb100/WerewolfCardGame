@@ -137,17 +137,29 @@ public class WerewolfServer implements Runnable {
                         }
                         int randomPlayer = (int) (Math.random() * playerArray.length);
                         String randomPlayerName = playerArray[randomPlayer];
-                        server.players.get(randomPlayerName).writeObject("g>Give me a number (Press enter before giving number)");
+                        server.players.get(randomPlayerName).writeObject("g>Give me 3 (Press enter before giving number)");
                         server.players.get(randomPlayerName).flush();
-                        synchronized (inputLock) {
-                            while (gameAction.equals("")) {
-                                inputLock.wait();
+                        while(true) {
+                            synchronized (inputLock) {
+                                while (gameAction.equals("")) {
+                                    inputLock.wait();
+                                }
                             }
-                        }
-                        if (gameAction.substring(0, gameAction.indexOf(">")).equals(randomPlayerName)) {
-                            server.players.get(randomPlayerName).writeObject("g>woohooo!!!");
+                            if(gameAction.contains("3")) {
+                                break;
+                            } else {
+                                server.players.get(randomPlayerName).writeObject("g>Not valid input");
+                                server.players.get(randomPlayerName).flush();
+                            }
                             gameAction = "";
                         }
+                        if (gameAction.substring(0, gameAction.indexOf(">")).equals(randomPlayerName)) {
+                            server.players.get(randomPlayerName).writeObject("><");
+                            server.players.get(randomPlayerName).flush();
+                            server.players.get(randomPlayerName).writeObject("g>woohooo!!!");
+                            server.players.get(randomPlayerName).flush();
+                        }
+                        gameAction = "";
                     }
                 } catch(Exception e) {
                     System.out.println(e.getMessage());

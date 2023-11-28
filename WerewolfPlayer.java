@@ -54,8 +54,10 @@ public class WerewolfPlayer implements Serializable {
     private void listenToPrompts() {
         try {
             while (true) {
+                System.out.println("lock " + pauseThreads);
                 Object incomingMessage = ois.readObject();
                 String incoming = (String)incomingMessage;
+                System.out.println(incoming);
 
                 if(incoming.charAt(0) == 'g') {
                     synchronized(inputLock) {
@@ -100,7 +102,7 @@ public class WerewolfPlayer implements Serializable {
                     }
                 }
                 String input = br.readLine().trim();
-                if(input.equals("<")) {
+                if(input.equals("<") || input.equals("")) {
                     continue;
                 }
                 String command = "c" + playerName + ">" + input;
