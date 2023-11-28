@@ -72,7 +72,6 @@ public class WerewolfServer implements Runnable {
                     System.out.println("waiting...");
                     Object message = input.readObject();
                     String temp = (String)message;
-                    String name = temp.substring(1, temp.indexOf(">"));
                     System.out.println(temp);
                     if(temp.charAt(0) == 'c') {
                         if(temp.substring(temp.indexOf(">") + 1).equals("")) {
@@ -168,3 +167,7 @@ public class WerewolfServer implements Runnable {
         }
     }
 }
+
+// Redo by taking out the stuff about waiting for a command. Instead, make it so that each player has 1 thread, and the player must do some special
+// input, like help><command> or something. Whenever the server calls for input, it calls a special method which calls the user. If it was a command
+// thing, it gives them the output and them returns a false to the server, which then asks again and calls the method again.

@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class WerewolfPlayer implements Serializable {
+public class WerewolfPlayer {
     Socket s;
     ObjectOutputStream oos;
     ObjectInputStream ois;
@@ -35,13 +35,13 @@ public class WerewolfPlayer implements Serializable {
         if (hostAddress.contains(" ") || playerName.contains(" ")) {
             throw new IllegalArgumentException("Parameters may not contain blanks.");
         }
-        System.out.println("Connecting to the chat room server at " + hostAddress + ".");
+        System.out.println("Connecting to the game at " + hostAddress + ".");
         try {
             s = new Socket(hostAddress, 5555);
         } catch (Exception e) {
             throw new Exception("The connection was refused. Did you type the correct ip in? Is the server up?");
         }
-        System.out.println("Connected to the chat server!");
+        System.out.println("Connected to the Werewolf game server!");
         oos = new ObjectOutputStream(s.getOutputStream());
         oos.writeObject(playerName);
         ois = new ObjectInputStream(s.getInputStream());
@@ -54,37 +54,9 @@ public class WerewolfPlayer implements Serializable {
     private void listenToPrompts() {
         try {
             while (true) {
-                System.out.println("lock " + pauseThreads);
                 Object incomingMessage = ois.readObject();
                 String incoming = (String)incomingMessage;
                 System.out.println(incoming);
-
-                if(incoming.charAt(0) == 'g') {
-                    synchronized(inputLock) {
-                        pauseThreads = true;
-                    }
-                    incoming = incoming.substring(2);
-                    System.out.println(incoming);
-
-                    // Implement different message prompts
-
-
-                    String input = br.readLine().trim();
-                    String message = "a" + playerName + ">" + input;
-                    try {
-                        oos.writeObject(message);
-                        oos.flush();
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    synchronized(inputLock) {
-                        pauseThreads = false;
-                        inputLock.notifyAll();
-                    }
-                } else if(incoming.charAt(0) == 'm') {
-                    incoming = incoming.substring(2);
-                    System.out.println(incoming);
-                }
             }
         } catch(Exception e) {
             System.out.println("Game error :(");
@@ -96,17 +68,8 @@ public class WerewolfPlayer implements Serializable {
     private void listenToPlayer() {
         while(true) {
             try {
-                synchronized (inputLock) {
-                    while(pauseThreads) {
-                        inputLock.wait();
-                    }
-                }
-                String input = br.readLine().trim();
-                if(input.equals("<") || input.equals("")) {
-                    continue;
-                }
-                String command = "c" + playerName + ">" + input;
-                oos.writeObject(command);
+                String input = br.readLine();
+                oos.writeObject(input);
                 oos.flush();
             } catch(Exception e) {
                 System.out.println(e.getMessage());
