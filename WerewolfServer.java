@@ -76,12 +76,16 @@ public class WerewolfServer implements Runnable {
                     String temp = (String)message;
                     System.out.println(playerName + ": " + temp);
                     if(gameStart && gameWaiting.get(playerName)) {
-                        if(temp.contains("help")) {
-                            new Thread(new handlePlayerCommand(temp.substring(temp.indexOf(":")+1))).start();
+                        if(temp.startsWith("help")) {
+                            String temp2 = temp.substring(temp.indexOf(":")+1).trim();
+                            new Thread(new handlePlayerCommand(temp2)).start();
                             continue;
                         }
                         new Thread(new handleGameAction(temp)).start();
                     } else {
+                        if(temp.startsWith("help:")) {
+                            temp = temp.substring(temp.indexOf(":")+1).trim();
+                        }
                         new Thread(new handlePlayerCommand(temp)).start();
                     }
                 }
@@ -122,6 +126,7 @@ public class WerewolfServer implements Runnable {
                     gameActions.replace(playerName, action);
                     players.get(playerName).writeObject("We got the action: " + action);
                     players.get(playerName).flush();
+                    gameWaiting.replace(playerName, Boolean.FALSE);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -150,6 +155,7 @@ public class WerewolfServer implements Runnable {
 
                     if (start) {
                         System.out.println("Starting");
+                        gameStart = true;
                         String[] playerArray = new String[server.players.size()];
                         int i = 0;
                         gameActions = new HashMap<String, String>();
@@ -162,17 +168,20 @@ public class WerewolfServer implements Runnable {
                         }
                         int randomPlayer = (int) (Math.random() * playerArray.length);
                         String randomPlayerName = playerArray[randomPlayer];
-                        server.players.get(randomPlayerName).writeObject("Give me 3 (Press enter before giving number)");
+                        server.players.get(randomPlayerName).writeObject("Give me 3");
                         server.players.get(randomPlayerName).flush();
                         gameWaiting.replace(randomPlayerName, Boolean.TRUE);
                         while(true) {
-                            if(gameActions.get(randomPlayerName).contains("3")) {
-                                break;
-                            } else {
-                                server.players.get(randomPlayerName).writeObject("Not valid input");
-                                server.players.get(randomPlayerName).flush();
+                            if(!gameWaiting.get(randomPlayerName)) {
+                                if (gameActions.get(randomPlayerName).contains("3")) {
+                                    break;
+                                } else {
+                                    gameWaiting.replace(randomPlayerName, Boolean.TRUE);
+                                    server.players.get(randomPlayerName).writeObject("Not valid input");
+                                    server.players.get(randomPlayerName).flush();
+                                }
+                                gameActions.replace(randomPlayerName, "");
                             }
-                            gameActions.replace(randomPlayerName, "");
                         }
                         if(!gameActions.get(randomPlayerName).equals("")) {
                             server.players.get(randomPlayerName).writeObject("woohooo!!!");
@@ -180,6 +189,7 @@ public class WerewolfServer implements Runnable {
                             gameWaiting.replace(randomPlayerName, Boolean.FALSE);
                         }
                         gameActions.replace(randomPlayerName, "");
+                        gameStart = false;
                     }
                 } catch(Exception e) {
                     System.out.println(e.getMessage());

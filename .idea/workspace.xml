@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Created the absolute bare bones code for the game (very ugly)">
+    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Made changes to refactor player and server">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfServer.java" afterDir="false" />
     </list>
