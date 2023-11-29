@@ -1,19 +1,26 @@
+import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WerewolfServer implements Runnable {
-    ConcurrentHashMap<String, ObjectOutputStream> players = new ConcurrentHashMap<String, ObjectOutputStream>();
+    ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<String, Player>();
     private ServerSocket ss;
     private ExecutorService clientThreadPool;
     HashMap<String, String> gameActions;
     boolean gameStart = false;
     HashMap<String, Boolean> gameWaiting;
+    HashSet<Player> dead;
+    HashSet<Player> currentPlayers;
+    HashSet<Card> chooseCards;
+    HashSet<Card> cards;
 
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -26,8 +33,8 @@ public class WerewolfServer implements Runnable {
         new Thread(this).start();
     }
 
-    public void addPlayer(String playerName, ObjectOutputStream outStream) {
-        players.put(playerName, outStream);
+    public void addPlayer(String playerName, Player player) {
+        players.put(playerName, player);
     }
 
     public void removePlayer(String playerName) {
@@ -51,6 +58,7 @@ public class WerewolfServer implements Runnable {
         private Socket clientSocket;
         private WerewolfServer server;
         private String playerName;
+        private Player player;
 
         public PlayerHandler(WerewolfServer server, Socket socket) {
             this.clientSocket = socket;
@@ -67,7 +75,8 @@ public class WerewolfServer implements Runnable {
                 playerName = joinMessage.substring(0);
                 System.out.println("New player joined from " + clientAddress + ", " + playerName);
 
-                server.addPlayer(playerName, output);
+                this.player = new Player(playerName, input, output);
+                server.addPlayer(playerName, player);
 
 
                 while(true) {
@@ -105,8 +114,8 @@ public class WerewolfServer implements Runnable {
             @Override
             public void run() {
                 try {
-                    players.get(playerName).writeObject("We got the message: " + command);
-                    players.get(playerName).flush();
+                    players.get(playerName).output.writeObject("We got the message: " + command);
+                    players.get(playerName).output.flush();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -124,8 +133,8 @@ public class WerewolfServer implements Runnable {
             public void run() {
                 try {
                     gameActions.replace(playerName, action);
-                    players.get(playerName).writeObject("We got the action: " + action);
-                    players.get(playerName).flush();
+                    players.get(playerName).output.writeObject("We got the action: " + action);
+                    players.get(playerName).output.flush();
                     gameWaiting.replace(playerName, Boolean.FALSE);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
@@ -153,48 +162,106 @@ public class WerewolfServer implements Runnable {
                         start = true;
                     }
 
-                    if (start) {
+                    if (start && server.players.size() >= 5) {
                         System.out.println("Starting");
                         gameStart = true;
-                        String[] playerArray = new String[server.players.size()];
-                        int i = 0;
+
+                        // Get all the players in the game situated
                         gameActions = new HashMap<String, String>();
                         gameWaiting = new HashMap<String, Boolean>();
-                        for (String name : server.players.keySet()) {
-                            playerArray[i] = name;
+                        currentPlayers = new HashSet<Player>();
+                        int i = 0;
+                        for(String name : server.players.keySet()) {
+                            currentPlayers.add(server.players.get(name));
                             gameActions.put(name, "");
                             gameWaiting.put(name, Boolean.FALSE);
                             i++;
                         }
-                        int randomPlayer = (int) (Math.random() * playerArray.length);
-                        String randomPlayerName = playerArray[randomPlayer];
-                        server.players.get(randomPlayerName).writeObject("Give me 3");
-                        server.players.get(randomPlayerName).flush();
-                        gameWaiting.replace(randomPlayerName, Boolean.TRUE);
-                        while(true) {
-                            if(!gameWaiting.get(randomPlayerName)) {
-                                if (gameActions.get(randomPlayerName).contains("3")) {
-                                    break;
-                                } else {
-                                    gameWaiting.replace(randomPlayerName, Boolean.TRUE);
-                                    server.players.get(randomPlayerName).writeObject("Not valid input");
-                                    server.players.get(randomPlayerName).flush();
-                                }
-                                gameActions.replace(randomPlayerName, "");
+
+                        readCards();
+                        Object[] tempCards = chooseCards.toArray();
+                        HashSet<Card> tempCards2 = (HashSet<Card>) chooseCards.clone();
+                        for(Player player : currentPlayers) {
+                            int random = (int)(Math.random() * tempCards.length);
+                            player.card = (Card)tempCards[random];
+                            tempCards2.remove(player.card);
+                            tempCards = tempCards2.toArray();
+                        }
+
+                        for(Player player : currentPlayers) {
+                            player.output.writeObject("Your card: " + player.card.cardName);
+                        }
+
+                        for(Card card : cards) {
+                            if(card.nightWakeup) {
+                                card.nightWakeup();
                             }
                         }
-                        if(!gameActions.get(randomPlayerName).equals("")) {
-                            server.players.get(randomPlayerName).writeObject("woohooo!!!");
-                            server.players.get(randomPlayerName).flush();
-                            gameWaiting.replace(randomPlayerName, Boolean.FALSE);
+
+                        for(Player player : currentPlayers) {
+                            if(player.dead) {
+                                sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!");
+                            }
                         }
-                        gameActions.replace(randomPlayerName, "");
+
+
                         gameStart = false;
+                    } else if(server.players.size() < 5) {
+                        System.out.println("We need more people. Need at least 5");
                     }
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
             }
+        }
+
+        private void readCards() throws FileNotFoundException {
+            File file = new File("cards.txt");
+            Scanner scanner = new Scanner(file);
+
+            HashMap<Card, Card> temp = new HashMap<Card, Card>();
+            server.cards = new HashSet<Card>();
+            while(scanner.hasNextLine()) {
+                String card = scanner.nextLine();
+                String cardName;
+                int cardAmount = 1;
+                if(card.contains(" x")) {
+                    cardName = card.substring(0, card.indexOf(" "));
+                    cardAmount = Integer.parseInt(card.substring(card.indexOf("x")+1));
+                } else {
+                    cardName = card;
+                }
+
+                boolean doneOnce = false;
+                for(int i = 0; i < cardAmount; i++) {
+                    Card tempCard = null;
+                    if (cardName.equalsIgnoreCase("villager") || cardName.equalsIgnoreCase("villagers")) {
+                        tempCard = new VillagerCard(server);
+                    } else if (cardName.equalsIgnoreCase("werewolf") || cardName.equalsIgnoreCase("werewolves")) {
+                        tempCard = new WerewolfCard(server);
+                    }
+
+                    temp.put(tempCard, tempCard);
+                    if(!doneOnce) {
+                        server.cards.add(tempCard);
+                        doneOnce = true;
+                    }
+                }
+            }
+            scanner.close();
+
+            server.chooseCards = new HashSet<Card>();
+            int i = 0;
+            for(Card card : temp.values()) {
+                server.chooseCards.add(card);
+                i++;
+            }
+        }
+    }
+
+    public void sendToAllPlayers(String message) throws IOException {
+        for(Player player : currentPlayers) {
+            player.output.writeObject(message);
         }
     }
 }
