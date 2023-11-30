@@ -26,4 +26,7 @@ public abstract class Card {
 
     // The method that is called whenever any subsequent night happens. If it doesn't wake up during night, return
     public abstract void nightWakeup();
+
+    // The method that returns information about the card when a player asks
+    public abstract String help();
 }

@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Created the werewolf and villager card and implemented the first night">
+    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Made the program pull out extra random cards if there are more cards than players. Made the program go through the rest of the day, including non-first night nights. Fixed errors where threads would change values in concurrent hashMaps and made the main thread wait a few seconds after important things happen so other threads can catch up. Made the main thread check for winners after every night and day.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/Card.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VillagerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/VillagerCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WerewolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +102,14 @@
       <option name="project" value="LOCAL" />
       <updated>1701236832892</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Made the program pull out extra random cards if there are more cards than players. Made the program go through the rest of the day, including non-first night nights. Fixed errors where threads would change values in concurrent hashMaps and made the main thread wait a few seconds after important things happen so other threads can catch up. Made the main thread check for winners after every night and day.">
+      <created>1701323581125</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1701323581125</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -112,6 +117,7 @@
     <MESSAGE value="Created the absolute bare bones code for the game (very ugly)" />
     <MESSAGE value="Finished the base structure of the server and client classes" />
     <MESSAGE value="Created the werewolf and villager card and implemented the first night" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created the werewolf and villager card and implemented the first night" />
+    <MESSAGE value="Made the program pull out extra random cards if there are more cards than players. Made the program go through the rest of the day, including non-first night nights. Fixed errors where threads would change values in concurrent hashMaps and made the main thread wait a few seconds after important things happen so other threads can catch up. Made the main thread check for winners after every night and day." />
+    <option name="LAST_COMMIT_MESSAGE" value="Made the program pull out extra random cards if there are more cards than players. Made the program go through the rest of the day, including non-first night nights. Fixed errors where threads would change values in concurrent hashMaps and made the main thread wait a few seconds after important things happen so other threads can catch up. Made the main thread check for winners after every night and day." />
   </component>
 </project>

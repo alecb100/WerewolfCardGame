@@ -136,8 +136,7 @@ public class WerewolfServer implements Runnable {
             @Override
             public void run() {
                 try {
-                    players.get(playerName).output.writeObject("We got the message: " + command);
-                    players.get(playerName).output.flush();
+                    System.out.println("We got the message: " + command);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -155,8 +154,7 @@ public class WerewolfServer implements Runnable {
             public void run() {
                 try {
                     gameActions.replace(playerName, action);
-                    players.get(playerName).output.writeObject("We got the action: " + action);
-                    players.get(playerName).output.flush();
+                    System.out.println("We got the action: " + action);
                     gameWaiting.replace(playerName, Boolean.FALSE);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
