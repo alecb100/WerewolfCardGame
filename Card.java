@@ -8,18 +8,22 @@ public abstract class Card {
     // Ranking of when this card will wake up during night calls (the lower cards wake up first)
     public int ranking;
 
-    // The player that has this role
-    public Player player;
-
     // The team this card is on
     public String team;
 
     // The server that the card is in, as well as the player
     public WerewolfServer server;
 
+    // The ranking for winning a game
+    public int winRank;
+
     // The method that will determine if this card won
     public abstract boolean won();
 
-    // The method that is called whenever night happens. If it doesn't wake up during night, return
+    // The method that is called whenever the first night happens. If it doesn't wake up during night, return. If it
+    // doesn't have a special first night, call the other night method
+    public abstract void firstNightWakeup();
+
+    // The method that is called whenever any subsequent night happens. If it doesn't wake up during night, return
     public abstract void nightWakeup();
 }

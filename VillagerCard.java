@@ -5,6 +5,7 @@ public class VillagerCard extends Card {
         this.ranking = 50;
         this.team = "villager";
         this.cardName = "Plain Villager";
+        this.winRank = 50;
     }
 
     @Override
@@ -34,7 +35,10 @@ public class VillagerCard extends Card {
     }
 
     @Override
-    public void nightWakeup() {
+    public void firstNightWakeup() {
         return;
     }
+
+    @Override
+    public void nightWakeup() { return; }
 }

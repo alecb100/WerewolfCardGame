@@ -12,15 +12,30 @@ public class WerewolfCard extends Card {
         this.ranking = 45;
         this.team = "werewolf";
         this.cardName = "Werewolf";
+        this.winRank = 5;
     }
     @Override
     public boolean won() {
-        return false;
+        int werewolfCount = 0;
+        int otherCount = 0;
+        for(Player player : server.currentPlayers) {
+            if(checkWerewolf(player)) {
+                werewolfCount++;
+            } else {
+                otherCount++;
+            }
+        }
+        return werewolfCount >= otherCount;
     }
 
     private boolean checkWerewolf(Player player) {
         return player.card.cardName.equals("Werewolf") || player.card.cardName.equals("Dire Werewolf") ||
                 player.card.cardName.equals("Werewolf Cub") || player.card.cardName.equals("Wolf Man");
+    }
+
+    @Override
+    public void firstNightWakeup() {
+        nightWakeup();
     }
 
     @Override
@@ -65,6 +80,7 @@ public class WerewolfCard extends Card {
                     count.replace(player, count.get(player)+1);
                 } else {
                     good = false;
+                    break;
                 }
             }
             if(!good) {
@@ -87,7 +103,7 @@ public class WerewolfCard extends Card {
         }
 
         try {
-            server.sendToAllPlayers("All werewolves, go to sleep.");
+            server.sendToAllPlayers("All werewolves, go back to sleep.");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }

@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Finished the base structure of the server and client classes">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Card.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Player.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/VillagerCard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WerewolfCard.java" afterDir="false" />
+    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Created the werewolf and villager card and implemented the first night">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VillagerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/VillagerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WerewolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,14 +49,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/alecc/OneDrive/Documents/School Stuff/ECE/ECE492 Java/ECE492Hw/src/ChatRoomClient.java&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/alecc/OneDrive/Documents/School Stuff/ECE/ECE492 Java/ECE492Hw/src/ChatRoomClient.java",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -96,13 +97,21 @@
       <option name="project" value="LOCAL" />
       <updated>1701219398953</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Created the werewolf and villager card and implemented the first night">
+      <created>1701236832892</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1701236832892</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Created the absolute bare bones code for the game (very ugly)" />
     <MESSAGE value="Finished the base structure of the server and client classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finished the base structure of the server and client classes" />
+    <MESSAGE value="Created the werewolf and villager card and implemented the first night" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created the werewolf and villager card and implemented the first night" />
   </component>
 </project>
