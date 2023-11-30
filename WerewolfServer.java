@@ -268,9 +268,6 @@ public class WerewolfServer implements Runnable {
 
                     // Logging message to make it clear something was obtained from them.
                     System.out.println(playerName + "'s action: " + action);
-
-                    // Replace the gameWaiting boolean for the player to false so that it's clear something was obtained.
-                    gameWaiting.replace(playerName, Boolean.FALSE);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -509,8 +506,10 @@ public class WerewolfServer implements Runnable {
                             for (Player player : server.currentPlayers) {
                                 votes.put(player, null);
                             }
-                            // Create a thread to continuously tell the server that it is waiting on every alive player.
-                            new Thread(this::waitForAll).start();
+                            // Tell the server it is waiting for all alive players' actions.
+                            for(Player player : currentPlayers) {
+                                gameWaiting.replace(player.name, Boolean.TRUE);
+                            }
 
                             // Create a thread that continuously sends a player's valid vote to all other players.
                             new Thread(this::sendAllVotes).start();
@@ -743,19 +742,6 @@ public class WerewolfServer implements Runnable {
             }
         }
 
-        // Continuously tell the server that it is waiting for all alive player's votes.
-        private void waitForAll() {
-            while(!dayKillFlag) {
-                for (Player player : currentPlayers) {
-                    if(dayKillFlag) {
-                        // If the server is no longer waiting for votes during execution, quit.
-                        break;
-                    }
-                    server.gameWaiting.replace(player.name, Boolean.TRUE);
-                }
-            }
-        }
-
         // Read all cards in the cards.txt file.
         private void readCards() throws FileNotFoundException {
             // Set up the scanner for the file.
@@ -846,7 +832,7 @@ public class WerewolfServer implements Runnable {
     }
 
     // A helper method to make sure that the server is no longer waiting for any players when needed.
-    private void stopWaiting() {
+    public void stopWaiting() {
         for (Player player : currentPlayers) {
             gameWaiting.replace(player.name, Boolean.FALSE);
             gameActions.replace(player.name, "");

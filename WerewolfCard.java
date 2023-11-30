@@ -63,7 +63,9 @@ public class WerewolfCard extends Card {
 
         // Wait for werewolves choice of kill
         new Thread(this::sendToWerewolves).start();
-        new Thread(this::keepThemWaiting).start();
+        for(Player player : werewolves.keySet()) {
+            server.gameWaiting.replace(player.name, Boolean.TRUE);
+        }
         while(true) {
             ultraGood = false;
             boolean good = true;
@@ -87,6 +89,7 @@ public class WerewolfCard extends Card {
                 continue;
             }
             ultraGood = true;
+            server.stopWaiting();
             try {
                 Thread.sleep(3000);
             } catch(Exception e) {
@@ -111,18 +114,6 @@ public class WerewolfCard extends Card {
             server.sendToAllPlayers("All werewolves, go back to sleep.");
         } catch(Exception e) {
             System.out.println(e.getMessage());
-        }
-    }
-
-    private void keepThemWaiting() {
-        while(!ultraGood) {
-            for (Player player : werewolves.keySet()) {
-                server.gameWaiting.replace(player.name, Boolean.TRUE);
-            }
-        }
-        for (Player player : werewolves.keySet()) {
-            server.gameWaiting.replace(player.name, Boolean.FALSE);
-            server.gameActions.replace(player.name, "");
         }
     }
 
@@ -167,4 +158,6 @@ public class WerewolfCard extends Card {
             player.output.flush();
         }
     }
+
+    //public void checkAfterDeath() { return; }
 }
