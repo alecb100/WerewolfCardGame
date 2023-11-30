@@ -1,9 +1,7 @@
-import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -185,6 +183,9 @@ public class WerewolfServer implements Runnable {
                     if (start && server.players.size() >= 5) {
                         System.out.println("Starting");
                         gameStart = true;
+                        for(Player player : players.values()) {
+                            player.dead = false;
+                        }
 
                         // Get all the players in the game situated
                         gameActions = new HashMap<String, String>();
@@ -283,6 +284,10 @@ public class WerewolfServer implements Runnable {
                         for(Player player : dead) {
                             sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
                             currentPlayers.remove(player);
+                            player.tower = true;
+                        }
+                        for(Player player : currentPlayers) {
+                            player.tower = false;
                         }
 
                         while(true) {
@@ -362,12 +367,14 @@ public class WerewolfServer implements Runnable {
                                 }
                             }
 
+                            HashSet<Player> deadCopy = new HashSet<Player>();
                             for(Player player : currentPlayers) {
                                 if(player.dead) {
                                     dead.add(player);
+                                    deadCopy.add(player);
                                 }
                             }
-                            for(Player player : dead) {
+                            for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
                                 currentPlayers.remove(player);
                             }

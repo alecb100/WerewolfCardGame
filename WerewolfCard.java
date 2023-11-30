@@ -86,6 +86,12 @@ public class WerewolfCard extends Card {
             if(!good) {
                 continue;
             }
+            ultraGood = true;
+            try {
+                Thread.sleep(3000);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
 
             int highest = -1;
             Player dead = null;
@@ -98,7 +104,6 @@ public class WerewolfCard extends Card {
 
             dead.dead = true;
             System.out.println("Werewolves' chosen kill: " + dead.name);
-            ultraGood = true;
             break;
         }
 
@@ -125,7 +130,7 @@ public class WerewolfCard extends Card {
         String[] names = new String[server.currentPlayers.size()-werewolves.size()];
         int i = 0;
         for(Player player : server.currentPlayers) {
-            if(!checkWerewolf(player) && !player.dead) {
+            if(!checkWerewolf(player) && !player.dead && !player.tower) {
                 names[i] = player.name;
                 i++;
             }

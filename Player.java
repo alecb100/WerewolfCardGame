@@ -12,11 +12,14 @@ public class Player {
 
     public boolean dead;
 
+    public boolean tower;
+
     public Player(String name, ObjectInputStream input, ObjectOutputStream output) {
         this.name = name;
         this.input = input;
         this.output = output;
         dead = false;
+        tower = false;
     }
 
     @Override
