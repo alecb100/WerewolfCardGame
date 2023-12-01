@@ -17,6 +17,9 @@ public abstract class Card {
     // The ranking for winning a game
     public int winRank;
 
+    // Whether the card only wakes up during the first night or not
+    public boolean firstNightOnly;
+
     // The method that will determine if this card won
     public abstract boolean won();
 
@@ -29,4 +32,9 @@ public abstract class Card {
 
     // The method that returns information about the card when a player asks
     public abstract String help();
+
+    // Some cards require things to be done after they are killed. Whenever they are killed, this method is called.
+    public abstract void checkAfterDeath();
+
+    public String toString() { return cardName; }
 }

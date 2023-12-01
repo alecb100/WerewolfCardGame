@@ -4,8 +4,19 @@ public class VillagerCard extends Card {
         this.nightWakeup = false;
         this.ranking = 50;
         this.team = "villager";
-        this.cardName = "Plain Villager";
+        this.cardName = "Villager";
         this.winRank = 50;
+        this.firstNightOnly = false;
+    }
+
+    @Override
+    public String help() {
+        String result = "The plain Villager is the default card in the Werewolf game. Usually this card outnumbers all other cards. ";
+        result += "Every day, the villagers wake up and try to find out which one of their neighbors are werewolves. At the end of every ";
+        result += "day, they choose one person to kill. There are many other cards that are on the villager team, including the Seer, Hunter, etc.";
+        result += " They win once they have killed all of the werewolves. There can still be people alive that are on the werewolf team (like the minion), but the actual ";
+        result += "werewolves must be dead. These include the plain Werewolf, the Wolf Man, the Dire Wolf, and the Werewolf Cub.";
+        return result;
     }
 
     @Override
@@ -41,4 +52,9 @@ public class VillagerCard extends Card {
 
     @Override
     public void nightWakeup() { return; }
+
+    @Override
+    public void checkAfterDeath() {
+        return;
+    }
 }

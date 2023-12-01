@@ -242,7 +242,140 @@ public class WerewolfServer implements Runnable {
             @Override
             public void run() {
                 try {
-                    System.out.println("We got the message: " + command);
+                    String result = "";
+                    // If the command is help, display all commands that can be used
+                    if(command.equalsIgnoreCase("commands") || command.equalsIgnoreCase("help")) {
+                        result += "\n\nThe following commands can be used:\n(Also, after the server asks you for something,\nyou can type 'help:' followed by a command to access\nany of these commands)\n\n";
+                        result += "'help':\t\t\tLists the possible commands\n";
+                        result += "'players':\t\tLists the current alive players\n";
+                        result += "'dead':\t\t\tLists the current dead players and their cards\n";
+                        result += "'cards':\t\tLists the cards that have been chosen to be in the game\n";
+                        result += "'card <card name>':\tLists the description and details of the card specified by <card name>\n";
+                        result += "'clients':\t\tLists the server clients (players) currently connected to the server\n";
+                        result += "'order':\t\tLists the order of the cards that wake up during the nights\n\t\t\t(does not include cards that only wake up during the first night)\n";
+                        result += "'win':\t\t\tLists the order in which win conditions are checked\n";
+                    } else if(command.equalsIgnoreCase("players")) {
+                        // If the command is players, display all alive players in the game
+                        if(gameStart) {
+                            // Alive players can't be displayed if the game hasn't started yet
+                            result += "\n\nThe following players are currently alive in the game\n\n";
+                            for(Player player : currentPlayers) {
+                                result += player.name;
+                                if(player.tower) {
+                                    // Displays the tower next to the player if they have the tower, preventing their death the first night
+                                    result += " <-- tower is currently active and thus cannot be killed this night";
+                                }
+                                result += "\n";
+                            }
+                        } else {
+                            result += "\n\nThe game has not started yet, and thus there are no players\n";
+                        }
+                    } else if(command.equalsIgnoreCase("dead")) {
+                        // Displays all dead players
+                        if(gameStart) {
+                            result += "\n\nThe following players are currently dead in the game\n\n";
+                            for(Player player : dead) {
+                                result += player.name + ", who was a " + player.card.cardName + "\n";
+                            }
+                        } else {
+                            result += "\n\nThe game has not started yet, and thus there are no players\n";
+                        }
+                    } else if(command.equalsIgnoreCase("cards")) {
+                        // Displays all cards potentially in the game
+                        if(gameStart) {
+                            result += "\n\nThe following cards are currently in the game\n\n";
+
+                            // Set up the scanner for the file.
+                            File file = new File("cards.txt");
+                            Scanner scanner = null;
+                            try {
+                                scanner = new Scanner(file);
+                            } catch(Exception e) {
+                                System.out.println(e.getMessage());
+                            }
+                            // Scan every line and add that to the result string
+                            while(scanner.hasNextLine()) {
+                                result += scanner.nextLine();
+                                result += "\n";
+                            }
+                            scanner.close();
+                        } else {
+                            result += "\n\nThe game has not started yet, and thus there are no cards\n";
+                        }
+                    } else if(command.length() >= 4 && command.substring(0, 4).equalsIgnoreCase("card")) {
+                        // Runs the help() command for the specified card, which displays the important information about it.
+                        if(gameStart) {
+                            if (command.length() < 5) {
+                                result += "\n\nUse this command with the name of a card, like so: 'card <card name>'\n";
+                            } else {
+                                // Search for the card asked about
+                                String askedCard = command.substring(5);
+                                boolean cardFound = false;
+                                for (Card card : cards) {
+                                    if (card.cardName.equalsIgnoreCase(askedCard)) {
+                                        // The card was identified, so display the help() method for that card.
+                                        result += "\n" + card.help() + "\n";
+                                        cardFound = true;
+                                    }
+                                }
+                                if (!cardFound) {
+                                    // If the card was not found, tell the player that.
+                                    result += "\nCard not found\n";
+                                }
+                            }
+                        } else {
+                            result += "\n\nThe game has not started yet, and thus there are no cards to ask about\n";
+                        }
+                    } else if(command.equalsIgnoreCase("clients")) {
+                        // Display all people currently connected to the server
+                        result += "\n\nThe following players are currently connected to the server\n\n";
+                        for(String player : players.keySet()) {
+                            result += player + "\n";
+                        }
+                    } else if(command.equalsIgnoreCase("order")) {
+                        // Display the order that cards wake up at night, excluding the first night wake-ups
+                        if(gameStart) {
+                            result += "\n\nThe following is the order of how the cards wake up each night (excluding first night only wakeups)\n\n";
+                            for(Card card : cards) {
+                                if(card.nightWakeup && !card.firstNightOnly) {
+                                    result += card.cardName + "\n";
+                                }
+                            }
+                        } else {
+                            result += "\n\nThe game has not started yet, and thus there are no cards to list the order\n";
+                        }
+                    } else if(command.equalsIgnoreCase("win")) {
+                        // Display the order that cards get checked for winning
+                        if(gameStart) {
+                            result += "\n\nThe following is the order of how the cards are checked for wins\n\n";
+
+                            // Clone the cards Array so that they can be put in order of win rank.
+                            Card[] cardsForWinning = cards.clone();
+
+                            // Sort in order of winRank
+                            for(int i = 0; i < cardsForWinning.length - 1; i++) {
+                                for(int j = 0; j < cardsForWinning.length - i - 1; j++) {
+                                    if(cardsForWinning[j].winRank > cardsForWinning[j+1].winRank) {
+                                        Card temp = cardsForWinning[j];
+                                        cardsForWinning[j] = cardsForWinning[j+1];
+                                        cardsForWinning[j+1] = temp;
+                                    }
+                                }
+                            }
+                            for(Card card : cardsForWinning) {
+                                result += card.cardName + "\n";
+                            }
+                        } else {
+                            result += "\n\nThe game has not started yet, and thus there are no cards to list the order\n";
+                        }
+                    } else {
+                        // If the command wasn't found, tell the player that
+                        result += "\n" + command + " command not found\n";
+                    }
+
+                    // Send the result of result to the player that sent the command
+                    player.output.writeObject(result);
+                    player.output.flush();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -323,6 +456,10 @@ public class WerewolfServer implements Runnable {
                         gameActions = new HashMap<String, String>();
                         gameWaiting = new HashMap<String, Boolean>();
                         currentPlayers = new HashSet<Player>();
+
+                        // Initialize the dead HashSet.
+                        dead = new HashSet<Player>();
+
                         int i = 0;
                         for(String name : server.players.keySet()) {
                             currentPlayers.add(server.players.get(name));
@@ -465,10 +602,7 @@ public class WerewolfServer implements Runnable {
                         }
 
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
-                        sendToAllPlayers("\nNow everyone open your eyes. You all need to discuss and pick a person each that you will kill.\nThe number of people chosen to be killed is: " + amountOfDayKills);
-
-                        // Initialize the dead HashSet.
-                        dead = new HashSet<Player>();
+                        sendToAllPlayers("\nNow everyone open your eyes.");
 
                         // Run through the alive players and check who was set to dead after the entire night, and add them to the
                         // dead HashSet.
@@ -497,6 +631,8 @@ public class WerewolfServer implements Runnable {
 
                         // Run the infinite loop for the game. Every day, then every night at the end, until someone won.
                         while(true) {
+                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people chosen to be killed is: " + amountOfDayKills);
+
                             // Set a flag to false signifying that the day isn't over. This only gets set to true
                             // once all alive players have chosen a valid player to kill (valid as in they are still alive).
                             dayKillFlag = false;
@@ -576,6 +712,7 @@ public class WerewolfServer implements Runnable {
                                     deadCopy.add(player);
                                 }
                             }
+
                             // Loops through all in the dead copy HashSet and alerts every one of their death and what card they were.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
@@ -621,6 +758,9 @@ public class WerewolfServer implements Runnable {
                                 }
                             }
 
+                            // The night is over, so wake up everyone so that they can see who died, and they can determine who to kill for the day.
+                            sendToAllPlayers("\nNow everyone open your eyes.");
+
                             // Just like above, it creates a dead copy and checks to see who is newly dead.
                             deadCopy = new HashSet<Player>();
                             for(Player player : currentPlayers) {
@@ -629,7 +769,7 @@ public class WerewolfServer implements Runnable {
                                     deadCopy.add(player);
                                 }
                             }
-                            // Runs through the newly dead and alerts everone of their death.
+                            // Runs through the newly dead and alerts everyone of their death.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
                                 // Some cards require special things to happen after they die, so run that method.

@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class.">
+    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Added many comments to WerewolfServer.java so that someone can follow along in the program.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VillagerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/VillagerCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WerewolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfServer.java" afterDir="false" />
     </list>
@@ -48,17 +49,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/alecc/OneDrive/Documents/School Stuff/ECE/ECE492 Java/ECE492Hw/src/ChatRoomClient.java",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/alecc/OneDrive/Documents/School Stuff/ECE/ECE492 Java/ECE492Hw/src/ChatRoomClient.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -117,7 +118,21 @@
       <option name="project" value="LOCAL" />
       <updated>1701323804309</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class. Fixed some misc issues.">
+      <created>1701325406379</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1701325406379</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added many comments to WerewolfServer.java so that someone can follow along in the program.">
+      <created>1701379380394</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1701379380394</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -127,6 +142,8 @@
     <MESSAGE value="Created the werewolf and villager card and implemented the first night" />
     <MESSAGE value="Made the program pull out extra random cards if there are more cards than players. Made the program go through the rest of the day, including non-first night nights. Fixed errors where threads would change values in concurrent hashMaps and made the main thread wait a few seconds after important things happen so other threads can catch up. Made the main thread check for winners after every night and day." />
     <MESSAGE value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class." />
+    <MESSAGE value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class. Fixed some misc issues." />
+    <MESSAGE value="Added many comments to WerewolfServer.java so that someone can follow along in the program." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added many comments to WerewolfServer.java so that someone can follow along in the program." />
   </component>
 </project>

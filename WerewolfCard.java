@@ -13,7 +13,18 @@ public class WerewolfCard extends Card {
         this.team = "werewolf";
         this.cardName = "Werewolf";
         this.winRank = 5;
+        this.firstNightOnly = false;
     }
+
+    @Override
+    public String help() {
+        String result = "This is the plain Werewolf, the main werewolf of the game. They wake up every night and choose one person to kill (doing that every night). ";
+        result += "They win by eliminating enough villagers so that the amount of alive werewolves equal or is greater than the ";
+        result += "amount of alive villagers. There are other werewolves in the game, including the Dire Wolf, the Wolf Man, and the Werewolf Cub.";
+        result += " They also have helpers, such as the minion, who do not actually count as werewolves but are on the werewolves team.";
+        return result;
+    }
+
     @Override
     public boolean won() {
         int werewolfCount = 0;
@@ -159,5 +170,6 @@ public class WerewolfCard extends Card {
         }
     }
 
-    //public void checkAfterDeath() { return; }
+    @Override
+    public void checkAfterDeath() { return; }
 }
