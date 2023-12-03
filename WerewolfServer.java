@@ -367,10 +367,10 @@ public class WerewolfServer implements Runnable {
                             for(Card card : cardsForWinning) {
                                 result += card.cardName + "\n";
                             }
-                        }else {
+                        } else {
                             result += "\n\nThe game has not started yet, and thus there are no cards to list the order\n";
                         }
-                    }  else if(command.equalsIgnoreCase("WhoAmI")) {
+                    } else if(command.equalsIgnoreCase("WhoAmI")) {
                         if(gameStart) {
                             result += "\n\nYour card is: " + player.card.cardName;
                         } else {
@@ -643,7 +643,7 @@ public class WerewolfServer implements Runnable {
 
                         // Run the infinite loop for the game. Every day, then every night at the end, until someone won.
                         while(true) {
-                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people chosen to be killed is: " + amountOfDayKills);
+                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people you must choose to kill is: " + amountOfDayKills);
 
                             // Set a flag to false signifying that the day isn't over. This only gets set to true
                             // once all alive players have chosen a valid player to kill (valid as in they are still alive).
@@ -711,6 +711,7 @@ public class WerewolfServer implements Runnable {
                                     }
                                     // That player who was chosen is set to dead.
                                     dead2.dead = true;
+                                    count.remove(dead2);
                                 }
                             }
 
@@ -936,12 +937,15 @@ public class WerewolfServer implements Runnable {
                     } else if (cardName.equalsIgnoreCase("werewolf") || cardName.equalsIgnoreCase("werewolves")) {
                         // If the card is a plain werewolf card.
                         tempCard = new WerewolfCard(server);
-                    } else if(cardName.equalsIgnoreCase("tanner")) {
+                    } else if (cardName.equalsIgnoreCase("tanner")) {
                         // If the card is a tanner card.
                         tempCard = new TannerCard(server);
-                    } else if(cardName.equalsIgnoreCase("bodyguard")) {
+                    } else if (cardName.equalsIgnoreCase("bodyguard")) {
                         // If the card is a bodyguard card.
                         tempCard = new BodyguardCard(server);
+                    } else if(cardName.equalsIgnoreCase("troublemaker")) {
+                        // If the card is a troublemaker card.
+                        tempCard = new TroublemakerCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

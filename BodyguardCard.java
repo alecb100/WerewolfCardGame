@@ -5,7 +5,7 @@ public class BodyguardCard extends Card {
     public BodyguardCard(WerewolfServer server) {
         this.server = server;
         this.nightWakeup = true;
-        this.ranking = 50;
+        this.ranking = 100;
         this.team = "villager";
         this.cardName = "Bodyguard";
         this.winRank = 100;
@@ -69,7 +69,7 @@ public class BodyguardCard extends Card {
         // Determine if there is a bodyguard or not (there would only ever be 1)
         Player bodyguard = null;
         for(Player player : server.currentPlayers) {
-            if(player.card.cardName.equals("Bodyguard")) {
+            if(player.card.cardName.contains("Bodyguard")) {
                 bodyguard = player;
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 break;
