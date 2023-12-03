@@ -260,7 +260,7 @@ public class WerewolfServer implements Runnable {
                         // If the command is players, display all alive players in the game
                         if(gameStart) {
                             // Alive players can't be displayed if the game hasn't started yet
-                            result += "\n\nThe following players are currently alive in the game\n\n";
+                            result += "\n\nThe following players are currently alive in the game:\n\n";
                             for(Player player : currentPlayers) {
                                 result += player.name;
                                 if(player.tower) {
@@ -275,7 +275,7 @@ public class WerewolfServer implements Runnable {
                     } else if(command.equalsIgnoreCase("dead")) {
                         // Displays all dead players
                         if(gameStart) {
-                            result += "\n\nThe following players are currently dead in the game\n\n";
+                            result += "\n\nThe following players are currently dead in the game:\n\n";
                             for(Player player : dead) {
                                 result += player.name + ", who was a " + player.card.cardName + "\n";
                             }
@@ -285,7 +285,7 @@ public class WerewolfServer implements Runnable {
                     } else if(command.equalsIgnoreCase("cards")) {
                         // Displays all cards potentially in the game
                         if(gameStart) {
-                            result += "\n\nThe following cards are currently in the game\n\n";
+                            result += "\n\nThe following cards are currently in the game:\n\n";
 
                             // Set up the scanner for the file.
                             File file = new File("cards.txt");
@@ -330,14 +330,14 @@ public class WerewolfServer implements Runnable {
                         }
                     } else if(command.equalsIgnoreCase("clients")) {
                         // Display all people currently connected to the server
-                        result += "\n\nThe following players are currently connected to the server\n\n";
+                        result += "\n\nThe following players are currently connected to the server:\n\n";
                         for(String player : players.keySet()) {
                             result += player + "\n";
                         }
                     } else if(command.equalsIgnoreCase("order")) {
                         // Display the order that cards wake up at night, excluding the first night wake-ups
                         if(gameStart) {
-                            result += "\n\nThe following is the order of how the cards wake up each night (excluding first night only wakeups)\n\n";
+                            result += "\n\nThe following is the order of how the cards wake up each night (excluding first night only wakeups):\n\n";
                             for(Card card : cards) {
                                 if(card.nightWakeup && !card.firstNightOnly) {
                                     result += card.cardName + "\n";
@@ -349,7 +349,7 @@ public class WerewolfServer implements Runnable {
                     } else if(command.equalsIgnoreCase("win")) {
                         // Display the order that cards get checked for winning
                         if(gameStart) {
-                            result += "\n\nThe following is the order of how the cards are checked for wins\n\n";
+                            result += "\n\nThe following is the order of how the cards are checked for wins:\n\n";
 
                             // Clone the cards Array so that they can be put in order of win rank.
                             Card[] cardsForWinning = cards.clone();
