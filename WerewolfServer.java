@@ -446,6 +446,10 @@ public class WerewolfServer implements Runnable {
                         // Set the start flag to true for the rest of the program.
                         gameStart = true;
 
+                        // Make it clear to all players where the new game chat starts
+                        sendToAllPlayers("================================");
+                        sendToAllPlayers("New Game!\n\n");
+
                         // Set all players in the server to alive.
                         for(Player player : players.values()) {
                             player.dead = false;
@@ -598,7 +602,7 @@ public class WerewolfServer implements Runnable {
 
                             // Tell all players who was on that winning team.
                             sendToAllPlayers("Winning players: " + winningPlayers);
-                            break;
+                            continue;
                         }
 
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
@@ -843,12 +847,7 @@ public class WerewolfServer implements Runnable {
 
         // A method to get all votes for all alive players.
         private void sendAllVotes() {
-            // Grab the names that players gave in the past so that the server doesn't continuously send everyone the vote
-            // a player made, it only sends it to everyone once.
-            HashMap<Player, String> pastNames = new HashMap<Player, String>();
-            for(Player player : currentPlayers) {
-                pastNames.put(player, "");
-            }
+            // Run through the infinite loop until everyone has voted for a person
             while(!dayKillFlag) {
                 // While the server is still waiting for everyone to vote.
                 for(Player player : currentPlayers) {
@@ -858,7 +857,7 @@ public class WerewolfServer implements Runnable {
                     }
                     // Make sure that the vote of a player is a valid player that is alive (can be themselves if they want). Also makes sure it doesn't send to all if
                     // it already sent to all.
-                    if(!server.gameActions.get(player.name).equals("") && currentPlayers.contains(player) && !pastNames.get(player).equals(server.gameActions.get(player.name))) {
+                    if(!server.gameActions.get(player.name).equals("") && currentPlayers.contains(player)) {
                         try {
                             // Send their vote to all players.
                             sendToAllPlayers(player.name + " voted: " + server.gameActions.get(player.name));
@@ -867,7 +866,7 @@ public class WerewolfServer implements Runnable {
                         }
                         // Sets the last vote the player made to this vote. Also logs their vote.
                         votes.replace(player, server.players.get(server.gameActions.get(player.name)));
-                        pastNames.replace(player, server.gameActions.get(player.name));
+                        gameActions.replace(player.name, "");
                     } else if(!gameActions.get(player.name).equals("") && !currentPlayers.contains(player)) {
                         // If the player's vote wasn't a valid player.
                         try {
@@ -922,6 +921,9 @@ public class WerewolfServer implements Runnable {
                     } else if (cardName.equalsIgnoreCase("werewolf") || cardName.equalsIgnoreCase("werewolves")) {
                         // If the card is a plain werewolf card.
                         tempCard = new WerewolfCard(server);
+                    } else if(cardName.equalsIgnoreCase("tanner")) {
+                        // If the card is a tanner card.
+                        tempCard = new TannerCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

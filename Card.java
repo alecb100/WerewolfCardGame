@@ -3,10 +3,10 @@ public abstract class Card {
     public String cardName;
 
     // Whether this card will wake up at night at all
-    public boolean nightWakeup;
+    public boolean nightWakeup = false;
 
     // Ranking of when this card will wake up during night calls (the lower cards wake up first)
-    public int ranking;
+    public int ranking = 100;
 
     // The team this card is on
     public String team;
@@ -18,7 +18,10 @@ public abstract class Card {
     public int winRank;
 
     // Whether the card only wakes up during the first night or not
-    public boolean firstNightOnly;
+    public boolean firstNightOnly = false;
+
+    // The method that returns information about the card when a player asks
+    public abstract String help();
 
     // The method that will determine if this card won
     public abstract boolean won();
@@ -29,9 +32,6 @@ public abstract class Card {
 
     // The method that is called whenever any subsequent night happens. If it doesn't wake up during night, return
     public abstract void nightWakeup();
-
-    // The method that returns information about the card when a player asks
-    public abstract String help();
 
     // Some cards require things to be done after they are killed. Whenever they are killed, this method is called.
     public abstract void checkAfterDeath();

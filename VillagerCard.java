@@ -1,12 +1,9 @@
 public class VillagerCard extends Card {
     public VillagerCard(WerewolfServer server) {
         this.server = server;
-        this.nightWakeup = false;
-        this.ranking = 50;
         this.team = "villager";
         this.cardName = "Villager";
         this.winRank = 50;
-        this.firstNightOnly = false;
     }
 
     @Override
@@ -24,7 +21,7 @@ public class VillagerCard extends Card {
         boolean oneVillager = false;
         // Checking if there is at least 1 villager alive
         for(Player player : server.currentPlayers) {
-            if(player.card.team.equals("villager")) {
+            if(!player.card.team.equals("werewolf")) {
                 oneVillager = true;
                 break;
             }
