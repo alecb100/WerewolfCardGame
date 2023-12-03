@@ -943,9 +943,12 @@ public class WerewolfServer implements Runnable {
                     } else if (cardName.equalsIgnoreCase("bodyguard")) {
                         // If the card is a bodyguard card.
                         tempCard = new BodyguardCard(server);
-                    } else if(cardName.equalsIgnoreCase("troublemaker")) {
+                    } else if (cardName.equalsIgnoreCase("troublemaker")) {
                         // If the card is a troublemaker card.
                         tempCard = new TroublemakerCard(server);
+                    } else if(cardName.equalsIgnoreCase("seer")) {
+                        // If the card is a seer card.
+                        tempCard = new SeerCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
