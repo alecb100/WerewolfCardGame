@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -854,6 +855,13 @@ public class WerewolfServer implements Runnable {
 
         // A method to get all votes for all alive players.
         private void sendAllVotes() {
+            String[] possibilities = new String[currentPlayers.size()];
+            int i = 0;
+            for(Player player : currentPlayers) {
+                possibilities[i] = player.name;
+                i++;
+            }
+
             // Run through the infinite loop until everyone has voted for a person
             while(!dayKillFlag) {
                 // While the server is still waiting for everyone to vote.
@@ -864,7 +872,7 @@ public class WerewolfServer implements Runnable {
                     }
                     // Make sure that the vote of a player is a valid player that is alive (can be themselves if they want). Also makes sure it doesn't send to all if
                     // it already sent to all.
-                    if(!server.gameActions.get(player.name).equals("") && currentPlayers.contains(player)) {
+                    if(!server.gameActions.get(player.name).equals("") && Arrays.asList(possibilities).contains(gameActions.get(player.name))) {
                         try {
                             // Send their vote to all players.
                             sendToAllPlayers(player.name + " voted: " + server.gameActions.get(player.name));
@@ -874,7 +882,7 @@ public class WerewolfServer implements Runnable {
                         // Sets the last vote the player made to this vote. Also logs their vote.
                         votes.replace(player, server.players.get(server.gameActions.get(player.name)));
                         gameActions.replace(player.name, "");
-                    } else if(!gameActions.get(player.name).equals("") && !currentPlayers.contains(player)) {
+                    } else if(!gameActions.get(player.name).equals("") && !Arrays.asList(possibilities).contains(gameActions.get(player.name))) {
                         // If the player's vote wasn't a valid player.
                         try {
                             player.output.writeObject("Not a valid player");
@@ -931,6 +939,9 @@ public class WerewolfServer implements Runnable {
                     } else if(cardName.equalsIgnoreCase("tanner")) {
                         // If the card is a tanner card.
                         tempCard = new TannerCard(server);
+                    } else if(cardName.equalsIgnoreCase("bodyguard")) {
+                        // If the card is a bodyguard card.
+                        tempCard = new BodyguardCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -972,9 +983,11 @@ public class WerewolfServer implements Runnable {
             // Sort in order of rank for night wakeup.
             for(i = 0; i < cards.length - 1; i++) {
                 for(int j = 0; j < cards.length - i - 1; j++) {
-                    Card temp3 = cards[j];
-                    cards[j] = cards[j+1];
-                    cards[j+1] = temp3;
+                    if(cards[j].ranking > cards[j+1].ranking) {
+                        Card temp3 = cards[j];
+                        cards[j] = cards[j + 1];
+                        cards[j + 1] = temp3;
+                    }
                 }
             }
         }
