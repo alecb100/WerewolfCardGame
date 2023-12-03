@@ -985,4 +985,10 @@ public class WerewolfServer implements Runnable {
             player.output.writeObject(message);
         }
     }
+
+    // A helper method used by other cards, including the Werewolf card, to check if a player is a type of werewolf
+    public boolean checkWerewolf(Player player) {
+        return player.card.cardName.contains("Werewolf") || player.card.cardName.contains("Dire Werewolf") ||
+                player.card.cardName.contains("Werewolf Cub") || player.card.cardName.contains("Wolf Man");
+    }
 }
