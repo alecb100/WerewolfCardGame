@@ -254,6 +254,7 @@ public class WerewolfServer implements Runnable {
                         result += "'clients':\t\tLists the server clients (players) currently connected to the server\n";
                         result += "'order':\t\tLists the order of the cards that wake up during the nights\n\t\t\t(does not include cards that only wake up during the first night)\n";
                         result += "'win':\t\t\tLists the order in which win conditions are checked\n";
+                        result += "'WhoAmI':\t\tTells you what your card is again\n";
                     } else if(command.equalsIgnoreCase("players")) {
                         // If the command is players, display all alive players in the game
                         if(gameStart) {
@@ -365,8 +366,14 @@ public class WerewolfServer implements Runnable {
                             for(Card card : cardsForWinning) {
                                 result += card.cardName + "\n";
                             }
-                        } else {
+                        }else {
                             result += "\n\nThe game has not started yet, and thus there are no cards to list the order\n";
+                        }
+                    }  else if(command.equalsIgnoreCase("WhoAmI")) {
+                        if(gameStart) {
+                            result += "\n\nYour card is: " + player.card.cardName;
+                        } else {
+                            result += "\n\nThe game hasn't started yet, so you don't have a card\n";
                         }
                     } else {
                         // If the command wasn't found, tell the player that
