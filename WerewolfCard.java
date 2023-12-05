@@ -38,7 +38,7 @@ public class WerewolfCard extends Card {
         // Goes through all the players and counts how many werewolf team members there are and how many
         // villager team members there are
         for(Player player : server.currentPlayers) {
-            if(server.checkWerewolf(player)) {
+            if(server.checkWerewolf(player) || player.card.team.equals("werewolf")) {
                 werewolfCount++;
             } else {
                 otherCount++;
@@ -200,5 +200,5 @@ public class WerewolfCard extends Card {
 
     // There is no special checkAfterDeath for normal werewolves
     @Override
-    public void checkAfterDeath() { return; }
+    public void checkAfterDeaths() { return; }
 }

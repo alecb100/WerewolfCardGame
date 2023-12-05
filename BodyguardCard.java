@@ -136,7 +136,7 @@ public class BodyguardCard extends Card {
 
     // There is no special checkAfterDeath function for this card
     @Override
-    public void checkAfterDeath() {
+    public void checkAfterDeaths() {
         return;
     }
 }

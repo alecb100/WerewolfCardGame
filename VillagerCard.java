@@ -51,7 +51,7 @@ public class VillagerCard extends Card {
     public void nightWakeup() { return; }
 
     @Override
-    public void checkAfterDeath() {
+    public void checkAfterDeaths() {
         return;
     }
 }

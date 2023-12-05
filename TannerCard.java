@@ -26,13 +26,13 @@ public class TannerCard extends Card {
         // Checks if an alive player has been set to dead. This is only checked after all night wake-ups, so nothing
         // would make the card no longer dead
         for(Player player : server.currentPlayers) {
-            if(player.card.cardName.equals("Tanner") && player.dead) {
+            if(player.card.team.equals("tanner") && player.dead) {
                 return true;
             }
         }
         // Checks if the player is in the dead HashMap, which means that they were recently put there
         for(Player player : server.dead) {
-            if(player.card.cardName.equals("Tanner")) {
+            if(player.card.team.equals("tanner")) {
                 return true;
             }
         }
@@ -53,7 +53,7 @@ public class TannerCard extends Card {
 
     // The Tanner does not have a special thing it does after it dies, except that it won
     @Override
-    public void checkAfterDeath() {
+    public void checkAfterDeaths() {
         return;
     }
 }

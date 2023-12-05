@@ -138,7 +138,7 @@ public class SeerCard extends Card {
     // There is no special checkAfterDeath function for this card, but there may be one implemented when creating the
     // Apprentice Seer
     @Override
-    public void checkAfterDeath() {
+    public void checkAfterDeaths() {
         return;
     }
 }

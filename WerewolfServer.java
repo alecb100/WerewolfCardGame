@@ -575,6 +575,7 @@ public class WerewolfServer implements Runnable {
                         // chosen, so it will run through them linearly.
                         for(Card card : cards) {
                             if(card.nightWakeup) {
+                                sendToAllPlayers("\n");
                                 card.firstNightWakeup();
                                 // Have the game thread sleep for 3 seconds after each night wakeup to ensure that threads
                                 // that should die now that their night wakeup is over, actually die after doing all they
@@ -610,6 +611,14 @@ public class WerewolfServer implements Runnable {
 
                             // Tell all players who was on that winning team.
                             sendToAllPlayers("Winning players: " + winningPlayers);
+
+                            // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
+                            for(Card card : cards) {
+                                if(card.cardName.equals("Cupid")) {
+                                    card.won();
+                                    break;
+                                }
+                            }
                             continue;
                         }
 
@@ -627,13 +636,21 @@ public class WerewolfServer implements Runnable {
                         for(Player player : dead) {
                             // Tell all players who have been killed and what their cards were.
                             sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
-                            // Some cards require special things to happen after they die, so run that method.
-                            player.card.checkAfterDeath();
                             // Remove them from the alive players HashSet.
                             currentPlayers.remove(player);
                             // Because they died on the very first night and did not get to play, set their tower to true, meaning
                             // they cannot die on the first night the next game (so they actually get to play).
                             player.tower = true;
+
+                            // Tell that player they are dead
+                            player.output.writeObject("!!!!!YOU DIED!!!!!");
+                        }
+
+                        // If the card has something it needs to check after all the deaths, like linked people, do it now
+                        for(Card card : cards) {
+                            if(card.deathCheck) {
+                                card.checkAfterDeaths();
+                            }
                         }
                         // Make sure that no player in the alive HashSet has a tower set since they survived. This is the only
                         // place they get cleared between games so that the state of their tower from last game is preserved.
@@ -643,7 +660,7 @@ public class WerewolfServer implements Runnable {
 
                         // Run the infinite loop for the game. Every day, then every night at the end, until someone won.
                         while(true) {
-                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people you must choose to kill is: " + amountOfDayKills);
+                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people you must choose to kill is: " + amountOfDayKills + "\n");
 
                             // Set a flag to false signifying that the day isn't over. This only gets set to true
                             // once all alive players have chosen a valid player to kill (valid as in they are still alive).
@@ -730,8 +747,17 @@ public class WerewolfServer implements Runnable {
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
                                 // Some cards require special things to happen after they die, so run that method.
-                                player.card.checkAfterDeath();
                                 currentPlayers.remove(player);
+
+                                // Tell that player they are dead
+                                player.output.writeObject("!!!!!YOU DIED!!!!!");
+                            }
+
+                            // If the card has something it needs to check after all the deaths, like linked people, do it now
+                            for(Card card : cards) {
+                                if(card.deathCheck) {
+                                    card.checkAfterDeaths();
+                                }
                             }
 
                             // Resets the amount of day kills to 1. May have already been 1, may have been changed by another card
@@ -754,6 +780,14 @@ public class WerewolfServer implements Runnable {
                                     }
                                 }
                                 sendToAllPlayers("Winning players: " + winningPlayers);
+
+                                // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
+                                for(Card card : cards) {
+                                    if(card.cardName.equals("Cupid")) {
+                                        card.won();
+                                        break;
+                                    }
+                                }
                                 break;
                             }
 
@@ -761,6 +795,7 @@ public class WerewolfServer implements Runnable {
                             sendToAllPlayers("Now for the night. Everyone close your eyes.");
                             for(Card card : cards) {
                                 if(card.nightWakeup) {
+                                    sendToAllPlayers("\n");
                                     // Runs through the nights same as the first night, except it calls the normal
                                     // night method rather than the first night method.
                                     card.nightWakeup();
@@ -786,8 +821,17 @@ public class WerewolfServer implements Runnable {
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
                                 // Some cards require special things to happen after they die, so run that method.
-                                player.card.checkAfterDeath();
                                 currentPlayers.remove(player);
+
+                                // Tell that player they are dead
+                                player.output.writeObject("!!!!!YOU DIED!!!!!");
+                            }
+
+                            // If the card has something it needs to check after all the deaths, like linked people, do it now
+                            for(Card card : cards) {
+                                if(card.deathCheck) {
+                                    card.checkAfterDeaths();
+                                }
                             }
 
 
@@ -807,6 +851,14 @@ public class WerewolfServer implements Runnable {
                                     }
                                 }
                                 sendToAllPlayers("Winning players: " + winningPlayers);
+
+                                // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
+                                for(Card card : cards) {
+                                    if(card.cardName.equals("Cupid")) {
+                                        card.won();
+                                        break;
+                                    }
+                                }
                                 break;
                             }
                         }
@@ -845,7 +897,7 @@ public class WerewolfServer implements Runnable {
             // Check through all cards in the order of win rank to see who won (call their won method).
             for(Card card : cardsForWinning) {
                 System.out.println("Checking win of " + card.cardName);
-                if(card.won()) {
+                if(!card.cardName.equals("Cupid") && card.won()) { // Check all cards except Cupid, since Cupid can win alongside another, and only wins when another does
                     // If a card won, return it.
                     return card;
                 }

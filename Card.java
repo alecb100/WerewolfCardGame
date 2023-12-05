@@ -20,6 +20,9 @@ public abstract class Card {
     // Whether the card only wakes up during the first night or not
     public boolean firstNightOnly = false;
 
+    // Whether there's something to be done after all the dead
+    public boolean deathCheck = false;
+
     // The method that returns information about the card when a player asks
     public abstract String help();
 
@@ -34,7 +37,7 @@ public abstract class Card {
     public abstract void nightWakeup();
 
     // Some cards require things to be done after they are killed. Whenever they are killed, this method is called.
-    public abstract void checkAfterDeath();
+    public abstract void checkAfterDeaths();
 
     public String toString() { return cardName; }
 }
