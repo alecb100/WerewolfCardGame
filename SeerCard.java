@@ -62,15 +62,17 @@ public class SeerCard extends Card {
         nightWakeup();
     }
 
+    // The night wakeup method where the server finds all the seers and asks each who they want to check.
+    // It then tells all the other seers who they checked and the result of said check
     @Override
     public void nightWakeup() {
-        // Tell everyone that the seer is waking up
+        // Tell everyone that the seers are waking up
         try {
             server.sendToAllPlayers("Seers, wake up, and pick who you want to see.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
-        // Determine if there is a seer or not
+        // Determine if there is a seer or not and who they are
         seers = new HashMap<Player, Player>();
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Seer")) {
@@ -84,8 +86,9 @@ public class SeerCard extends Card {
             }
         }
 
-        // If there is a seer, wait for the player to choose someone
+        // If there are seers, wait for them to choose someone
         if(!seers.isEmpty()) {
+            // Continuously tell all other seers who a seer checked and the result
             new Thread(this::sendToAllSeers).start();
             ultraGood = false;
             int count = 0;
@@ -102,8 +105,11 @@ public class SeerCard extends Card {
                                 count++;
                             }
                         }
+                        // Set a flag that their choice has been checked so that there's no issues that crop up with multiple
+                        // threads and things being updated after this
                         checked = true;
                     }
+                    // Tell that seer that that's not a valid player if it has checked and if it's still waiting for them to choose someone
                     if(checked && seers.get(seer) == null && !server.gameActions.get(seer.name).equals("")) {
                         try {
                             seer.output.writeObject("Player not found.");
@@ -113,16 +119,20 @@ public class SeerCard extends Card {
                         server.gameActions.replace(seer.name, "");
                     }
                 }
+                // Count up how many seers have been checked and stop the loops if all have asked
                 if(count == seers.size()) {
                     try {
+                        // Wait for the other thread to catch up
                         Thread.sleep(3000);
                     } catch(Exception e) {
                         System.out.println(e.getMessage());
                     }
+                    // Stop that thread
                     ultraGood = true;
                     break;
                 }
             }
+            // Tell everyone that teh seers are going back to sleep
             try {
                 server.sendToAllPlayers("Seers, go back to sleep.");
             } catch(Exception e) {
@@ -140,7 +150,9 @@ public class SeerCard extends Card {
         }
     }
 
+    // The method that makes sure all checks are sent to all seers
     private void sendToAllSeers() {
+        // Tell all seers who each other are
         for(Player player : seers.keySet()) {
             try {
                 player.output.writeObject("The seers: " + seers.keySet().toString());
@@ -148,11 +160,17 @@ public class SeerCard extends Card {
                 System.out.println(e.getMessage());
             }
         }
+        // Loop through the seers, checking if they said a valid player and telling all the result
         while(!ultraGood) {
+            // For each seer
             for(Player seer : seers.keySet()) {
+                // If they asked a valid person and this method hasn't already saw that they did and dealt with it
                 if(seers.get(seer) != null && server.gameWaiting.get(seer.name)) {
+                    // Tell the server to stop waiting for this player and that their action is being dealt with
                     server.gameWaiting.replace(seer.name, Boolean.FALSE);
+                    // For each seer again
                     for(Player seer2 : seers.keySet()) {
+                        // Tell each of the original seer's choice and the result
                         String result = "";
                         if(server.checkWerewolf(seers.get(seer)) || seers.get(seer).card.cardName.equals("Lycan")) {
                             result = seers.get(seer) + " IS a type of Werewolf.";
