@@ -1,5 +1,11 @@
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+
 // The class for the Seer card, who has the ability to see if 1 person is a werewolf or not every night
 public class SeerCard extends Card {
+    HashMap<Player, Player> seers;
+    boolean ultraGood;
 
     // The constructor to make the seer card
     public SeerCard(WerewolfServer server) {
@@ -60,76 +66,106 @@ public class SeerCard extends Card {
     public void nightWakeup() {
         // Tell everyone that the seer is waking up
         try {
-            server.sendToAllPlayers("Seer, wake up, and pick who you want to see.\n");
+            server.sendToAllPlayers("Seers, wake up, and pick who you want to see.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
-        // Determine if there is a seer or not (there would only ever be 1)
-        Player seer = null;
+        // Determine if there is a seer or not
+        seers = new HashMap<Player, Player>();
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Seer")) {
-                seer = player;
+                seers.put(player, null);
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
-                    seer.output.writeObject("Who do you wish to see?");
+                    player.output.writeObject("Who do you wish to see?");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
-                break;
             }
         }
 
         // If there is a seer, wait for the player to choose someone
-        if(seer != null) {
-            Player choice = null;
-            // Continue in this while loop until they choose someone
+        if(!seers.isEmpty()) {
+            new Thread(this::sendToAllSeers).start();
+            ultraGood = false;
+            int count = 0;
+            // Continue in this while loop until all choose someone
             while(true) {
-                if(!server.gameActions.get(seer.name).equals("")) {
-                    // Run through the players currently alive and make sure it is a valid player
-                    for(Player player : server.currentPlayers) {
-                        // If it's a valid player, stop waiting for the seer
-                        if(player.name.equals(server.gameActions.get(seer.name))) {
-                            choice = player;
-                            server.gameWaiting.replace(seer.name, Boolean.FALSE);
-                            break;
-                        }
-                    }
-                    // If it was a valid player, tell the seer whether they are a type of werewolf or not
-                    if(choice != null) {
-                        try {
-                            if(server.checkWerewolf(choice) || choice.card.cardName.contains("Lycan")) {
-                                seer.output.writeObject(choice.name + " IS a type of Werewolf.");
-                            } else {
-                                seer.output.writeObject(choice.name + " is NOT a type of Werewolf.");
+                // Run through the players currently alive and make sure it is a valid player
+                for(Player seer : seers.keySet()) {
+                    boolean checked = false;
+                    if(seers.get(seer) == null && !server.gameActions.get(seer.name).equals("")) {
+                        for(Player player : server.currentPlayers) {
+                            if(server.gameActions.get(seer.name).equals(player.name)) {
+                                seers.replace(seer, player);
+                                server.gameActions.replace(seer.name, "");
+                                count++;
                             }
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
                         }
+                        checked = true;
+                    }
+                    if(checked && seers.get(seer) == null && !server.gameActions.get(seer.name).equals("")) {
                         try {
-                            server.sendToAllPlayers("Seer, go back to sleep.");
+                            seer.output.writeObject("Player not found.");
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }
-                        return;
-                    } else {
-                        // If that player was not found, continue in the loop until they are
-                        try {
-                            seer.output.writeObject("Player not found");
-                            server.gameActions.replace(seer.name, "");
-                        } catch(Exception e) {
-                            System.out.println(e.getMessage());
-                        }
+                        server.gameActions.replace(seer.name, "");
                     }
                 }
+                if(count == seers.size()) {
+                    try {
+                        Thread.sleep(3000);
+                    } catch(Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    ultraGood = true;
+                    break;
+                }
+            }
+            try {
+                server.sendToAllPlayers("Seers, go back to sleep.");
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
             }
         } else {
             // If there is no seer, wait a random amount of time so the other players don't realize there is no seer
             int randomWait = (int)(Math.random() * 5000) + 5000;
             try {
                 Thread.sleep(randomWait);
-                server.sendToAllPlayers("Seer, go back to sleep.");
+                server.sendToAllPlayers("Seers, go back to sleep.");
             } catch(Exception e) {
                 System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void sendToAllSeers() {
+        for(Player player : seers.keySet()) {
+            try {
+                player.output.writeObject("The seers: " + seers.keySet().toString());
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        while(!ultraGood) {
+            for(Player seer : seers.keySet()) {
+                if(seers.get(seer) != null && server.gameWaiting.get(seer.name)) {
+                    server.gameWaiting.replace(seer.name, Boolean.FALSE);
+                    for(Player seer2 : seers.keySet()) {
+                        String result = "";
+                        if(server.checkWerewolf(seers.get(seer)) || seers.get(seer).card.cardName.equals("Lycan")) {
+                            result = seers.get(seer) + " IS a type of Werewolf.";
+                        } else {
+                            result = seers.get(seer) + " is NOT a type of Werewolf.";
+                        }
+                        try {
+                            seer2.output.writeObject(seer.name + " checked " + seers.get(seer).name + ": " + result);
+                        } catch(Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
             }
         }
     }

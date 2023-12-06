@@ -55,6 +55,9 @@ public class WerewolfServer implements Runnable {
     // who votes, and the value is the player they voted for.
     HashMap<Player, Player> votes;
 
+    // A boolean flag to let the server know everyone is voting during the day
+    boolean voting;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -261,7 +264,7 @@ public class WerewolfServer implements Runnable {
                     if(command.equalsIgnoreCase("commands") || command.equalsIgnoreCase("help")) {
                         result += "\n\nThe following commands can be used:\n(Also, after the server asks you for something,\nyou can type 'help:' followed by a command to access\nany of these commands)\n\n";
                         result += "'help':\t\t\tLists the possible commands\n";
-                        result += "'players':\t\tLists the current alive players\n";
+                        result += "'players':\t\tLists the current alive players. Includes their votes if during voting time.\n";
                         result += "'dead':\t\t\tLists the current dead players and their cards\n";
                         result += "'cards':\t\tLists the cards that have been chosen to be in the game\n";
                         result += "'card <card name>':\tLists the description and details of the card specified by <card name>\n";
@@ -272,15 +275,28 @@ public class WerewolfServer implements Runnable {
                     } else if(command.equalsIgnoreCase("players")) {
                         // If the command is players, display all alive players in the game
                         if(gameStart) {
-                            // Alive players can't be displayed if the game hasn't started yet
-                            result += "\n\nThe following players are currently alive in the game:\n\n";
-                            for(Player player : currentPlayers) {
-                                result += player.name;
-                                if(player.tower) {
-                                    // Displays the tower next to the player if they have the tower, preventing their death the first night
-                                    result += " <-- tower is currently active and thus cannot be killed this night";
+                            if(!voting) {
+                                // Alive players can't be displayed if the game hasn't started yet
+                                result += "\n\nThe following players are currently alive in the game:\n\n";
+                                for (Player player : currentPlayers) {
+                                    result += player.name;
+                                    if (player.tower) {
+                                        // Displays the tower next to the player if they have the tower, preventing their death the first night
+                                        result += " <-- tower is currently active and thus cannot be killed this night";
+                                    }
+                                    result += "\n";
                                 }
-                                result += "\n";
+                            } else {
+                                result += "\n\nThe following players are currently alive in the game:\n\n";
+                                for(Player player : currentPlayers) {
+                                    result += player.name;
+                                    if(votes.get(player) != null) {
+                                        result += " - Voted for " + votes.get(player).name;
+                                    } else {
+                                        result += " - Hasn't voted yet";
+                                    }
+                                    result += "\n";
+                                }
                             }
                         } else {
                             result += "\n\nThe game has not started yet, and thus there are no players\n";
@@ -679,6 +695,9 @@ public class WerewolfServer implements Runnable {
                         while(true) {
                             sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people you must choose to kill is: " + amountOfDayKills + "\n");
 
+                            // Set a flag so the server knows everyone is voting
+                            voting = true;
+
                             // Set a flag to false signifying that the day isn't over. This only gets set to true
                             // once all alive players have chosen a valid player to kill (valid as in they are still alive).
                             dayKillFlag = false;
@@ -747,6 +766,16 @@ public class WerewolfServer implements Runnable {
                                     dead2.dead = true;
                                     count.remove(dead2);
                                 }
+                            }
+
+                            // Unset the voting flag
+                            voting = false;
+
+                            // Tell everyone that voting is over
+                            try {
+                                sendToAllPlayers("\n\nVoting is now over.\n\n");
+                            } catch(Exception e) {
+                                System.out.println(e.getMessage());
                             }
 
                             // A temporary dead HashSet is created to log the newly dead players.
