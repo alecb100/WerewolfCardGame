@@ -43,7 +43,7 @@ public class CupidCard extends Card {
         // Check to see if there's a cupid
         boolean hasCupid = false;
         for(Player player : server.currentPlayers) {
-            if(player.card.cardName.equals("Cupid")) {
+            if(player.card.cardName.contains("Cupid")) {
                 hasCupid = true;
                 break;
             }
@@ -51,7 +51,7 @@ public class CupidCard extends Card {
         // Check if they are dead, but still was in the game
         if(!hasCupid) {
             for(Player player : server.dead){
-                if(player.card.cardName.equals("Cupid")) {
+                if(player.card.cardName.contains("Cupid")) {
                     hasCupid = true;
                     break;
                 }
