@@ -956,7 +956,7 @@ public class WerewolfServer implements Runnable {
             Scanner scanner = new Scanner(file);
 
             // Create multiple temp data structures for the cards.
-            HashMap<Card, Card> temp = new HashMap<Card, Card>();
+            HashSet<Card> temp = new HashSet<Card>();
             HashSet<Card> temp2 = new HashSet<Card>();
             // Scan every line
             while(scanner.hasNextLine()) {
@@ -983,24 +983,31 @@ public class WerewolfServer implements Runnable {
                 // Go for the amount of cards specified (1 is default).
                 for(int i = 0; i < cardAmount; i++) {
                     Card tempCard = null;
+                    Card tempCard2 = null;
                     if (cardName.equalsIgnoreCase("villager") || cardName.equalsIgnoreCase("villagers")) {
                         // If the card is a plain villager, create a new villager card object.
                         tempCard = new VillagerCard(server);
+                        tempCard2 = new VillagerCard(server);
                     } else if (cardName.equalsIgnoreCase("werewolf") || cardName.equalsIgnoreCase("werewolves")) {
                         // If the card is a plain werewolf card.
                         tempCard = new WerewolfCard(server);
+                        tempCard2 = new WerewolfCard(server);
                     } else if (cardName.equalsIgnoreCase("tanner")) {
                         // If the card is a tanner card.
                         tempCard = new TannerCard(server);
+                        tempCard2 = new TannerCard(server);
                     } else if (cardName.equalsIgnoreCase("bodyguard")) {
                         // If the card is a bodyguard card.
                         tempCard = new BodyguardCard(server);
+                        tempCard2 = new BodyguardCard(server);
                     } else if (cardName.equalsIgnoreCase("troublemaker")) {
                         // If the card is a troublemaker card.
                         tempCard = new TroublemakerCard(server);
+                        tempCard2 = new TroublemakerCard(server);
                     } else if(cardName.equalsIgnoreCase("seer")) {
                         // If the card is a seer card.
                         tempCard = new SeerCard(server);
+                        tempCard2 = new SeerCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1009,10 +1016,10 @@ public class WerewolfServer implements Runnable {
                     }
 
                     // Put the newly created card in the temp HashMap.
-                    temp.put(tempCard, tempCard);
+                    temp.add(tempCard);
                     // If this is the first iteration of this card, add it to the temp2 HashSet as well.
                     if(!doneOnce) {
-                        temp2.add(tempCard);
+                        temp2.add(tempCard2);
                         // Make sure to set the done once flag to true.
                         doneOnce = true;
                     }
@@ -1025,7 +1032,7 @@ public class WerewolfServer implements Runnable {
             server.chooseCards = new HashSet<Card>();
             int i = 0;
             // Add all cards that were in the temp HashMap.
-            for(Card card : temp.values()) {
+            for(Card card : temp) {
                 server.chooseCards.add(card);
                 i++;
             }

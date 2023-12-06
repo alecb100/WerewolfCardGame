@@ -97,15 +97,14 @@ public class SeerCard extends Card {
                     // If it was a valid player, tell the seer whether they are a type of werewolf or not
                     if(choice != null) {
                         try {
-                            if(server.checkWerewolf(choice)) {
-                                seer.output.writeObject(choice.name + " is a type of Werewolf.");
+                            if(server.checkWerewolf(choice) || choice.card.cardName.contains("Lycan")) {
+                                seer.output.writeObject(choice.name + " IS a type of Werewolf.");
                             } else {
                                 seer.output.writeObject(choice.name + " is NOT a type of Werewolf.");
                             }
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
-                        choice.dead = false;
                         try {
                             server.sendToAllPlayers("Seer, go back to sleep.");
                         } catch(Exception e) {
