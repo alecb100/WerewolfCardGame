@@ -1,4 +1,6 @@
+// The Plain villager card, the most basic card in the game
 public class VillagerCard extends Card {
+    // The constructor for the plain villager
     public VillagerCard(WerewolfServer server) {
         this.server = server;
         this.team = "villager";
@@ -6,6 +8,7 @@ public class VillagerCard extends Card {
         this.winRank = 50;
     }
 
+    // The help method for the plain villager
     @Override
     public String help() {
         String result = "The plain Villager is the default card in the Werewolf game. Usually this card outnumbers all other cards. ";
@@ -16,6 +19,7 @@ public class VillagerCard extends Card {
         return result;
     }
 
+    // The win method for the plain villager
     @Override
     public boolean won() {
         boolean oneVillager = false;
@@ -42,14 +46,17 @@ public class VillagerCard extends Card {
         return result;
     }
 
+    // The plain villager does not wake up at night
     @Override
     public void firstNightWakeup() {
         return;
     }
 
+    // The plain villager does not wake up at night
     @Override
     public void nightWakeup() { return; }
 
+    // The plain villager does not have any checks to do after the deaths
     @Override
     public void checkAfterDeaths() {
         return;

@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
+// The main Werewolf card, the main werewolf enemy in the game
 public class WerewolfCard extends Card {
     // A HashMap of the werewolves and their votes to kill
     HashMap<Player, Player> werewolves;

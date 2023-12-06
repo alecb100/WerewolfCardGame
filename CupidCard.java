@@ -13,6 +13,7 @@ public class CupidCard extends Card {
         this.deathCheck = true;
     }
 
+    // The help method for the Cupid
     @Override
     public String help() {
         String result = "The Cupid card is one of the cooler cards, but is confusing to understand. The cupid ";
