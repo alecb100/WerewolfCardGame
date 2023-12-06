@@ -46,19 +46,22 @@ public class MinionCard extends Card {
         try {
             // Tell everyone that the minion is waking up
             server.sendToAllPlayers("Minion, wake up and see who the werewolves are. Remember, they don't know who you are.");
-            Player minion = null;
+            HashSet<Player> minions = new HashSet<Player>();
             HashSet<Player> werewolves = new HashSet<Player>();
             // Find out who all the werewolves are and who the minion is
             for(Player player : server.currentPlayers) {
                 if(player.card.cardName.contains("Minion")) {
-                    minion = player;
+                    minions.add(player);
                 } else if(server.checkWerewolf(player)) {
                     werewolves.add(player);
                 }
             }
             // If there's a minion, tell them who the werewolves are
-            if(minion != null) {
+            for(Player minion : minions) {
                 minion.output.writeObject("\nThe werewolves are: " + werewolves.toString());
+                if(minions.size() > 1) {
+                    minion.output.writeObject("\nAll of the minions are: " + minions.toString());
+                }
             }
             // Wait, and then tell everyone the minion is going back to sleep
             Thread.sleep(3000);
