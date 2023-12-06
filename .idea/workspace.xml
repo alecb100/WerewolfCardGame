@@ -4,12 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Added many comments to WerewolfServer.java so that someone can follow along in the program.">
+    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/Card.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VillagerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/VillagerCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WerewolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cards.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cards.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/BodyguardCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/BodyguardCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/CupidCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/CupidCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/SeerCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/SeerCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/TroublemakerCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/TroublemakerCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/VillagerCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/VillagerCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$GameRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$GameRunner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$PlayerHandler$handleGameAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$PlayerHandler$handleGameAction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$PlayerHandler$handlePlayerCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$PlayerHandler$handlePlayerCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$PlayerHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer$PlayerHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/WerewolfServer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/WerewolfCardGame/cards.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/WerewolfCardGame/cards.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +142,35 @@
       <option name="project" value="LOCAL" />
       <updated>1701379380394</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Fixed merge issues and fully implemented and tested the Cupid card">
+      <created>1701841858293</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1701841858293</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added some more comments to Cupid, Villager, and Werewolf cards">
+      <created>1701842334706</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1701842334706</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Fixed a typo in Cupid's win conditions">
+      <created>1701842636641</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1701842636641</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated">
+      <created>1701843211621</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1701843211621</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -144,6 +182,26 @@
     <MESSAGE value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class." />
     <MESSAGE value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class. Fixed some misc issues." />
     <MESSAGE value="Added many comments to WerewolfServer.java so that someone can follow along in the program." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added many comments to WerewolfServer.java so that someone can follow along in the program." />
+    <MESSAGE value="Fixed merge issues and fully implemented and tested the Cupid card" />
+    <MESSAGE value="Added some more comments to Cupid, Villager, and Werewolf cards" />
+    <MESSAGE value="Fixed a typo in Cupid's win conditions" />
+    <MESSAGE value="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/WerewolfServer.java</url>
+          <line>464</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="((WerewolfServer)((GameRunner)this).server).cards" custom="WerewolfServer.GameRunner,WerewolfServer" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
