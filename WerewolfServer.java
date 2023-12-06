@@ -1011,6 +1011,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a cupid card.
                         tempCard = new CupidCard(server);
                         tempCard2 = new CupidCard(server);
+                    } else if(cardName.equalsIgnoreCase("minion")) {
+                        // If the card is a minion card.
+                        tempCard = new MinionCard(server);
+                        tempCard2 = new MinionCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

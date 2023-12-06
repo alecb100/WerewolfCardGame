@@ -134,7 +134,7 @@ public class CupidCard extends Card {
             if(player.card.cardName.contains("Cupid")) {
                 cupid = player;
                 try {
-                    cupid.output.writeObject("Cupid, which 2 players do you wish to link? Put them each on separate lines please.");
+                    cupid.output.writeObject("\nCupid, which 2 players do you wish to link? Put them each on separate lines please.");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
