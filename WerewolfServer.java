@@ -611,14 +611,6 @@ public class WerewolfServer implements Runnable {
 
                             // Tell all players who was on that winning team.
                             sendToAllPlayers("Winning players: " + winningPlayers);
-
-                            // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
-                            for(Card card : cards) {
-                                if(card.cardName.equals("Cupid")) {
-                                    card.won();
-                                    break;
-                                }
-                            }
                             continue;
                         }
 
@@ -780,14 +772,6 @@ public class WerewolfServer implements Runnable {
                                     }
                                 }
                                 sendToAllPlayers("Winning players: " + winningPlayers);
-
-                                // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
-                                for(Card card : cards) {
-                                    if(card.cardName.equals("Cupid")) {
-                                        card.won();
-                                        break;
-                                    }
-                                }
                                 break;
                             }
 
@@ -851,14 +835,6 @@ public class WerewolfServer implements Runnable {
                                     }
                                 }
                                 sendToAllPlayers("Winning players: " + winningPlayers);
-
-                                // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
-                                for(Card card : cards) {
-                                    if(card.cardName.equals("Cupid")) {
-                                        card.won();
-                                        break;
-                                    }
-                                }
                                 break;
                             }
                         }
@@ -897,7 +873,7 @@ public class WerewolfServer implements Runnable {
             // Check through all cards in the order of win rank to see who won (call their won method).
             for(Card card : cardsForWinning) {
                 System.out.println("Checking win of " + card.cardName);
-                if(!card.cardName.equals("Cupid") && card.won()) { // Check all cards except Cupid, since Cupid can win alongside another, and only wins when another does
+                if(card.won()) {
                     // If a card won, return it.
                     return card;
                 }
@@ -1008,6 +984,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a seer card.
                         tempCard = new SeerCard(server);
                         tempCard2 = new SeerCard(server);
+                    } else if(cardName.equalsIgnoreCase("cupid")) {
+                        // If the card is a cupid card.
+                        tempCard = new CupidCard(server);
+                        tempCard2 = new CupidCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
