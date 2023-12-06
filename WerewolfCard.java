@@ -38,7 +38,7 @@ public class WerewolfCard extends Card {
         // Goes through all the players and counts how many werewolf team members there are and how many
         // villager team members there are
         for(Player player : server.currentPlayers) {
-            if(server.checkWerewolf(player) || player.card.team.equals("werewolf")) {
+            if(server.checkWerewolf(player) || player.card.team.contains("werewolf")) {
                 werewolfCount++;
             } else {
                 otherCount++;

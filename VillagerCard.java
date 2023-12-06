@@ -21,7 +21,7 @@ public class VillagerCard extends Card {
         boolean oneVillager = false;
         // Checking if there is at least 1 villager alive
         for(Player player : server.currentPlayers) {
-            if(!player.card.team.equals("werewolf")) {
+            if(!player.card.team.contains("werewolf")) {
                 oneVillager = true;
                 break;
             }

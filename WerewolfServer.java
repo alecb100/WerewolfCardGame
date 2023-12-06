@@ -187,9 +187,6 @@ public class WerewolfServer implements Runnable {
                     // The message will always be a string, so convert it to that.
                     String temp = (String)message;
 
-                    // Logging message of the message from the player
-                    System.out.println(playerName + ": " + temp);
-
                     // Check if the game has started and if the server is waiting for this player to say something,
                     // because if so, then whatever they said is likely in response to what the server asked.
                     if(gameStart && gameWaiting.get(playerName)) {
@@ -202,6 +199,9 @@ public class WerewolfServer implements Runnable {
                             // Create a thread to send them back what they need, so that the server can continue to wait for
                             // new input and never miss anything.
                             new Thread(new handlePlayerCommand(temp2)).start();
+
+                            // Logging message of the message from the player
+                            System.out.println(playerName + ": " + temp2);
                             continue;
                         }
                         // If the message didn't start with 'help:', then the message was in response to the server's question,
@@ -216,6 +216,9 @@ public class WerewolfServer implements Runnable {
                         }
                         // Create a new thread to deal with that.
                         new Thread(new handlePlayerCommand(temp)).start();
+
+                        // Logging message of the message from the player
+                        System.out.println(playerName + ": " + temp);
                     }
                 }
             } catch(Exception e) {
@@ -482,6 +485,17 @@ public class WerewolfServer implements Runnable {
 
                         // Read the cards that will be played with from the cards.txt file.
                         readCards();
+                        boolean hasWerewolves = false;
+                        for(Card card : cards) {
+                            if(card.cardName.equals("Werewolf") || card.cardName.equals("Dire Wolf") || card.cardName.equals("Wolf Man") || card.cardName.equals("Wolf Cub")) {
+                                hasWerewolves = true;
+                                break;
+                            }
+                        }
+                        if(!hasWerewolves) {
+                            System.out.println("There are no werewolf cards.");
+                            continue;
+                        }
 
                         // If the amount of cards is equal to the amount of players, just assign each player a random card,
                         // with all cards being used once each (there can be duplicates of actual cards, which is stated
@@ -739,7 +753,6 @@ public class WerewolfServer implements Runnable {
                             // Loops through all in the dead copy HashSet and alerts every one of their death and what card they were.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
-                                // Some cards require special things to happen after they die, so run that method.
                                 currentPlayers.remove(player);
 
                                 // Tell that player they are dead
@@ -805,7 +818,6 @@ public class WerewolfServer implements Runnable {
                             // Runs through the newly dead and alerts everyone of their death.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
-                                // Some cards require special things to happen after they die, so run that method.
                                 currentPlayers.remove(player);
 
                                 // Tell that player they are dead
@@ -876,6 +888,10 @@ public class WerewolfServer implements Runnable {
                 System.out.println("Checking win of " + card.cardName);
                 if(card.won()) {
                     // If a card won, return it.
+                    return card;
+                } else if(card.cardName.equals("Cupid") && server.currentPlayers.size() <= 3) {
+                    System.out.println("Checking win of " + card.cardName);
+                    card.won();
                     return card;
                 }
             }

@@ -2,7 +2,7 @@
 public class CupidCard extends Card {
     Player[] linked;
 
-    // The constructor for creating the Werewolf
+    // The constructor for creating the Cupid
     public CupidCard(WerewolfServer server) {
         this.server = server;
         this.nightWakeup = true;
@@ -33,7 +33,7 @@ public class CupidCard extends Card {
         result += "villager team.\n\t3.\tIn any other circumstance, they are on their own team and will only win if they ";
         result += "are the only ones to remain.\n\nThe cupid is not affected by the linked people, but this overrides all ";
         result += "other win conditions";
-
+  
         return result;
     }
 
@@ -225,9 +225,9 @@ public class CupidCard extends Card {
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Cupid, go back to sleep.\n");
-                server.sendToAllPlayers("The 2 linked people, wake up and see who the other is. You are now on a team with ");
-                server.sendToAllPlayers("each other and the Cupid. If either of you dies, the other dies as well. Your win conditions ");
-                server.sendToAllPlayers("are also overridden. You now only win once another team wins and both of you are still alive.");
+                server.sendToAllPlayers("The 2 linked people, wake up and see who the other is. If one of you dies, the ");
+                server.sendToAllPlayers("other also dies and cannot be prevented. Your win conditions may have also been ");
+                server.sendToAllPlayers("overridden. It depends on what teams each of you were on before. Good luck!");
                 Thread.sleep(3000);
                 server.sendToAllPlayers("Linked, go back to sleep.");
             } catch(Exception e) {
