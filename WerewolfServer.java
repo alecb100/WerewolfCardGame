@@ -586,34 +586,6 @@ public class WerewolfServer implements Runnable {
                             }
                         }
 
-                        // Check if after the first night, someone already won. This is unlikely, but could happen in
-                        // the case of the Tanner, who wins if they die.
-                        Card won = checkWins();
-                        if(won != null) {
-                            // Tell everyone which team won.
-                            sendToAllPlayers("The " + won.team + " team won!");
-
-                            // Make a HashSet of players that were on that team.
-                            HashSet<Player> winningPlayers = new HashSet<Player>();
-                            for(Player player : currentPlayers) {
-                                if(player.card.team.equals(won.team)) {
-                                    // Add every player that won to that HashSet.
-                                    winningPlayers.add(player);
-                                }
-                            }
-
-                            // Add all dead players of that HashSet too, since they still technically win if their team does.
-                            for(Player player : dead) {
-                                if(player.card.team.equals(won.team)) {
-                                    winningPlayers.add(player);
-                                }
-                            }
-
-                            // Tell all players who was on that winning team.
-                            sendToAllPlayers("Winning players: " + winningPlayers);
-                            continue;
-                        }
-
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
                         sendToAllPlayers("\nNow everyone open your eyes.");
 
@@ -644,6 +616,35 @@ public class WerewolfServer implements Runnable {
                                 card.checkAfterDeaths();
                             }
                         }
+
+                        // Check if after the first night, someone already won. This is unlikely, but could happen in
+                        // the case of the Tanner, who wins if they die.
+                        Card won = checkWins();
+                        if(won != null) {
+                            // Tell everyone which team won.
+                            sendToAllPlayers("The " + won.team + " team won!");
+
+                            // Make a HashSet of players that were on that team.
+                            HashSet<Player> winningPlayers = new HashSet<Player>();
+                            for(Player player : currentPlayers) {
+                                if(player.card.team.equals(won.team)) {
+                                    // Add every player that won to that HashSet.
+                                    winningPlayers.add(player);
+                                }
+                            }
+
+                            // Add all dead players of that HashSet too, since they still technically win if their team does.
+                            for(Player player : dead) {
+                                if(player.card.team.equals(won.team)) {
+                                    winningPlayers.add(player);
+                                }
+                            }
+
+                            // Tell all players who was on that winning team.
+                            sendToAllPlayers("Winning players: " + winningPlayers);
+                            continue;
+                        }
+
                         // Make sure that no player in the alive HashSet has a tower set since they survived. This is the only
                         // place they get cleared between games so that the state of their tower from last game is preserved.
                         for(Player player : currentPlayers) {
