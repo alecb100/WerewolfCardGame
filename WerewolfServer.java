@@ -187,9 +187,6 @@ public class WerewolfServer implements Runnable {
                     // The message will always be a string, so convert it to that.
                     String temp = (String)message;
 
-                    // Logging message of the message from the player
-                    System.out.println(playerName + ": " + temp);
-
                     // Check if the game has started and if the server is waiting for this player to say something,
                     // because if so, then whatever they said is likely in response to what the server asked.
                     if(gameStart && gameWaiting.get(playerName)) {
@@ -202,6 +199,9 @@ public class WerewolfServer implements Runnable {
                             // Create a thread to send them back what they need, so that the server can continue to wait for
                             // new input and never miss anything.
                             new Thread(new handlePlayerCommand(temp2)).start();
+
+                            // Logging message of the message from the player
+                            System.out.println(playerName + ": " + temp2);
                             continue;
                         }
                         // If the message didn't start with 'help:', then the message was in response to the server's question,
@@ -216,6 +216,9 @@ public class WerewolfServer implements Runnable {
                         }
                         // Create a new thread to deal with that.
                         new Thread(new handlePlayerCommand(temp)).start();
+
+                        // Logging message of the message from the player
+                        System.out.println(playerName + ": " + temp);
                     }
                 }
             } catch(Exception e) {
@@ -482,6 +485,17 @@ public class WerewolfServer implements Runnable {
 
                         // Read the cards that will be played with from the cards.txt file.
                         readCards();
+                        boolean hasWerewolves = false;
+                        for(Card card : cards) {
+                            if(card.cardName.equals("Werewolf") || card.cardName.equals("Dire Wolf") || card.cardName.equals("Wolf Man") || card.cardName.equals("Wolf Cub")) {
+                                hasWerewolves = true;
+                                break;
+                            }
+                        }
+                        if(!hasWerewolves) {
+                            System.out.println("There are no werewolf cards.");
+                            continue;
+                        }
 
                         // If the amount of cards is equal to the amount of players, just assign each player a random card,
                         // with all cards being used once each (there can be duplicates of actual cards, which is stated
@@ -746,7 +760,6 @@ public class WerewolfServer implements Runnable {
                             // Loops through all in the dead copy HashSet and alerts every one of their death and what card they were.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
-                                // Some cards require special things to happen after they die, so run that method.
                                 currentPlayers.remove(player);
 
                                 // Tell that player they are dead
@@ -820,7 +833,6 @@ public class WerewolfServer implements Runnable {
                             // Runs through the newly dead and alerts everyone of their death.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
-                                // Some cards require special things to happen after they die, so run that method.
                                 currentPlayers.remove(player);
 
                                 // Tell that player they are dead
@@ -897,8 +909,12 @@ public class WerewolfServer implements Runnable {
             // Check through all cards in the order of win rank to see who won (call their won method).
             for(Card card : cardsForWinning) {
                 System.out.println("Checking win of " + card.cardName);
-                if(!card.cardName.equals("Cupid") && card.won()) { // Check all cards except Cupid, since Cupid can win alongside another, and only wins when another does
+                if(!card.cardName.equals("Cupid") && card.won()) { // Check all cards except Cupid, since Cupid can win alongside another
                     // If a card won, return it.
+                    return card;
+                } else if(card.cardName.equals("Cupid") && server.currentPlayers.size() <= 3) {
+                    System.out.println("Checking win of " + card.cardName);
+                    card.won();
                     return card;
                 }
             }
@@ -956,7 +972,7 @@ public class WerewolfServer implements Runnable {
             Scanner scanner = new Scanner(file);
 
             // Create multiple temp data structures for the cards.
-            HashMap<Card, Card> temp = new HashMap<Card, Card>();
+            HashSet<Card> temp = new HashSet<Card>();
             HashSet<Card> temp2 = new HashSet<Card>();
             // Scan every line
             while(scanner.hasNextLine()) {
@@ -983,24 +999,35 @@ public class WerewolfServer implements Runnable {
                 // Go for the amount of cards specified (1 is default).
                 for(int i = 0; i < cardAmount; i++) {
                     Card tempCard = null;
+                    Card tempCard2 = null;
                     if (cardName.equalsIgnoreCase("villager") || cardName.equalsIgnoreCase("villagers")) {
                         // If the card is a plain villager, create a new villager card object.
                         tempCard = new VillagerCard(server);
+                        tempCard2 = new VillagerCard(server);
                     } else if (cardName.equalsIgnoreCase("werewolf") || cardName.equalsIgnoreCase("werewolves")) {
                         // If the card is a plain werewolf card.
                         tempCard = new WerewolfCard(server);
+                        tempCard2 = new WerewolfCard(server);
                     } else if (cardName.equalsIgnoreCase("tanner")) {
                         // If the card is a tanner card.
                         tempCard = new TannerCard(server);
+                        tempCard2 = new TannerCard(server);
                     } else if (cardName.equalsIgnoreCase("bodyguard")) {
                         // If the card is a bodyguard card.
                         tempCard = new BodyguardCard(server);
+                        tempCard2 = new BodyguardCard(server);
                     } else if (cardName.equalsIgnoreCase("troublemaker")) {
                         // If the card is a troublemaker card.
                         tempCard = new TroublemakerCard(server);
+                        tempCard2 = new TroublemakerCard(server);
                     } else if(cardName.equalsIgnoreCase("seer")) {
                         // If the card is a seer card.
                         tempCard = new SeerCard(server);
+                        tempCard2 = new SeerCard(server);
+                    } else if(cardName.equalsIgnoreCase("cupid")) {
+                        // If the card is a cupid card.
+                        tempCard = new CupidCard(server);
+                        tempCard2 = new CupidCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1009,10 +1036,10 @@ public class WerewolfServer implements Runnable {
                     }
 
                     // Put the newly created card in the temp HashMap.
-                    temp.put(tempCard, tempCard);
+                    temp.add(tempCard);
                     // If this is the first iteration of this card, add it to the temp2 HashSet as well.
                     if(!doneOnce) {
-                        temp2.add(tempCard);
+                        temp2.add(tempCard2);
                         // Make sure to set the done once flag to true.
                         doneOnce = true;
                     }
@@ -1025,7 +1052,7 @@ public class WerewolfServer implements Runnable {
             server.chooseCards = new HashSet<Card>();
             int i = 0;
             // Add all cards that were in the temp HashMap.
-            for(Card card : temp.values()) {
+            for(Card card : temp) {
                 server.chooseCards.add(card);
                 i++;
             }

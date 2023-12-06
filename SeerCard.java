@@ -105,7 +105,6 @@ public class SeerCard extends Card {
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
-                        choice.dead = false;
                         try {
                             server.sendToAllPlayers("Seer, go back to sleep.");
                         } catch(Exception e) {
