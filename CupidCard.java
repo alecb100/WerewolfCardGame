@@ -7,94 +7,113 @@ public class CupidCard extends Card {
         this.server = server;
         this.nightWakeup = true;
         this.ranking = 15;
-        this.team = "cupid";
+        this.team = "villager";
         this.cardName = "Cupid";
-        this.winRank = 100;
         this.firstNightOnly = true;
         this.deathCheck = true;
     }
 
-    // The help method for the Cupid
     @Override
     public String help() {
-        String result = "The Cupid is one of the most interesting cards. They link 2 people together, can be themselves if they wish, ";
-        result += "to be on a team together. They are put on their own team, the cupid team. The Cupid is also on this team. However, there's ";
-        result += "a twist. If one of the linked people die, the other one dies as well. Those linked people know each other, but they do not ";
-        result += "know who the Cupid is, nor do they know what cards each other are. This card overrides all other cards, including Tanner, ";
-        result += "which means that the Tanner no longer wins if he dies. They still keep abilities they previously had, however, as this card ";
-        result += "just overrides win conditions. The way these players win, including the Cupid, is if they are all still alive when another ";
-        result += "team wins. Once another team wins, if the 2 linked people are still alive, they and the Cupid win as well!";
-
+        String result = "The Cupid card is one of the cooler cards, but is confusing to understand. The cupid ";
+        result += "wakes up the first night and chooses 2 people to link together (they can choose themselves if they ";
+        result += "want). Once one of them dies, the other also dies, and cannot be prevented. They both know who they ";
+        result += "are linked to, but they don't know what their card is. Depending on their card, they may have switched ";
+        result += "to a different team. If they were both on the same team, they remain on that team. If one was a villager ";
+        result += "and the other was on the werewolf team but NOT a werewolf (like a minion), they are both on the villager ";
+        result += "team. In any other circumstance, they are on their own team and can only win if they are the last people ";
+        result += "alive. It is more than likely that these 2 are on the villager team as there are always more villagers ";
+        result += "than other cards, so it's in the cupid's best interest not to say who they linked (because they are always ";
+        result += "on the villager team, unless they chose to link themselves) as the werewolves would go after them if they ";
+        result += "both weren't werewolves. However, they may not be on the villager team, so it is ultimately up to the ";
+        result += "Cupid to reveal them or not.\n\n";
+        result += "Here are the conditions for team switching:\n";
+        result += "\t1.\tIf both were on the same team, they remain on the same team.\n";
+        result += "\t2.\tIf one was a villager and the other on the werewolf team but NOT a werewolf, they are both on the ";
+        result += "villager team.\n\t3.\tIn any other circumstance, they are on their own team and will only win if they ";
+        result += "are the only ones to remain.\n\nThe cupid is not affected by the linked people, but this overrides all ";
+        result += "other win conditions";
+  
         return result;
     }
 
-    // The win checking method for the Cupid. It's only called once another team won and checks to see if the linked people are still alive
     @Override
     public boolean won() {
+        // Check to see if there's a cupid
         boolean hasCupid = false;
-        Player cupid = null;
-        // Checks if there is a cupid in the game
         for(Player player : server.currentPlayers) {
-            if(player.card.cardName.contains("Cupid")) {
+            if(player.card.cardName.equals("Cupid")) {
                 hasCupid = true;
-                cupid = player;
                 break;
             }
         }
-        // Checks if there is one in the game but they're just dead
+        // Check if they are dead, but still was in the game
         if(!hasCupid) {
-            for(Player player : server.dead) {
-                if(player.card.cardName.contains("Cupid")) {
+            for(Player player : server.dead){
+                if(player.card.cardName.equals("Cupid")) {
                     hasCupid = true;
-                    cupid = player;
                     break;
                 }
             }
         }
+        // If there was never a cupid, quit out because no reason to check
+        if(!hasCupid) {
+            return false;
+        }
 
-        // If there's a cupid, that means there are people who were linked
-        if (hasCupid) {
-            // If there are more than 3 players alive, that means it only got here because another card won
+        if(team.equals("villager")) {
+            // If both the linked people are villagers
+            boolean oneVillager = false;
+            // Checking if there is at least 1 villager alive
+            for (Player player : server.currentPlayers) {
+                if (!player.card.team.equals("werewolf")) {
+                    oneVillager = true;
+                    break;
+                }
+            }
+            if (!oneVillager) {
+                return false;
+            }
+
+            // Checking to make sure all werewolves are dead
+            boolean result = true;
+            for (Player player : server.currentPlayers) {
+                if (!player.dead && server.checkWerewolf(player)) {
+                    result = false;
+                    break;
+                }
+            }
+
+            return result;
+        } else if(team.equals("werewolf")) {
+            // If both the linked people are werewolves
+            int werewolfCount = 0;
+            int otherCount = 0;
+            // Goes through all the players and counts how many werewolf team members there are and how many
+            // villager team members there are
+            for(Player player : server.currentPlayers) {
+                if(server.checkWerewolf(player) || player.card.team.equals("werewolf")) {
+                    werewolfCount++;
+                } else {
+                    otherCount++;
+                }
+            }
+            // Checks whether the amount of alive werewolves is greater than or equal to the amount of alive villagers
+            return werewolfCount >= otherCount;
+        } else {
+            // If the linked people were put on their own team, check to see if those 2 are the last ones alive
+            if(server.currentPlayers.size() != 2) {
+                return false;
+            }
             boolean won = true;
-            if(server.currentPlayers.size() > 3) {
-                // Check if one of them are dead. If one is dead, they did not win
-                for (int i = 0; i < 2; i++) {
-                    if (linked[i].dead) {
-                        won = false;
-                        break;
-                    }
-                }
-
-                // If the 2 linked people are alive, that means they won
-                if (won) {
-                    try {
-                        // Tell everyone who was linked and who the Cupid is
-                        server.sendToAllPlayers("The cupid team also won!");
-                        server.sendToAllPlayers("The linked players were [" + linked[0].name + "," + linked[1].name + "] and the Cupid was " + cupid.name);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            } else {
-                // If it got here, that means there are 3 players or fewer alive, which potentially could be all cupid team members
-                for(Player player : server.currentPlayers) {
-                    if(!player.card.team.contains("cupid")) {
-                        won = false;
-                        break;
-                    }
-                }
-                if(won) {
-                    for(Player player : server.currentPlayers) {
-                        if(player.card.team.contains("cupid")) {
-                            player.card.team = "cupid";
-                        }
-                    }
+            for(Player player : server.currentPlayers) {
+                if(!player.card.team.equals("cupid")) {
+                    won = false;
+                    break;
                 }
             }
             return won;
         }
-        // If there wasn't a Cupid then that means the non-existent Cupid didn't win
-        return false;
     }
 
     // The Cupid only wakes up on the first night to link 2 people
@@ -171,13 +190,28 @@ public class CupidCard extends Card {
             // Tell everyone the Cupid is falling back to sleep and that the 2 linked are waking up to see each other.
             try {
                 server.sendToAllPlayers("Cupid, go back to sleep.\n");
-                server.sendToAllPlayers("The 2 linked people, wake up and see who the other is. You are now on a team with ");
-                server.sendToAllPlayers("each other and the Cupid. If either of you dies, the other dies as well. Your win conditions ");
-                server.sendToAllPlayers("are also overridden. You now only win once another team wins and both of you are still alive.");
+                server.sendToAllPlayers("The 2 linked people, wake up and see who the other is. If one of you dies, the ");
+                server.sendToAllPlayers("other also dies and cannot be prevented. Your win conditions may have also been ");
+                server.sendToAllPlayers("overridden. It depends on what teams each of you were on before. Good luck!");
                 for(int i = 0; i < 2; i++) {
                     // Tell each linked who they're linked to
                     linked[i].output.writeObject("\nYou are linked to: " + linked[1 - i].name + "\n");
-                    linked[i].card.team += " - cupid";
+                }
+                // Check if they are on the same team
+                if(linked[0].card.team.equals(linked[1].card.team)) {
+                    // If they are both on the same team
+                    this.team = linked[0].card.team;
+                } else if((linked[0].card.team.equals("villager") && linked[1].card.team.equals("werewolf") && !server.checkWerewolf(linked[1])) ||
+                        (linked[1].card.team.equals("villager") && linked[0].card.team.equals("werewolf") && !server.checkWerewolf(linked[0]))) {
+                    // If one is a villager and the other is on the werewolf team but NOT a werewolf
+                    linked[0].card.team = "villager";
+                    linked[1].card.team = "villager";
+                } else {
+                    // If they are none of the above, they are on their own team
+                    linked[0].card.team = "cupid";
+                    linked[1].card.team = "cupid";
+                    this.team = "cupid";
+                    this.winRank = 0;
                 }
                 Thread.sleep(3000);
                 // Tell everyone that the linked are going back to sleep
@@ -191,9 +225,9 @@ public class CupidCard extends Card {
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Cupid, go back to sleep.\n");
-                server.sendToAllPlayers("The 2 linked people, wake up and see who the other is. You are now on a team with ");
-                server.sendToAllPlayers("each other and the Cupid. If either of you dies, the other dies as well. Your win conditions ");
-                server.sendToAllPlayers("are also overridden. You now only win once another team wins and both of you are still alive.");
+                server.sendToAllPlayers("The 2 linked people, wake up and see who the other is. If one of you dies, the ");
+                server.sendToAllPlayers("other also dies and cannot be prevented. Your win conditions may have also been ");
+                server.sendToAllPlayers("overridden. It depends on what teams each of you were on before. Good luck!");
                 Thread.sleep(3000);
                 server.sendToAllPlayers("Linked, go back to sleep.");
             } catch(Exception e) {

@@ -41,7 +41,7 @@ public class SeerCard extends Card {
         // Checking to make sure all werewolves are dead
         boolean result = true;
         for(Player player : server.currentPlayers) {
-            if(!player.dead && player.card.team.equals("werewolf")) {
+            if(!player.dead && server.checkWerewolf(player)) {
                 result = false;
                 break;
             }
@@ -97,8 +97,8 @@ public class SeerCard extends Card {
                     // If it was a valid player, tell the seer whether they are a type of werewolf or not
                     if(choice != null) {
                         try {
-                            if(server.checkWerewolf(choice)) {
-                                seer.output.writeObject(choice.name + " is a type of Werewolf.");
+                            if(server.checkWerewolf(choice) || choice.card.cardName.contains("Lycan")) {
+                                seer.output.writeObject(choice.name + " IS a type of Werewolf.");
                             } else {
                                 seer.output.writeObject(choice.name + " is NOT a type of Werewolf.");
                             }

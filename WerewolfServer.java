@@ -600,42 +600,6 @@ public class WerewolfServer implements Runnable {
                             }
                         }
 
-                        // Check if after the first night, someone already won. This is unlikely, but could happen in
-                        // the case of the Tanner, who wins if they die.
-                        Card won = checkWins();
-                        if(won != null) {
-                            // Tell everyone which team won.
-                            sendToAllPlayers("The " + won.team + " team won!");
-
-                            // Make a HashSet of players that were on that team.
-                            HashSet<Player> winningPlayers = new HashSet<Player>();
-                            for(Player player : currentPlayers) {
-                                if(player.card.team.equals(won.team)) {
-                                    // Add every player that won to that HashSet.
-                                    winningPlayers.add(player);
-                                }
-                            }
-
-                            // Add all dead players of that HashSet too, since they still technically win if their team does.
-                            for(Player player : dead) {
-                                if(player.card.team.equals(won.team)) {
-                                    winningPlayers.add(player);
-                                }
-                            }
-
-                            // Tell all players who was on that winning team.
-                            sendToAllPlayers("Winning players: " + winningPlayers);
-
-                            // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
-                            for(Card card : cards) {
-                                if(card.cardName.equals("Cupid")) {
-                                    card.won();
-                                    break;
-                                }
-                            }
-                            continue;
-                        }
-
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
                         sendToAllPlayers("\nNow everyone open your eyes.");
 
@@ -666,6 +630,35 @@ public class WerewolfServer implements Runnable {
                                 card.checkAfterDeaths();
                             }
                         }
+
+                        // Check if after the first night, someone already won. This is unlikely, but could happen in
+                        // the case of the Tanner, who wins if they die.
+                        Card won = checkWins();
+                        if(won != null) {
+                            // Tell everyone which team won.
+                            sendToAllPlayers("The " + won.team + " team won!");
+
+                            // Make a HashSet of players that were on that team.
+                            HashSet<Player> winningPlayers = new HashSet<Player>();
+                            for(Player player : currentPlayers) {
+                                if(player.card.team.equals(won.team)) {
+                                    // Add every player that won to that HashSet.
+                                    winningPlayers.add(player);
+                                }
+                            }
+
+                            // Add all dead players of that HashSet too, since they still technically win if their team does.
+                            for(Player player : dead) {
+                                if(player.card.team.equals(won.team)) {
+                                    winningPlayers.add(player);
+                                }
+                            }
+
+                            // Tell all players who was on that winning team.
+                            sendToAllPlayers("Winning players: " + winningPlayers);
+                            continue;
+                        }
+
                         // Make sure that no player in the alive HashSet has a tower set since they survived. This is the only
                         // place they get cleared between games so that the state of their tower from last game is preserved.
                         for(Player player : currentPlayers) {
@@ -793,14 +786,6 @@ public class WerewolfServer implements Runnable {
                                     }
                                 }
                                 sendToAllPlayers("Winning players: " + winningPlayers);
-
-                                // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
-                                for(Card card : cards) {
-                                    if(card.cardName.equals("Cupid")) {
-                                        card.won();
-                                        break;
-                                    }
-                                }
                                 break;
                             }
 
@@ -863,14 +848,6 @@ public class WerewolfServer implements Runnable {
                                     }
                                 }
                                 sendToAllPlayers("Winning players: " + winningPlayers);
-
-                                // Check if the Cupid team members are all alive, because if so, they also won along with the other team.
-                                for(Card card : cards) {
-                                    if(card.cardName.equals("Cupid")) {
-                                        card.won();
-                                        break;
-                                    }
-                                }
                                 break;
                             }
                         }
@@ -909,7 +886,7 @@ public class WerewolfServer implements Runnable {
             // Check through all cards in the order of win rank to see who won (call their won method).
             for(Card card : cardsForWinning) {
                 System.out.println("Checking win of " + card.cardName);
-                if(!card.cardName.equals("Cupid") && card.won()) { // Check all cards except Cupid, since Cupid can win alongside another
+                if(card.won()) {
                     // If a card won, return it.
                     return card;
                 } else if(card.cardName.equals("Cupid") && server.currentPlayers.size() <= 3) {

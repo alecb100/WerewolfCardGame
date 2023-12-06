@@ -33,7 +33,7 @@ public class VillagerCard extends Card {
         // Checking to make sure all werewolves are dead
         boolean result = true;
         for(Player player : server.currentPlayers) {
-            if(!player.dead && player.card.team.contains("werewolf")) {
+            if(!player.dead && server.checkWerewolf(player)) {
                 result = false;
                 break;
             }
