@@ -72,6 +72,11 @@ public class WerewolfServer implements Runnable {
     // A method to add a person from the player HashMap when they connect.
     public void addPlayer(String playerName, Player player) {
         players.put(playerName, player);
+        try {
+            sendToAllPlayers("\n" + playerName + " joined the server.\n");
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     // A method to remove a person from teh player HashMap when they leave or disconnect. When disconnecting, if the game
@@ -79,6 +84,11 @@ public class WerewolfServer implements Runnable {
     // them disconnecting and reconnecting.
     public void removePlayer(String playerName) {
         players.remove(playerName);
+        try {
+            sendToAllPlayers("\n" + playerName + " left the server.\n");
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     // The run method that continually accepts new players and executes the thread pool for that player.
@@ -563,8 +573,8 @@ public class WerewolfServer implements Runnable {
                             }
 
 
-                        // If there are fewer cards than players, don't continue the game and let the server moderator know
-                        // they need to add more cards.
+                            // If there are fewer cards than players, don't continue the game and let the server moderator know
+                            // they need to add more cards.
                         } else {
                             System.out.println("\nThere aren't enough cards for the amount of players.");
                             start = false;
@@ -888,10 +898,6 @@ public class WerewolfServer implements Runnable {
                 System.out.println("Checking win of " + card.cardName);
                 if(card.won()) {
                     // If a card won, return it.
-                    return card;
-                } else if(card.cardName.equals("Cupid") && server.currentPlayers.size() <= 3) {
-                    System.out.println("Checking win of " + card.cardName);
-                    card.won();
                     return card;
                 }
             }
