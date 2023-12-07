@@ -18,5 +18,4 @@
 There can only be one instance of the following cards in the game currently:
 - Tanner
 - Troublemaker
-- Bodyguard -> Server will soon be able to handle more than 1
 - Cupid
