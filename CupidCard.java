@@ -33,7 +33,7 @@ public class CupidCard extends Card {
         result += "\t2.\tIf one was a villager and the other on the werewolf team but NOT a werewolf, they are both on the ";
         result += "villager team.\n\t3.\tIn any other circumstance, they are on their own team and will only win if they ";
         result += "are the only ones to remain.\n\nThe cupid is not affected by the linked people, but this overrides all ";
-        result += "other win conditions";
+        result += "other win conditions.";
 
         return result;
     }

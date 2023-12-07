@@ -22,8 +22,8 @@ public class SeerCard extends Card {
     public String help() {
         String result = "The seer is one of the most important villagers in the game. They have the ability to see if ";
         result += "a player is a type of werewolf. Every night, they are asked who they want to check and are told if they ";
-        result += "are a type of werewolf or not. The werewolf types are Werewolf, Dire Wolf, Wolf Cub, and Wolf Man. They ";
-        result += "count as a villager for everything else, including wins.";
+        result += "are a type of werewolf or not. The werewolf types are Werewolf, Dire Wolf, Wolf Cub, and Wolf Man. However,";
+        result += " there is a villager card that they see as a werewolf called the Lycan. Everything else counts as a villager.";
 
         return result;
     }
