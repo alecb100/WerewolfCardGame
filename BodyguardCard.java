@@ -1,5 +1,9 @@
+import java.util.HashMap;
+
 // The class for the Bodyguard card, which protects a person from being killed during a night
 public class BodyguardCard extends Card {
+    HashMap<Player, Player> bodyguards;
+    boolean ultraGood;
 
     // The constructor for the bodyguard card
     public BodyguardCard(WerewolfServer server) {
@@ -62,74 +66,114 @@ public class BodyguardCard extends Card {
     public void nightWakeup() {
         // Tell everyone that the bodyguard is waking up
         try {
-            server.sendToAllPlayers("Bodyguard, wake up, and determine who you want to protect. You can pick yourself.\n");
+            server.sendToAllPlayers("Bodyguards, wake up, and determine who you want to protect. You can pick yourself.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
-        // Determine if there is a bodyguard or not (there would only ever be 1)
-        Player bodyguard = null;
+        // Determine if there is a bodyguard or not and who they are
+        bodyguards = new HashMap<Player, Player>();
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Bodyguard")) {
-                bodyguard = player;
+                bodyguards.put(player, null);
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
-                    bodyguard.output.writeObject("Who do you wish to protect?");
+                    player.output.writeObject("Who do you wish to protect?");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
-                break;
             }
         }
 
         // If there is a bodyguard, wait for the player to choose someone
-        if(bodyguard != null) {
-            Player choice = null;
+        if(!bodyguards.isEmpty()) {
             // Continue in this while loop until they choose someone
+            new Thread(this::sendToAllBodyguards).start();
+            ultraGood = false;
+            int count = 0;
             while(true) {
-                if(!server.gameActions.get(bodyguard.name).equals("")) {
-                    // Run through the players currently alive and make sure it is a valid player
-                    for(Player player : server.currentPlayers) {
-                        // If it's a valid player, stop waiting for the bodyguard
-                        if(player.name.equals(server.gameActions.get(bodyguard.name))) {
-                            choice = player;
-                            server.gameWaiting.replace(bodyguard.name, Boolean.FALSE);
-                            break;
+                // Run through the players currently alive and make sure it is a valid player
+                for(Player bodyguard : bodyguards.keySet()) {
+                    boolean checked = false;
+                    if (bodyguards.get(bodyguard) == null && !server.gameActions.get(bodyguard.name).equals("")) {
+                        for (Player player : server.currentPlayers) {
+                            if (server.gameActions.get(bodyguard.name).equals(player.name)) {
+                                bodyguards.replace(bodyguard, player);
+                                server.gameActions.replace(bodyguard.name, "");
+                                count++;
+                            }
                         }
+                        // Set a flag that their choice has been checked so that there's no issues that crop up with multiple
+                        // threads and things being updated after this
+                        checked = true;
                     }
-                    // If it was a valid player, tell the bodyguard their choice and set that player as not dead
-                    // regardless if they were or not
-                    if(choice != null) {
+                    if(checked && bodyguards.get(bodyguard) == null && !server.gameActions.get(bodyguard.name).equals("")) {
                         try {
-                            bodyguard.output.writeObject("Player saved: " + choice.name);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
-                        choice.dead = false;
-                        try {
-                            server.sendToAllPlayers("Bodyguard, go back to sleep.");
+                            bodyguard.output.writeObject("player not found.");
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }
-                        return;
-                    } else {
-                        // If that player was not found, continue in the loop until they are
-                        try {
-                            bodyguard.output.writeObject("Player not found");
-                            server.gameActions.replace(bodyguard.name, "");
-                        } catch(Exception e) {
-                            System.out.println(e.getMessage());
-                        }
+                        server.gameActions.replace(bodyguard.name, "");
                     }
                 }
+                // Count up how many bodyguards have saved someone and stop the loops if all have asked
+                if(count == bodyguards.size()) {
+                    try {
+                        // Wait for the other thread to catch up
+                        Thread.sleep(3000);
+                    } catch(Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    // Stop that thread
+                    ultraGood = true;
+                    break;
+                }
+            }
+            // Tell everyone that the seers are going back to sleep
+            try {
+                server.sendToAllPlayers("Bodyguards, go back to sleep.");
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
             }
         } else {
             // If there is no bodyguard, wait a random amount of time so the other players don't realize there is no bodyguard
             int randomWait = (int)(Math.random() * 5000) + 5000;
             try {
                 Thread.sleep(randomWait);
-                server.sendToAllPlayers("Bodyguard, go back to sleep.");
+                server.sendToAllPlayers("Bodyguards, go back to sleep.");
             } catch(Exception e) {
                 System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void sendToAllBodyguards() {
+        // Tell all seers who each other are
+        for(Player player : bodyguards.keySet()) {
+            try {
+                player.output.writeObject("The bodyguards: " + bodyguards.keySet().toString());
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        // Loop through the bodyguards, checking if they said a valid player and telling all the result
+        while(!ultraGood) {
+            // For each bodyguard
+            for(Player bodyguard : bodyguards.keySet()) {
+                // If they asked a valid person and this method hasn't already saw that they did and dealt with it
+                if(bodyguards.get(bodyguard) != null && server.gameWaiting.get(bodyguard.name)) {
+                    // Tell the server to stop waiting for this player and that their action is being dealt with
+                    server.gameWaiting.replace(bodyguard.name, Boolean.FALSE);
+                    // For each bodyguard again
+                    for(Player bodyguard2 : bodyguards.keySet()) {
+                        // Tell each of the original bodyguard's choice and the result
+                        bodyguards.get(bodyguard).dead = false;
+                        try {
+                            bodyguard2.output.writeObject(bodyguard.name + " saved " + bodyguards.get(bodyguard).name);
+                        } catch(Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
             }
         }
     }

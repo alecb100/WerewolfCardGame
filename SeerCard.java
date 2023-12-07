@@ -109,7 +109,6 @@ public class SeerCard extends Card {
                         // threads and things being updated after this
                         checked = true;
                     }
-                    // Tell that seer that that's not a valid player if it has checked and if it's still waiting for them to choose someone
                     if(checked && seers.get(seer) == null && !server.gameActions.get(seer.name).equals("")) {
                         try {
                             seer.output.writeObject("Player not found.");
@@ -132,7 +131,7 @@ public class SeerCard extends Card {
                     break;
                 }
             }
-            // Tell everyone that teh seers are going back to sleep
+            // Tell everyone that the seers are going back to sleep
             try {
                 server.sendToAllPlayers("Seers, go back to sleep.");
             } catch(Exception e) {
