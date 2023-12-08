@@ -11,6 +11,7 @@ public class CupidCard extends Card {
         this.cardName = "Cupid";
         this.firstNightOnly = true;
         this.deathCheck = true;
+        this.preCheckRank = 1;
     }
 
     // The help method for the Cupid
@@ -297,5 +298,24 @@ public class CupidCard extends Card {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    // The pre check method that makes sure there's only 1 of this card
+    @Override
+    public void preCheck() {
+        int cards = 0;
+        for(Card card : server.chooseCards) {
+            if(card.cardName.equals("Cupid")) {
+                cards++;
+            }
+        }
+        if(cards > 1) {
+            throw new IllegalArgumentException("There can't be more than 1 Cupid card.");
+        }
+    }
+
+    @Override
+    public void needToKnow(Player player) {
+        return;
     }
 }

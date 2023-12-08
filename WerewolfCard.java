@@ -202,4 +202,25 @@ public class WerewolfCard extends Card {
     // There is no special checkAfterDeath for normal werewolves
     @Override
     public void checkAfterDeaths() { return; }
+
+    @Override
+    public void preCheck() {
+        int werewolfCards = 0;
+        int otherCards = 0;
+        for(Card card : server.chooseCards) {
+            if(card.cardName.equals("Werewolf") || card.cardName.equals("Wolf Man") || card.cardName.equals("Wolf Cub") || card.cardName.equals("Dire Wolf")) {
+                werewolfCards++;
+            } else {
+                otherCards++;
+            }
+        }
+        if(werewolfCards >= otherCards) {
+            throw new IllegalArgumentException("There has to be more non-werewolf cards than werewolf cards.");
+        }
+    }
+
+    @Override
+    public void needToKnow(Player player) {
+        // Not yet implemented
+    }
 }

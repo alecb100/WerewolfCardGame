@@ -23,6 +23,12 @@ public abstract class Card {
     // Whether there's something to be done after all the dead
     public boolean deathCheck = false;
 
+    // The boolean for whether the card has a precheck
+    public boolean hasPreCheck = false;
+
+    // The rank to call prechecks
+    public int preCheckRank = 100;
+
     // The method that returns information about the card when a player asks
     public abstract String help();
 
@@ -39,5 +45,13 @@ public abstract class Card {
     // Some cards require things to be done after they are killed. Whenever they are killed, this method is called.
     public abstract void checkAfterDeaths();
 
+    // The toSring method that prints the card name when called
     public String toString() { return cardName; }
+
+    // The method to precheck required things for each card. This can be used to ensure there's only 1 of a specific
+    // type of card
+    public abstract void preCheck();
+
+    // A need to know method that tells the player what they need to know
+    public abstract void needToKnow(Player player);
 }

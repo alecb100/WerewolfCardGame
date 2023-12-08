@@ -523,6 +523,20 @@ public class WerewolfServer implements Runnable {
                             continue;
                         }
 
+
+                        // The preCheck stuff (sort for preCheck order, then preCheck)
+                        Card[] preCheckCards = preCheckSort(cards.clone());
+                        try {
+                            for (Card card : preCheckCards) {
+                                if (card.hasPreCheck) {
+                                    card.preCheck();
+                                }
+                            }
+                        } catch(IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                            continue;
+                        }
+
                         // If the amount of cards is equal to the amount of players, just assign each player a random card,
                         // with all cards being used once each (there can be duplicates of actual cards, which is stated
                         // in the cards.txt file).
@@ -1044,6 +1058,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a minion card.
                         tempCard = new MinionCard(server);
                         tempCard2 = new MinionCard(server);
+                    } else if(cardName.equalsIgnoreCase("drunk")) {
+                        // If the card is a drunk card.
+                        tempCard = new DrunkCard(server);
+                        tempCard2 = new DrunkCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1114,5 +1132,20 @@ public class WerewolfServer implements Runnable {
     public boolean checkWerewolf(Player player) {
         return player.card.cardName.contains("Werewolf") || player.card.cardName.contains("Dire Werewolf") ||
                 player.card.cardName.contains("Werewolf Cub") || player.card.cardName.contains("Wolf Man");
+    }
+
+    // A helper method to sort for preCheck order
+    public Card[] preCheckSort(Card[] checkCards) {
+        // Sort in order of rank for night wakeup.
+        for(int i = 0; i < checkCards.length - 1; i++) {
+            for(int j = 0; j < checkCards.length - i - 1; j++) {
+                if(checkCards[j].preCheckRank > checkCards[j+1].preCheckRank) {
+                    Card temp3 = checkCards[j];
+                    checkCards[j] = checkCards[j + 1];
+                    checkCards[j + 1] = temp3;
+                }
+            }
+        }
+        return checkCards;
     }
 }

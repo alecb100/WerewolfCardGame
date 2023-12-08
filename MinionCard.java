@@ -82,4 +82,14 @@ public class MinionCard extends Card {
     public void checkAfterDeaths() {
         return;
     }
+
+    @Override
+    public void preCheck() {
+        return;
+    }
+
+    @Override
+    public void needToKnow(Player player) {
+        // Not yet implemented
+    }
 }

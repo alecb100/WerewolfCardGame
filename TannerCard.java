@@ -8,6 +8,7 @@ public class TannerCard extends Card {
         this.team = "tanner";
         this.cardName = "Tanner";
         this.winRank = 1;
+        this.preCheckRank = 1;
     }
 
     // The help method for the Tanner card
@@ -54,6 +55,25 @@ public class TannerCard extends Card {
     // The Tanner does not have a special thing it does after it dies, except that it won
     @Override
     public void checkAfterDeaths() {
+        return;
+    }
+
+    // The pre check method that makes sure there's only 1 of this card
+    @Override
+    public void preCheck() {
+        int cards = 0;
+        for(Card card : server.chooseCards) {
+            if(card.cardName.equals("Tanner")) {
+                cards++;
+            }
+        }
+        if(cards > 1) {
+            throw new IllegalArgumentException("There can't be more than 1 Tanner card.");
+        }
+    }
+
+    @Override
+    public void needToKnow(Player player) {
         return;
     }
 }

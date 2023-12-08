@@ -183,4 +183,9 @@ public class BodyguardCard extends Card {
     public void checkAfterDeaths() {
         return;
     }
+
+    @Override
+    public void preCheck() {
+        return;
+    }
 }
