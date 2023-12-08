@@ -171,7 +171,7 @@ public class SeerCard extends Card {
                     for(Player seer2 : seers.keySet()) {
                         // Tell each of the original seer's choice and the result
                         String result = "";
-                        if(server.checkWerewolf(seers.get(seer)) || seers.get(seer).card.cardName.equals("Lycan")) {
+                        if(seers.get(seer).card.isSeenAsWerewolf) {
                             result = seers.get(seer) + " IS a type of Werewolf.";
                         } else {
                             result = seers.get(seer) + " is NOT a type of Werewolf.";
@@ -194,13 +194,9 @@ public class SeerCard extends Card {
         return;
     }
 
+    // There is no preCheck that must be done for this card
     @Override
     public void preCheck() {
         return;
-    }
-
-    @Override
-    public void needToKnow(Player player) {
-        // Not yet implemented
     }
 }

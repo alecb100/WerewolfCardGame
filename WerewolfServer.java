@@ -480,13 +480,6 @@ public class WerewolfServer implements Runnable {
                     if (start && server.players.size() >= 5) {
                         System.out.println("Starting");
 
-                        // Set the start flag to true for the rest of the program.
-                        gameStart = true;
-
-                        // Make it clear to all players where the new game chat starts
-                        sendToAllPlayers("================================");
-                        sendToAllPlayers("New Game!\n\n");
-
                         // Set all players in the server to alive.
                         for(Player player : players.values()) {
                             player.dead = false;
@@ -528,14 +521,19 @@ public class WerewolfServer implements Runnable {
                         Card[] preCheckCards = preCheckSort(cards.clone());
                         try {
                             for (Card card : preCheckCards) {
-                                if (card.hasPreCheck) {
-                                    card.preCheck();
-                                }
+                                card.preCheck();
                             }
                         } catch(IllegalArgumentException e) {
                             System.out.println(e.getMessage());
                             continue;
                         }
+
+                        // Set the start flag to true for the rest of the program.
+                        gameStart = true;
+
+                        // Make it clear to all players where the new game chat starts
+                        sendToAllPlayers("================================");
+                        sendToAllPlayers("New Game!\n\n");
 
                         // If the amount of cards is equal to the amount of players, just assign each player a random card,
                         // with all cards being used once each (there can be duplicates of actual cards, which is stated

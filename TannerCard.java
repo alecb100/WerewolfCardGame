@@ -8,7 +8,6 @@ public class TannerCard extends Card {
         this.team = "tanner";
         this.cardName = "Tanner";
         this.winRank = 1;
-        this.preCheckRank = 1;
     }
 
     // The help method for the Tanner card
@@ -70,10 +69,5 @@ public class TannerCard extends Card {
         if(cards > 1) {
             throw new IllegalArgumentException("There can't be more than 1 Tanner card.");
         }
-    }
-
-    @Override
-    public void needToKnow(Player player) {
-        return;
     }
 }

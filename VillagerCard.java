@@ -62,13 +62,9 @@ public class VillagerCard extends Card {
         return;
     }
 
+    // Doesn't have any preCheck
     @Override
     public void preCheck() {
-        return;
-    }
-
-    @Override
-    public void needToKnow(Player player) {
         return;
     }
 }

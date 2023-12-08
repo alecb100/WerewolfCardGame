@@ -19,6 +19,7 @@ public class WerewolfCard extends Card {
         this.cardName = "Werewolf";
         this.winRank = 5;
         this.firstNightOnly = false;
+        this.isSeenAsWerewolf = true;
     }
 
     // Its help method, detailing what it does at night and how it wins
@@ -203,6 +204,7 @@ public class WerewolfCard extends Card {
     @Override
     public void checkAfterDeaths() { return; }
 
+    // Checks to see if there are more non-werewolf cards than werewolf cards so that the game doesn't instantly end
     @Override
     public void preCheck() {
         int werewolfCards = 0;
@@ -217,10 +219,5 @@ public class WerewolfCard extends Card {
         if(werewolfCards >= otherCards) {
             throw new IllegalArgumentException("There has to be more non-werewolf cards than werewolf cards.");
         }
-    }
-
-    @Override
-    public void needToKnow(Player player) {
-        // Not yet implemented
     }
 }

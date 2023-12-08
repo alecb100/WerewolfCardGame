@@ -23,11 +23,11 @@ public abstract class Card {
     // Whether there's something to be done after all the dead
     public boolean deathCheck = false;
 
-    // The boolean for whether the card has a precheck
-    public boolean hasPreCheck = false;
-
     // The rank to call prechecks
-    public int preCheckRank = 100;
+    public int preCheckRank = 1;
+
+    // Whether the seer sees them as a werewolf or not
+    public boolean isSeenAsWerewolf = false;
 
     // The method that returns information about the card when a player asks
     public abstract String help();
@@ -51,7 +51,4 @@ public abstract class Card {
     // The method to precheck required things for each card. This can be used to ensure there's only 1 of a specific
     // type of card
     public abstract void preCheck();
-
-    // A need to know method that tells the player what they need to know
-    public abstract void needToKnow(Player player);
 }

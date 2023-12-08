@@ -12,7 +12,6 @@ public class TroublemakerCard extends Card {
         this.cardName = "Troublemaker";
         this.firstNightOnly = false;
         this.abilityUsed = false;
-        this.preCheckRank = 1;
     }
 
     // The help method for the bodyguard card
@@ -166,10 +165,5 @@ public class TroublemakerCard extends Card {
         if(cards > 1) {
             throw new IllegalArgumentException("There can't be more than 1 Troublemaker card.");
         }
-    }
-
-    @Override
-    public void needToKnow(Player player) {
-        return;
     }
 }
