@@ -188,4 +188,9 @@ public class BodyguardCard extends Card {
     public void preCheck() {
         return;
     }
+
+    @Override
+    public void needToKnow(Player player) {
+        // Not yet implemented
+    }
 }
