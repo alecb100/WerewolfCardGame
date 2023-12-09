@@ -13,9 +13,12 @@
   3. In any other circumstance, they are on their own team and will only win if they are the only ones to remain.
   - The cupid is not affected by the linked people, but this overrides all other win conditions.
 - <b><u>Minion</u></b> - The Minion is on the werewolf team. Their only special trait is that they know who all of the werewolves are, but they don't know who he is. His whole goal is to take suspicion away from the werewolves so that his team can win. That may include pulling suspicion over to himself.
+- <b><u>Drunk</u></b> - The Drunk is one of the more interesting and complicated roles. The drunk is essentially a normal villager for the first 2 days, being on the villager team, having the same win condition, etc. Once the third night hits, they sober up and become their true role. Their true role is not revealed to them until this point. At which point, their team switches and they are able to use any abilities that new card has. However, if that card had an action they performed on the very first night, they do not get to use it. But from hence forth, they are that role and will wake up during the night whenever that role would. There are very few roles that this card cannot be, and that is the Dire Wolf and Hoodlum. Because both of those cards had first night actions that would result in something very important, like their win condition or a death effect, they cannot become those cards. They can, however, become a werewolf if there's more than 1 that was specified in the game.
+  - It is important to note, cards that override other win conditions, like the cupid will be updated and still override it. Additionally, the seer and any other similar cards see the Drunk as their true card. So, while the Drunk is on the villagers' team while drunk, the seer will see if they are really a werewolf or not, even before the Drunk knows.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:
 - Tanner
 - Troublemaker
 - Cupid
+- Drunk

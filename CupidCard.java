@@ -312,4 +312,55 @@ public class CupidCard extends Card {
             throw new IllegalArgumentException("There can't be more than 1 Cupid card.");
         }
     }
+
+    // A helper method to update a team switcher's team based on Cupid stuff, if they are linked
+    public void cupidTeamAssistance(Player teamSwitcher) {
+        // Check if the teamSwitcher was linked, and if they're not, return as there's nothing that needs to be done
+        if(!linked[0].equals(teamSwitcher) && !linked[1].equals(teamSwitcher)) {
+            return;
+        }
+
+        // If they were, set the other linked person's team back to what it was originally and do the checks again
+        this.team = "villager";
+        int otherIndex;
+
+        // Figure out which one is the other one
+        if(linked[0].equals(teamSwitcher)) {
+            otherIndex = 1;
+        } else {
+            otherIndex = 0;
+        }
+
+        // Get the name of the last card they are (could be that a doppelganger chose a cursed and was cursed after becoming them,
+        // in this case their card name is Doppelganger -> Cursed -> Werewolf, othersCard is going to be Werewolf at the end)
+        String othersCard = linked[otherIndex].card.cardName;
+        while(othersCard.indexOf('>') != -1) {
+            othersCard = othersCard.substring(othersCard.indexOf('>') + 2);
+        }
+
+        // Find that original card and set the other's team to that
+        for(Card card : server.cards) {
+            if (card.cardName.equals(othersCard)) {
+                linked[otherIndex].card.team = card.team;
+                break;
+            }
+        }
+
+        // Check if they are on the same team
+        if(linked[0].card.team.equals(linked[1].card.team)) {
+            // If they are both on the same team
+            this.team = linked[0].card.team;
+        } else if((linked[0].card.team.equals("villager") && linked[1].card.team.equals("werewolf") && !server.checkWerewolf(linked[1])) ||
+                (linked[1].card.team.equals("villager") && linked[0].card.team.equals("werewolf") && !server.checkWerewolf(linked[0]))) {
+            // If one is a villager and the other is on the werewolf team but NOT a werewolf
+            linked[0].card.team = "villager";
+            linked[1].card.team = "villager";
+        } else {
+            // If they are none of the above, they are on their own team
+            linked[0].card.team = "cupid";
+            linked[1].card.team = "cupid";
+            this.team = "cupid";
+            this.winRank = 0;
+        }
+    }
 }

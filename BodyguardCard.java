@@ -168,7 +168,7 @@ public class BodyguardCard extends Card {
                         // Tell each of the original bodyguard's choice and the result
                         bodyguards.get(bodyguard).dead = false;
                         try {
-                            bodyguard2.output.writeObject(bodyguard.name + " saved " + bodyguards.get(bodyguard).name);
+                            bodyguard2.output.writeObject(bodyguard.name + " protected " + bodyguards.get(bodyguard).name);
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }

@@ -627,7 +627,6 @@ public class WerewolfServer implements Runnable {
                         // chosen, so it will run through them linearly.
                         for(Card card : cards) {
                             if(card.nightWakeup) {
-                                sendToAllPlayers("\n");
                                 card.firstNightWakeup();
                                 // Have the game thread sleep for 3 seconds after each night wakeup to ensure that threads
                                 // that should die now that their night wakeup is over, actually die after doing all they
@@ -641,13 +640,23 @@ public class WerewolfServer implements Runnable {
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
                         sendToAllPlayers("\nNow everyone open your eyes.");
 
+                        // A flag to make sure someone has died
+                        boolean hasDied = false;
+
                         // Run through the alive players and check who was set to dead after the entire night, and add them to the
                         // dead HashSet.
                         for(Player player : currentPlayers) {
                             if(player.dead) {
                                 dead.add(player);
+                                hasDied = true;
                             }
                         }
+
+                        // If no one died, tell everyone that no one died
+                        if(!hasDied) {
+                            sendToAllPlayers("\nNo one died tonight!\n");
+                        }
+
                         // For all players in the dead HashSet, because it was just created, all of those people are newly dead.
                         for(Player player : dead) {
                             // Tell all players who have been killed and what their cards were.
@@ -841,10 +850,10 @@ public class WerewolfServer implements Runnable {
                             }
 
                             // Now for the night again. This is the normal night, not the first night.
-                            sendToAllPlayers("Now for the night. Everyone close your eyes.");
+                            sendToAllPlayers("Now for the night. Everyone close your eyes.\n");
+                            Thread.sleep(3000);
                             for(Card card : cards) {
                                 if(card.nightWakeup) {
-                                    sendToAllPlayers("\n");
                                     // Runs through the nights same as the first night, except it calls the normal
                                     // night method rather than the first night method.
                                     card.nightWakeup();
@@ -858,14 +867,24 @@ public class WerewolfServer implements Runnable {
                             // The night is over, so wake up everyone so that they can see who died, and they can determine who to kill for the day.
                             sendToAllPlayers("\nNow everyone open your eyes.");
 
+                            // Resets the hasDied flag to check if anyone has died this night
+                            hasDied = false;
+
                             // Just like above, it creates a dead copy and checks to see who is newly dead.
                             deadCopy = new HashSet<Player>();
                             for(Player player : currentPlayers) {
                                 if(player.dead) {
                                     dead.add(player);
                                     deadCopy.add(player);
+                                    hasDied = true;
                                 }
                             }
+
+                            // If no one died, tell everyone that
+                            if(!hasDied) {
+                                sendToAllPlayers("\nNo one died tonight!\n");
+                            }
+
                             // Runs through the newly dead and alerts everyone of their death.
                             for(Player player : deadCopy) {
                                 sendToAllPlayers("\n" + player.name + " has been killed!\nThey were " + player.card.cardName + "!\n");
