@@ -202,4 +202,29 @@ public class DrunkCard extends Card {
         // Add back all of those extra cards
         server.chooseCards.addAll(extraCards);
     }
+
+    // The need to know method for Drunk. It will tell the player the need to know stuff for its new card, if it has switched
+    @Override
+    public String needToKnow(Player player) {
+        String result = "";
+
+        // Find the card the server uses for Drunk
+        DrunkCard drunkCard = null;
+        for(Card card : server.cards) {
+            if(card instanceof DrunkCard) {
+                drunkCard = (DrunkCard)card;
+                break;
+            }
+        }
+
+        if(drunkCard.nightCount < 3) {
+            result += "\nYou haven't sobered up yet. Sit tight, there's only been " + drunkCard.nightCount + " nights. ";
+            result += "You will switch on the 3rd night.\n";
+        } else {
+            result += "\nYou have become the " + drunkCard.chosenCard.cardName + ".";
+            result += drunkCard.chosenCard.needToKnow(player) + "\n";
+        }
+
+        return result;
+    }
 }

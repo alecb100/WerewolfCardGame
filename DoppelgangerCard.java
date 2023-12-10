@@ -210,6 +210,10 @@ public class DoppelgangerCard extends Card {
     // the Doppelganger to it if they haven't already
     @Override
     public void checkAfterDeaths() {
+        // Make sure chosen player is not null. If it is, that means the Drunk has become the Doppelganger, so do nothing
+        if(chosenPlayer == null) {
+            return;
+        }
         if(chosenPlayer.dead && hasSwitched == 0) {
             hasSwitched++;
         }
@@ -227,5 +231,38 @@ public class DoppelgangerCard extends Card {
         if(cards > 1) {
             throw new IllegalArgumentException("There can't be more than 1 Doppelganger card.");
         }
+    }
+
+    // Will return who they will become as well as that person's need to know method, if they have already switched
+    @Override
+    public String needToKnow(Player player) {
+        String result = "";
+
+        // Find the Doppelganger card that the server uses
+        DoppelgangerCard doppelgangerCard = null;
+        for(Card card : server.cards) {
+            if(card instanceof DoppelgangerCard) {
+                doppelgangerCard = (DoppelgangerCard)card;
+                break;
+            }
+        }
+
+        // Check if the player has chosen someone yet
+        if(doppelgangerCard.chosenPlayer == null) {
+            result += "\nYou haven't chosen a player yet!\n";
+            return result;
+        }
+
+        // Check if they have switched yet
+        if(doppelgangerCard.hasSwitched < 2) {
+            // If they haven't, tell them who they will switch with
+            result += "\nYou will become " + doppelgangerCard.chosenPlayer.name + " when they die.\n";
+        } else {
+            // If they have, tell them they have switched and become whatever card, then call that card's need to know method
+            result += "\nYou have switched with " + doppelgangerCard.chosenPlayer.name + " and become a " + doppelgangerCard.chosenPlayer.card.cardName + ".\n";
+            result += doppelgangerCard.chosenPlayer.card.needToKnow(player);
+        }
+
+        return result;
     }
 }
