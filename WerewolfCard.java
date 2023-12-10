@@ -69,14 +69,14 @@ public class WerewolfCard extends Card {
 
         // Tell everyone that werewolves are waking up
         try {
-            server.sendToAllPlayers("All werewolves, wake up, and determine who you want to kill.\nAll werewolves must vote. The player with the most votes will be killed.\n");
+            server.sendToAllPlayers("\nAll werewolves, wake up, and determine who you want to kill.\nAll werewolves must vote. The player with the most votes will be killed.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
 
         // Tell the werewolves who the other werewolves are, but not what kind of werewolf they are
         try {
-            outputPrint("Other Werewolves: " + werewolves.keySet().toString());
+            outputPrint("Werewolves: " + werewolves.keySet().toString());
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
@@ -136,8 +136,18 @@ public class WerewolfCard extends Card {
                 }
             }
 
-            // Set their dead flag to true (not put them in the dead HashSet, so that the program knows who's newly dead)
-            dead.dead = true;
+            // Check if they are a Cursed, and if so, don't kill them, but set them to a werewolf for the next night
+            if(dead.card.cardName.contains("Cursed")) {
+                for(Card card : server.cards) {
+                    if(card.cardName.contains("Cursed")) {
+                        ((CursedCard) card).isWerewolf++;
+                    }
+                }
+            } else {
+                // Set their dead flag to true (not put them in the dead HashSet, so that the program knows who's newly dead)
+                // if they are not Cursed
+                dead.dead = true;
+            }
             // Print this for logging purposes
             System.out.println("Werewolves' chosen kill: " + dead.name);
             break;

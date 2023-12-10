@@ -10,7 +10,6 @@ public class CupidCard extends Card {
         this.team = "villager";
         this.cardName = "Cupid";
         this.firstNightOnly = true;
-        this.deathCheck = true;
     }
 
     // The help method for the Cupid

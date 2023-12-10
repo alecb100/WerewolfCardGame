@@ -17,6 +17,7 @@
   - It is important to note, cards that override other win conditions, like the cupid will be updated and still override it. Additionally, the seer and any other similar cards see the Drunk as their true card. So, while the Drunk is on the villagers' team while drunk, the seer will see if they are really a werewolf or not, even before the Drunk knows.
 - <b><u>Doppelganger</u></b> - The Doppelganger is one of the more interesting cards. The Doppelganger picks a player in the first night to take the role of once they die. They become their role the next night after death, not immediately after. It can be any role, including the Drunk or Cursed. What's important to know is that the Doppelganger's team and win conditions will change to whatever role they take, and they don't know the player's role until after they die and become them. Before this happens, the Doppelganger is a normal villager. Additionally, if the player had a first night action or an ability they already used, they are unable to use it again. This means if they become the Minion, they are on the werewolves team but do not know who the werewolves are, so effectively playing as the Doppelganger requires the player to have been paying close attention the whole game.
   - An important note, for cards that have links with other players, like the Dire Wolf, if the Dire Wolf-like card dies but their link is still alive, the Doppelganger will still have that link, but if they die because their link died, they will basically be just a normal werewolf.
+- <b><u>Cursed</u></b> - The Cursed is a team switcher card, starting out as a villager and potentially ending up as a werewolf by the end of the game. The Cursed starts out as a Villager and becomes a plain Werewolf the next night after the werewolves attempt to kill them. So if the werewolves attempt to kill the Cursed on the first night, they will still be a villager during the day, but they will be made aware that they were attacked during the second night, in which case they then become a Werewolf for the rest of the game. However, if the Bodyguard protects the Cursed on the same night the Werewolves attempt to kill them, they do not turn.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:
@@ -25,3 +26,4 @@ There can only be one instance of the following cards in the game currently:
 - Cupid
 - Drunk
 - Doppelganger
+- Cursed

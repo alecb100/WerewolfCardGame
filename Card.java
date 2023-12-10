@@ -15,13 +15,10 @@ public abstract class Card {
     public WerewolfServer server;
 
     // The ranking for winning a game
-    public int winRank;
+    public int winRank = 100;
 
     // Whether the card only wakes up during the first night or not
     public boolean firstNightOnly = false;
-
-    // Whether there's something to be done after all the dead
-    public boolean deathCheck = false;
 
     // The rank to call prechecks
     public int preCheckRank = 1;

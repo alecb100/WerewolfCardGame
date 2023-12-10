@@ -15,7 +15,6 @@ public class DoppelgangerCard extends Card {
         this.firstNightOnly = false;
         this.winRank = 100;
         this.hasSwitched = 0;
-        this.deathCheck = true;
         this.deathCheckRank = 100;
     }
 

@@ -167,6 +167,19 @@ public class BodyguardCard extends Card {
                     for(Player bodyguard2 : bodyguards.keySet()) {
                         // Tell each of the original bodyguard's choice and the result
                         bodyguards.get(bodyguard).dead = false;
+
+                        // If that player is Cursed and recently would become a werewolf (as in attacked this night), they
+                        // do not become a werewolf
+                        if(bodyguards.get(bodyguard).card.cardName.contains("Cursed")) {
+                            for (Card card : server.cards) {
+                                if (card.cardName.contains("Cursed") && ((CursedCard) card).isWerewolf == 1) {
+                                    ((CursedCard) card).isWerewolf--;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Tell all the other bodyguards who they protected
                         try {
                             bodyguard2.output.writeObject(bodyguard.name + " protected " + bodyguards.get(bodyguard).name);
                         } catch(Exception e) {

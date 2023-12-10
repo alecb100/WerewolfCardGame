@@ -676,9 +676,7 @@ public class WerewolfServer implements Runnable {
 
                         // If the card has something it needs to check after all the deaths, like linked people, do it now
                         for(Card card : deathCheckCards) {
-                            if(card.deathCheck) {
-                                card.checkAfterDeaths();
-                            }
+                            card.checkAfterDeaths();
                         }
 
                         // Check if after the first night, someone already won. This is unlikely, but could happen in
@@ -824,9 +822,7 @@ public class WerewolfServer implements Runnable {
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
                             for(Card card : deathCheckCards) {
-                                if(card.deathCheck) {
-                                    card.checkAfterDeaths();
-                                }
+                                card.checkAfterDeaths();
                             }
 
                             // Resets the amount of day kills to 1. May have already been 1, may have been changed by another card
@@ -899,9 +895,7 @@ public class WerewolfServer implements Runnable {
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
                             for(Card card : deathCheckCards) {
-                                if(card.deathCheck) {
-                                    card.checkAfterDeaths();
-                                }
+                                card.checkAfterDeaths();
                             }
 
 
@@ -1086,6 +1080,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a doppelganger card.
                         tempCard = new DoppelgangerCard(server);
                         tempCard2 = new DoppelgangerCard(server);
+                    } else if(cardName.equalsIgnoreCase("cursed")) {
+                        // If the card is a cursed card.
+                        tempCard = new CursedCard(server);
+                        tempCard2 = new CursedCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
