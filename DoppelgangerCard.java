@@ -73,6 +73,7 @@ public class DoppelgangerCard extends Card {
         }
     }
 
+    // The first night wakeup which has the Doppelganger pick someone they want to become
     @Override
     public void firstNightWakeup() {
         // Tell everyone that the doppelganger is waking up
@@ -149,6 +150,7 @@ public class DoppelgangerCard extends Card {
         }
     }
 
+    // The night wakeup which tells everyone it checks if they have become a different role
     @Override
     public void nightWakeup() {
         // Determine if the doppelganger is alive
