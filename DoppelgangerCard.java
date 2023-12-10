@@ -120,7 +120,7 @@ public class DoppelgangerCard extends Card {
                         }
                         chosenPlayer = choice;
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(3000);
                             server.sendToAllPlayers("Doppelganger, go back to sleep.");
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
