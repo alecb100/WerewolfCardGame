@@ -136,7 +136,7 @@ public class BodyguardCard extends Card {
             }
         } else {
             // If there is no bodyguard, wait a random amount of time so the other players don't realize there is no bodyguard
-            int randomWait = (int)(Math.random() * 5000) + 5000;
+            int randomWait = server.rand.nextInt(5000) + 5000;
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Bodyguards, go back to sleep.");

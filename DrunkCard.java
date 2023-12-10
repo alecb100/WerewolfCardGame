@@ -188,7 +188,7 @@ public class DrunkCard extends Card {
         server.chooseCards.removeAll(extraCards);
 
         // Choose the random card and remove it from chooseCards, so it can't be assigned to someone else
-        int randomCard = (int)(Math.random() * server.chooseCards.size());
+        int randomCard = server.rand.nextInt(server.chooseCards.size());
         int i = 0;
         for(Card card : server.chooseCards) {
             if(i == randomCard) {

@@ -2,10 +2,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,6 +54,9 @@ public class WerewolfServer implements Runnable {
 
     // A boolean flag to let the server know everyone is voting during the day
     boolean voting;
+
+    // The random class to give random numbers that are more random than Math.random()
+    Random rand = new Random();
 
     // main function which creates the server
     public static void main(String[] args) throws IOException {
@@ -535,6 +535,8 @@ public class WerewolfServer implements Runnable {
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
 
+                        rand = new Random(System.currentTimeMillis());
+
                         // If the amount of cards is equal to the amount of players, just assign each player a random card,
                         // with all cards being used once each (there can be duplicates of actual cards, which is stated
                         // in the cards.txt file).
@@ -548,7 +550,7 @@ public class WerewolfServer implements Runnable {
 
                             // Run through each player in the game and give them a random card.
                             for (Player player : currentPlayers) {
-                                int random = (int) (Math.random() * tempCards.length);
+                                int random = rand.nextInt(tempCards.length);
                                 player.card = (Card) tempCards[random];
                                 tempCards2.remove(player.card);
                                 tempCards = tempCards2.toArray();
@@ -580,7 +582,7 @@ public class WerewolfServer implements Runnable {
 
                             // Run through the amount of cards that need to be removed and randomly remove that amount of cards.
                             for(i = 0; i < removeCardAmount; i++) {
-                                int random = (int)(Math.random() * chooseCardsClone.size());
+                                int random = rand.nextInt(chooseCardsClone.size());
                                 chooseCardsClone.remove(chooseCardsClone.toArray()[random]);
                             }
 
@@ -594,7 +596,7 @@ public class WerewolfServer implements Runnable {
                             Object[] tempCards = chooseCardsClone.toArray();
                             HashSet<Card> tempCards2 = (HashSet<Card>) chooseCardsClone.clone();
                             for (Player player : currentPlayers) {
-                                int random = (int) (Math.random() * tempCards.length);
+                                int random = rand.nextInt(tempCards.length);
                                 player.card = (Card) tempCards[random];
                                 tempCards2.remove(player.card);
                                 tempCards = tempCards2.toArray();

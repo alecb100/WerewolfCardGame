@@ -62,6 +62,7 @@ public class TroublemakerCard extends Card {
     // The night wakeup method where the troublemaker decides if they want to use their ability, if they haven't already
     @Override
     public void nightWakeup() {
+        // Tell everyone the troublemaker is waking up
         try {
             server.sendToAllPlayers("Now Troublemaker, wake up.");
             server.sendToAllPlayers("Decide if you want to force the deaths of an extra person the next day or not. You can only use it once per game!");
@@ -69,6 +70,7 @@ public class TroublemakerCard extends Card {
             System.out.println(e.getMessage());
         }
 
+        // Find the troublemaker, if they're still alive and there is one
         Player troublemaker = null;
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Troublemaker")) {
@@ -78,20 +80,25 @@ public class TroublemakerCard extends Card {
             }
         }
 
+        // If they're still alive
         if(troublemaker != null) {
             if(!abilityUsed) {
+                // If the ability hasn't been used yet, ask if they want to use it
                 try {
                     troublemaker.output.writeObject("Do you wish to use your ability? (yes or no)");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
+                // Continuously wait until they say yes or no
                 while(true) {
                     if(server.gameActions.get(troublemaker.name).equals("")) {
                         continue;
                     } else if(server.gameActions.get(troublemaker.name).equalsIgnoreCase("yes") || server.gameActions.get(troublemaker.name).equalsIgnoreCase("y")) {
+                        // If they said yes, stop waiting for them and use the ability
                         server.gameWaiting.replace(troublemaker.name, Boolean.FALSE);
                         server.gameActions.replace(troublemaker.name, "");
                         abilityUsed = true;
+                        // Set the amount of day kills to 2 and tell them they used their ability
                         server.amountOfDayKills = 2;
                         try {
                             troublemaker.output.writeObject("Your ability has been used. You cannot use it again.");
@@ -100,6 +107,7 @@ public class TroublemakerCard extends Card {
                         }
                         break;
                     } else if(server.gameActions.get(troublemaker.name).equalsIgnoreCase("no") || server.gameActions.get(troublemaker.name).equalsIgnoreCase("n")) {
+                        // If they say no, stop waiting for them and say they didn't use their ability
                         server.gameWaiting.replace(troublemaker.name, Boolean.FALSE);
                         server.gameActions.replace(troublemaker.name, "");
                         try {
@@ -109,6 +117,7 @@ public class TroublemakerCard extends Card {
                         }
                         break;
                     } else {
+                        // If neither, say their reply was not recognized
                         try {
                             troublemaker.output.writeObject("Your reply was not recognized.");
                             server.gameActions.replace(troublemaker.name, "");
@@ -117,18 +126,20 @@ public class TroublemakerCard extends Card {
                         }
                     }
                 }
+                // Tell everyone the troublemaker is going back to sleep
                 try {
                     server.sendToAllPlayers("Troublemaker, go back to sleep.");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
             } else {
+                // If the ability was already used, tell them as much and wait a random amount of time
                 try {
                     troublemaker.output.writeObject("You have already used your ability.");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
-                int randomWait = (int)(Math.random() * 5000) + 5000;
+                int randomWait = server.rand.nextInt(5000) + 5000;
                 try {
                     Thread.sleep(randomWait);
                     server.sendToAllPlayers("Troublemaker, go back to sleep.");
@@ -137,7 +148,8 @@ public class TroublemakerCard extends Card {
                 }
             }
         } else {
-            int randomWait = (int)(Math.random() * 5000) + 5000;
+            // If the troublemaker wasn't found, wait a random amount of time
+            int randomWait = server.rand.nextInt(5000) + 5000;
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Troublemaker, go back to sleep.");
