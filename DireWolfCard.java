@@ -20,7 +20,6 @@ public class DireWolfCard extends Card {
         this.firstNightOnly = true;
         this.isSeenAsWerewolf = true;
         this.hasDied = false;
-        this.deathCheckRank = 4;
     }
 
     // The help method for the Dire Wolf

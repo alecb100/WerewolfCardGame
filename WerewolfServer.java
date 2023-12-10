@@ -61,6 +61,9 @@ public class WerewolfServer implements Runnable {
     // Number of death checks, incremented after someone died during a death check
     int deathCheckNum;
 
+    // The number of werewolf cards that are in the game
+    int werewolfNum;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -548,6 +551,15 @@ public class WerewolfServer implements Runnable {
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
 
+                        // Check how many werewolf cards are being played
+                        werewolfNum = 0;
+                        for(Card card : chooseCards) {
+                            if(card.cardName.equals("Werewolf") || card.cardName.equals("Dire Wolf") ||
+                            card.cardName.equals("Wolf Man") || card.cardName.equals("Wolf Cub")) {
+                                werewolfNum++;
+                            }
+                        }
+
                         // Set death check num
                         deathCheckNum = 1;
 
@@ -689,13 +701,10 @@ public class WerewolfServer implements Runnable {
                             player.output.writeObject("!!!!!YOU DIED!!!!!");
                         }
 
-                        // sort by death check rank
-                        Card[] deathCheckCards = deathCheckSort();
-
                         // If the card has something it needs to check after all the deaths, like linked people, do it now
-                        // Do it the number of times that people died during a death check
+                        // Do it the number of times that people died during a death check + 1
                         for(int k = 0; k < deathCheckNum; k++) {
-                            for (Card card : deathCheckCards) {
+                            for (Card card : cards) {
                                 card.checkAfterDeaths();
                             }
                         }
@@ -843,9 +852,9 @@ public class WerewolfServer implements Runnable {
                             }
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
-                            // Do it 4 times to make sure that everything is gotten
+                            // Do it the amount of times that someone during the death checks died + 1
                             for(int k = 0; k < deathCheckNum; k++) {
-                                for (Card card : deathCheckCards) {
+                                for (Card card : cards) {
                                     card.checkAfterDeaths();
                                 }
                             }
@@ -920,9 +929,13 @@ public class WerewolfServer implements Runnable {
                             }
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
-                            for(Card card : deathCheckCards) {
-                                card.checkAfterDeaths();
+                            // Do it the amount of times that someone during the death checks died + 1
+                            for(int k = 0; k < deathCheckNum; k++) {
+                                for (Card card : cards) {
+                                    card.checkAfterDeaths();
+                                }
                             }
+                            deathCheckNum = 1;
 
 
                             // Just like above, checks to see if anyone won as a result of the night.
@@ -1192,23 +1205,6 @@ public class WerewolfServer implements Runnable {
         for(int i = 0; i < checkCards.length - 1; i++) {
             for(int j = 0; j < checkCards.length - i - 1; j++) {
                 if(checkCards[j].preCheckRank > checkCards[j+1].preCheckRank) {
-                    Card temp3 = checkCards[j];
-                    checkCards[j] = checkCards[j + 1];
-                    checkCards[j + 1] = temp3;
-                }
-            }
-        }
-        return checkCards;
-    }
-
-    // A helper method to sort for deathCheck order
-    public Card[] deathCheckSort() {
-        Card[] checkCards = cards.clone();
-
-        // Sort in order of rank for night wakeup.
-        for(int i = 0; i < checkCards.length - 1; i++) {
-            for(int j = 0; j < checkCards.length - i - 1; j++) {
-                if(checkCards[j].deathCheckRank > checkCards[j+1].deathCheckRank) {
                     Card temp3 = checkCards[j];
                     checkCards[j] = checkCards[j + 1];
                     checkCards[j + 1] = temp3;
