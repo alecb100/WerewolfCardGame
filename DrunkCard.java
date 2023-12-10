@@ -201,7 +201,5 @@ public class DrunkCard extends Card {
 
         // Add back all of those extra cards
         server.chooseCards.addAll(extraCards);
-
-        System.out.println("Drunk card: " + chosenCard.cardName);
     }
 }

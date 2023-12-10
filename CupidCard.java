@@ -315,6 +315,32 @@ public class CupidCard extends Card {
 
     // A helper method to update a team switcher's team based on Cupid stuff, if they are linked
     public void cupidTeamAssistance(Player teamSwitcher) {
+        // Check if the teamSwitcher is already on the cupid team, and if it is, set their team correctly
+        // This only happens if they switched cards to a player that was linked and put on the cupid team, meaning
+        // that this player wouldn't still be cupid in all but the scenario that they swapped with their cupid mate,
+        // but in that case, they would also be dead
+        if(teamSwitcher.card.team.equals("cupid")) {
+            // Get the name of the last card they are (could be that a doppelganger chose a cursed and was cursed after becoming them,
+            // in this case their card name is Doppelganger -> Cursed -> Werewolf, othersCard is going to be Werewolf at the end)
+            String switchersCard = teamSwitcher.card.cardName;
+            while(switchersCard.indexOf('>') != -1) {
+                switchersCard = switchersCard.substring(switchersCard.indexOf('>') + 2);
+            }
+
+            // Set their actual team to that card's team
+            for(Card card : server.cards) {
+                if(card.cardName.contains(switchersCard)) {
+                    teamSwitcher.card.team = card.team;
+                    break;
+                }
+            }
+
+            // If the team is still cupid, set it to villager
+            if(teamSwitcher.card.team.equals("cupid")) {
+                teamSwitcher.card.team = "villager";
+            }
+        }
+
         // Check if the teamSwitcher was linked, and if they're not, return as there's nothing that needs to be done
         if(!linked[0].equals(teamSwitcher) && !linked[1].equals(teamSwitcher)) {
             return;
@@ -322,6 +348,7 @@ public class CupidCard extends Card {
 
         // If they were, set the other linked person's team back to what it was originally and do the checks again
         this.team = "villager";
+        this.winRank = 100;
         int otherIndex;
 
         // Figure out which one is the other one

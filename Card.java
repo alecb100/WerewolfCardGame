@@ -26,6 +26,9 @@ public abstract class Card {
     // The rank to call prechecks
     public int preCheckRank = 1;
 
+    // The rank to check deaths
+    public int deathCheckRank = 5;
+
     // Whether the seer sees them as a werewolf or not
     public boolean isSeenAsWerewolf = false;
 

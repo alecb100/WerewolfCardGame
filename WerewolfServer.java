@@ -671,8 +671,11 @@ public class WerewolfServer implements Runnable {
                             player.output.writeObject("!!!!!YOU DIED!!!!!");
                         }
 
+                        // sort by death check rank
+                        Card[] deathCheckCards = deathCheckSort();
+
                         // If the card has something it needs to check after all the deaths, like linked people, do it now
-                        for(Card card : cards) {
+                        for(Card card : deathCheckCards) {
                             if(card.deathCheck) {
                                 card.checkAfterDeaths();
                             }
@@ -820,7 +823,7 @@ public class WerewolfServer implements Runnable {
                             }
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
-                            for(Card card : cards) {
+                            for(Card card : deathCheckCards) {
                                 if(card.deathCheck) {
                                     card.checkAfterDeaths();
                                 }
@@ -895,7 +898,7 @@ public class WerewolfServer implements Runnable {
                             }
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
-                            for(Card card : cards) {
+                            for(Card card : deathCheckCards) {
                                 if(card.deathCheck) {
                                     card.checkAfterDeaths();
                                 }
@@ -1079,6 +1082,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a drunk card.
                         tempCard = new DrunkCard(server);
                         tempCard2 = new DrunkCard(server);
+                    } else if(cardName.equalsIgnoreCase("doppelganger")) {
+                        // If the card is a doppelganger card.
+                        tempCard = new DoppelgangerCard(server);
+                        tempCard2 = new DoppelgangerCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1157,6 +1164,23 @@ public class WerewolfServer implements Runnable {
         for(int i = 0; i < checkCards.length - 1; i++) {
             for(int j = 0; j < checkCards.length - i - 1; j++) {
                 if(checkCards[j].preCheckRank > checkCards[j+1].preCheckRank) {
+                    Card temp3 = checkCards[j];
+                    checkCards[j] = checkCards[j + 1];
+                    checkCards[j + 1] = temp3;
+                }
+            }
+        }
+        return checkCards;
+    }
+
+    // A helper method to sort for deathCheck order
+    public Card[] deathCheckSort() {
+        Card[] checkCards = cards.clone();
+
+        // Sort in order of rank for night wakeup.
+        for(int i = 0; i < checkCards.length - 1; i++) {
+            for(int j = 0; j < checkCards.length - i - 1; j++) {
+                if(checkCards[j].deathCheckRank > checkCards[j+1].deathCheckRank) {
                     Card temp3 = checkCards[j];
                     checkCards[j] = checkCards[j + 1];
                     checkCards[j + 1] = temp3;
