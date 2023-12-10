@@ -157,6 +157,9 @@ public class DireWolfCard extends Card {
                         // Tell that player they are dead
                         player.output.writeObject("!!!!!YOU DIED!!!!!");
 
+                        // Increment death check num
+                        server.deathCheckNum++;
+
                         return;
                     } catch(Exception e) {
                         System.out.println(e.getMessage());

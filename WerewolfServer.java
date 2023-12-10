@@ -58,6 +58,9 @@ public class WerewolfServer implements Runnable {
     // The random class to give random numbers that are more random than Math.random()
     Random rand = new Random();
 
+    // Number of death checks, incremented after someone died during a death check
+    int deathCheckNum;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -545,6 +548,9 @@ public class WerewolfServer implements Runnable {
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
 
+                        // Set death check num
+                        deathCheckNum = 1;
+
                         rand = new Random(System.currentTimeMillis());
 
                         // If the amount of cards is equal to the amount of players, just assign each player a random card,
@@ -687,9 +693,13 @@ public class WerewolfServer implements Runnable {
                         Card[] deathCheckCards = deathCheckSort();
 
                         // If the card has something it needs to check after all the deaths, like linked people, do it now
-                        for(Card card : deathCheckCards) {
-                            card.checkAfterDeaths();
+                        // Do it the number of times that people died during a death check
+                        for(int k = 0; k < deathCheckNum; k++) {
+                            for (Card card : deathCheckCards) {
+                                card.checkAfterDeaths();
+                            }
                         }
+                        deathCheckNum = 1;
 
                         // Check if after the first night, someone already won. This is unlikely, but could happen in
                         // the case of the Tanner, who wins if they die.
@@ -833,9 +843,13 @@ public class WerewolfServer implements Runnable {
                             }
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
-                            for(Card card : deathCheckCards) {
-                                card.checkAfterDeaths();
+                            // Do it 4 times to make sure that everything is gotten
+                            for(int k = 0; k < deathCheckNum; k++) {
+                                for (Card card : deathCheckCards) {
+                                    card.checkAfterDeaths();
+                                }
                             }
+                            deathCheckNum = 1;
 
                             // Resets the amount of day kills to 1. May have already been 1, may have been changed by another card
                             // during the night.

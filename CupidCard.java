@@ -276,6 +276,9 @@ public class CupidCard extends Card {
 
                 // Tell that player they are dead
                 linked[1].output.writeObject("!!!!!YOU DIED!!!!!");
+
+                // Increment death check num
+                server.deathCheckNum++;
             } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -292,6 +295,9 @@ public class CupidCard extends Card {
 
                 // Tell that player they are dead
                 linked[0].output.writeObject("!!!!!YOU DIED!!!!!");
+
+                // Increment death check num
+                server.deathCheckNum++;
             } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
