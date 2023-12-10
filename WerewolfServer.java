@@ -272,6 +272,7 @@ public class WerewolfServer implements Runnable {
                         result += "'order':\t\tLists the order of the cards that wake up during the nights\n\t\t\t(does not include cards that only wake up during the first night)\n";
                         result += "'win':\t\t\tLists the order in which win conditions are checked\n";
                         result += "'WhoAmI':\t\tTells you what your card is again\n";
+                        result += "'needToKnow':\tTells you your card's need to know information. Not every card has some.\n";
                     } else if(command.equalsIgnoreCase("players")) {
                         // If the command is players, display all alive players in the game
                         if(gameStart) {
@@ -400,10 +401,19 @@ public class WerewolfServer implements Runnable {
                             result += "\n\nThe game has not started yet, and thus there are no cards to list the order\n";
                         }
                     } else if(command.equalsIgnoreCase("WhoAmI")) {
+                        // Display the player's card name, which can include -> if they are a team switcher
                         if(gameStart) {
                             result += "\n\nYour card is: " + player.card.cardName;
                         } else {
                             result += "\n\nThe game hasn't started yet, so you don't have a card\n";
+                        }
+                    } else if(command.equalsIgnoreCase("needToKnow")) {
+                        // Display the player's card's need to know information. Not too many cards have some
+                        String needToKnow = player.card.needToKnow(player);
+                        if(needToKnow.equals("")) {
+                            result += "\n\nYour card does not have any need to know information.\n";
+                        } else {
+                            result += "\n\n" + needToKnow + "\n";
                         }
                     } else {
                         // If the command wasn't found, tell the player that
@@ -1086,6 +1096,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a cursed card.
                         tempCard = new CursedCard(server);
                         tempCard2 = new CursedCard(server);
+                    } else if(cardName.equalsIgnoreCase("dire wolf")) {
+                        // If the card is a dire wolf card.
+                        tempCard = new DireWolfCard(server);
+                        tempCard2 = new DireWolfCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1154,7 +1168,7 @@ public class WerewolfServer implements Runnable {
 
     // A helper method used by other cards, including the Werewolf card, to check if a player is a type of werewolf
     public boolean checkWerewolf(Player player) {
-        return player.card.cardName.contains("Werewolf") || player.card.cardName.contains("Dire Werewolf") ||
+        return player.card.cardName.contains("Werewolf") || player.card.cardName.contains("Dire Wolf") ||
                 player.card.cardName.contains("Werewolf Cub") || player.card.cardName.contains("Wolf Man");
     }
 

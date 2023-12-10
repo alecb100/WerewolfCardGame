@@ -173,6 +173,12 @@ public class DoppelgangerCard extends Card {
                 doppelganger.card.team = chosenPlayer.card.team;
                 doppelganger.card.isSeenAsWerewolf = chosenPlayer.card.isSeenAsWerewolf;
 
+                // If there's information this card needs to know (like Dire Wolf or Hoodlum has), tell that to the Doppelganger immediately
+                String needToKnow = chosenPlayer.card.needToKnow(doppelganger);
+                if(!needToKnow.equals("")) {
+                    doppelganger.output.writeObject(needToKnow);
+                }
+
                 // Check if there's a cupid, and if there is, call its cupid team assistance so that this new team change can be checked
                 for(Card card : server.cards) {
                     if(card instanceof CupidCard) {

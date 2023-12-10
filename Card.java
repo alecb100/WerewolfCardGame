@@ -51,4 +51,9 @@ public abstract class Card {
     // The method to precheck required things for each card. This can be used to ensure there's only 1 of a specific
     // type of card
     public abstract void preCheck();
+
+    // An optional method for cards that have information they need to know
+    public String needToKnow(Player player) {
+        return "";
+    }
 }
