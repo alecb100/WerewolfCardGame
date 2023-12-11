@@ -64,7 +64,7 @@ public class TroublemakerCard extends Card {
     public void nightWakeup() {
         // Tell everyone the troublemaker is waking up
         try {
-            server.sendToAllPlayers("Now Troublemaker, wake up.");
+            server.sendToAllPlayers("\nNow Troublemaker, wake up.");
             server.sendToAllPlayers("Decide if you want to force the deaths of an extra person the next day or not. You can only use it once per game!");
         } catch(Exception e) {
             System.out.println(e.getMessage());
@@ -128,7 +128,7 @@ public class TroublemakerCard extends Card {
                 }
                 // Tell everyone the troublemaker is going back to sleep
                 try {
-                    server.sendToAllPlayers("Troublemaker, go back to sleep.");
+                    server.sendToAllPlayers("Troublemaker, go back to sleep.\n");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -152,7 +152,7 @@ public class TroublemakerCard extends Card {
             int randomWait = server.rand.nextInt(5000) + 5000;
             try {
                 Thread.sleep(randomWait);
-                server.sendToAllPlayers("Troublemaker, go back to sleep.");
+                server.sendToAllPlayers("Troublemaker, go back to sleep.\n");
             } catch(Exception e) {
                 System.out.println(e.getMessage());
             }

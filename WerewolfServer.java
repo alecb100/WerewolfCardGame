@@ -755,65 +755,70 @@ public class WerewolfServer implements Runnable {
                         while(true) {
                             sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people you must choose to kill is: " + amountOfDayKills + "\n");
 
-                            // Set a flag so the server knows everyone is voting
-                            voting = true;
+                            // Loop through the amount of kills there are that day
+                            for(int j = 0; j < amountOfDayKills; j++) {
 
-                            // Set a flag to false signifying that the day isn't over. This only gets set to true
-                            // once all alive players have chosen a valid player to kill (valid as in they are still alive).
-                            dayKillFlag = false;
-
-                            // Create the HashMap that holds all alive players votes.
-                            votes = new HashMap<Player, Player>();
-                            for (Player player : server.currentPlayers) {
-                                votes.put(player, null);
-                            }
-                            // Tell the server it is waiting for all alive players' actions.
-                            for(Player player : currentPlayers) {
-                                gameWaiting.replace(player.name, Boolean.TRUE);
-                            }
-
-                            // Create a thread that continuously sends a player's valid vote to all other players.
-                            new Thread(this::sendAllVotes).start();
-
-                            // While the flag is false, run through this code.
-                            while(!dayKillFlag) {
-                                // Set a temporary flag that checks if all players have chosen someone.
-                                boolean good = true;
-
-                                // Create a count map that is used to find the most popular player to kill.
-                                HashMap<Player, Integer> count = new HashMap<Player, Integer>();
+                                // Create the HashMap that holds all alive players votes.
+                                votes = new HashMap<Player, Player>();
                                 for (Player player : server.currentPlayers) {
-                                    count.put(player, 0);
+                                    votes.put(player, null);
+                                }
+                                // Tell the server it is waiting for all alive players' actions.
+                                for(Player player : currentPlayers) {
+                                    gameWaiting.replace(player.name, Boolean.TRUE);
                                 }
 
-                                // Step through all alive players and check to see if they voted. Additionally, talley
-                                // the player they voted for.
-                                for (Player player : votes.values()) {
-                                    if (player != null) {
-                                        count.replace(player, count.get(player) + 1);
-                                    } else {
-                                        // If they did not vote, then that means the server can't continue so just quit
-                                        // and try again.
-                                        good = false;
-                                        break;
+                                // Tell the players what kill this is
+                                sendToAllPlayers("Who is your kill #" + (j+1) + "?");
+
+                                // Set a flag so the server knows everyone is voting
+                                voting = true;
+
+                                // Set a flag to false signifying that the day isn't over. This only gets set to true
+                                // once all alive players have chosen a valid player to kill (valid as in they are still alive).
+                                dayKillFlag = false;
+
+                                // Create a thread that continuously sends a player's valid vote to all other players.
+                                new Thread(this::sendAllVotes).start();
+
+                                // While the flag is false, run through this code.
+                                while (!dayKillFlag) {
+                                    // Set a temporary flag that checks if all players have chosen someone.
+                                    boolean good = true;
+
+                                    // Create a count map that is used to find the most popular player to kill.
+                                    HashMap<Player, Integer> count = new HashMap<Player, Integer>();
+                                    for (Player player : server.currentPlayers) {
+                                        count.put(player, 0);
                                     }
-                                }
-                                // A player didn't vote yet, so restart this loop.
-                                if (!good) {
-                                    continue;
-                                }
 
-                                // If it got here, that means that all players have voted. Set the flag to true.
-                                dayKillFlag = true;
-                                // Wait 3 seconds to allow the threads created to help get player votes to end.
-                                Thread.sleep(3000);
-                                // Make sure the server is no longer waiting for any player.
-                                stopWaiting();
+                                    // Step through all alive players and check to see if they voted. Additionally, talley
+                                    // the player they voted for.
+                                    for (Player player : votes.values()) {
+                                        if (player != null) {
+                                            count.replace(player, count.get(player) + 1);
+                                        } else {
+                                            // If they did not vote, then that means the server can't continue so just quit
+                                            // and try again.
+                                            good = false;
+                                            break;
+                                        }
+                                    }
+                                    // A player didn't vote yet, so restart this loop.
+                                    if (!good) {
+                                        continue;
+                                    }
 
-                                HashSet<Player> deadCopy = (HashSet<Player>) dead.clone();
+                                    // If it got here, that means that all players have voted. Set the flag to true.
+                                    dayKillFlag = true;
+                                    // Wait 3 seconds to allow the threads created to help get player votes to end.
+                                    Thread.sleep(3000);
+                                    // Make sure the server is no longer waiting for any player.
+                                    stopWaiting();
 
-                                // Loop through the votes for the amount of kills necessary and get the highest player.
-                                for (i = 0; i < amountOfDayKills; i++) {
+                                    HashSet<Player> deadCopy = (HashSet<Player>) dead.clone();
+
+                                    // Loop through the votes for the amount of kills necessary and get the highest player.
                                     int highest = -1;
                                     Player dead2 = null;
                                     for (Player player : count.keySet()) {
