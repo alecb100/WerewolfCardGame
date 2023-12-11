@@ -1152,6 +1152,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a wolf cub card.
                         tempCard = new WolfCubCard(server);
                         tempCard2 = new WolfCubCard(server);
+                    } else if(cardName.equalsIgnoreCase("lycan")) {
+                        // If the card is a lycan card.
+                        tempCard = new LycanCard(server);
+                        tempCard2 = new LycanCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
