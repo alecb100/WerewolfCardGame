@@ -832,6 +832,12 @@ public class WerewolfServer implements Runnable {
                                     // That player who was chosen is set to dead.
                                     dead2.dead = true;
                                     count.remove(dead2);
+
+                                    try {
+                                        server.sendToAllPlayers("Voted dead player #" + (j+1) + ": " + dead2.name + "\n");
+                                    } catch(Exception e) {
+                                        System.out.println(e.getMessage());
+                                    }
                                 }
                             }
 
@@ -1021,8 +1027,10 @@ public class WerewolfServer implements Runnable {
             String[] possibilities = new String[currentPlayers.size()];
             int i = 0;
             for(Player player : currentPlayers) {
-                possibilities[i] = player.name;
-                i++;
+                if(!player.dead) {
+                    possibilities[i] = player.name;
+                    i++;
+                }
             }
 
             // Run through the infinite loop until everyone has voted for a person
