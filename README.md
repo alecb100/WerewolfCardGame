@@ -21,6 +21,7 @@
 - <b><u>Dire Wolf</u></b> - The Dire Wolf is a minor werewolf. They are on the werewolves team and act exactly like a normal werewolf. The only difference is that they pick a companion on the first night. If that companion dies, they die. However, if the Dire Wolf dies, the companion is fine. The companion also doesn't know they are a companion, and the other wolves don't know who the Dire Wolf's companion is.
   - An important note, if the Doppelganger, or a similar card, becomes the Dire Wolf, if the companion is still alive, they will be under the same rules. But if the companion is already dead, they will be just like a normal werewolf.
 - <b><u>Hoodlum</u></b> - The Hoodlum is on a team completely on their own. They choose an amount of players equal to the number of werewolves in the game during the first night. When those people die, they win, even if the last werewolf was killed. They have priority over the werewolves and villagers in terms of winning. Obviously, they have to be alive to win, though.
+- <b><u>Wolf Man</u></b> - The Wolf Man is the same as a normal werewolf. The only difference is that a seer does not see them as a werewolf.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:

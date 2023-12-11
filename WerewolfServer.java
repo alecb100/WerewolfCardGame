@@ -1131,6 +1131,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a hoodlum card.
                         tempCard = new HoodlumCard(server);
                         tempCard2 = new HoodlumCard(server);
+                    } else if(cardName.equalsIgnoreCase("wolf man")) {
+                        // If the card is a wolf man card.
+                        tempCard = new WolfManCard(server);
+                        tempCard2 = new WolfManCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
