@@ -769,7 +769,7 @@ public class WerewolfServer implements Runnable {
                                 }
 
                                 // Tell the players what kill this is
-                                sendToAllPlayers("Who is your kill #" + (j+1) + "?");
+                                sendToAllPlayers("\nWho is your kill #" + (j+1) + "?");
 
                                 // Set a flag so the server knows everyone is voting
                                 voting = true;
