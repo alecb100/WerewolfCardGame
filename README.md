@@ -22,6 +22,7 @@
   - An important note, if the Doppelganger, or a similar card, becomes the Dire Wolf, if the companion is still alive, they will be under the same rules. But if the companion is already dead, they will be just like a normal werewolf.
 - <b><u>Hoodlum</u></b> - The Hoodlum is on a team completely on their own. They choose an amount of players equal to the number of werewolves in the game during the first night. When those people die, they win, even if the last werewolf was killed. They have priority over the werewolves and villagers in terms of winning. Obviously, they have to be alive to win, though.
 - <b><u>Wolf Man</u></b> - The Wolf Man is the same as a normal werewolf. The only difference is that a seer does not see them as a werewolf.
+- <b><u>Wolf Cub</u></b> - The Wolf Cub is very similar to a normal werewolf. The only difference is that when they are killed, the wolves the next night are able to kill an additional person for that night. Apart from that, they have the same win conditions as a normal werewolf.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:

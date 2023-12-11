@@ -82,75 +82,101 @@ public class WerewolfCard extends Card {
         }
 
         // Wait for each werewolves' choice of kill
-        new Thread(this::sendToWerewolves).start();
         for(Player player : werewolves.keySet()) {
             server.gameWaiting.replace(player.name, Boolean.TRUE);
         }
 
-        // Run through this loop until all werewolves have chosen someone they want to kill
-        while(true) {
-            // Set flags for running through the loop and determining if it should be over
-            ultraGood = false;
-            boolean good = true;
-
-            // Create a hashMap to count the amount of votes each player has
-            HashMap<Player, Integer> count = new HashMap<Player, Integer>();
-            for(Player player : server.currentPlayers) {
-                // Put all non-werewolves into this HashMap
-                if(!server.checkWerewolf(player)) {
-                    count.put(player, 0);
-                }
-            }
-
-            // Run through the werewolves' votes and talley up the corresponding player
-            for(Player player : werewolves.values()) {
-                if(player != null) {
-                    count.replace(player, count.get(player)+1);
-                } else {
-                    // If even one of the werewolves hasn't voted yet, continue and retry the loop
-                    good = false;
-                    break;
-                }
-            }
-            if(!good) {
-                continue;
-            }
-
-            // If it got here, that means all the werewolves have voted, so stop looking for their votes
-            ultraGood = true;
-            server.stopWaiting();
-            // Have the program sleep so the other threads can catch up
+        // Run through this loop until all werewolves have chosen someone they want to kill for the amount of kills they can make
+        for(Player player : werewolves.keySet()) {
             try {
-                Thread.sleep(3000);
+                player.output.writeObject("You must kill " + server.werewolfKills + ".\n");
             } catch(Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println();
             }
-
-            // Find out who the player with the most votes is
-            int highest = -1;
-            Player dead = null;
-            for(Player player : count.keySet()) {
-                if(count.get(player) > highest) {
-                    highest = count.get(player);
-                    dead = player;
+        }
+        for(int j = 0; j < server.werewolfKills; j++) {
+            new Thread(this::sendToWerewolves).start();
+            for(Player player : werewolves.keySet()) {
+                try {
+                    player.output.writeObject("Who is your kill #" + (j+1) + "?");
+                    server.gameWaiting.replace(player.name, Boolean.TRUE);
+                    werewolves.replace(player, null);
+                } catch(Exception e) {
+                    System.out.println();
                 }
             }
+            while(true) {
 
-            // Check if they are a Cursed, and if so, don't kill them, but set them to a werewolf for the next night
-            if(dead.card.cardName.contains("Cursed")) {
-                for(Card card : server.cards) {
-                    if(card.cardName.contains("Cursed")) {
-                        ((CursedCard) card).isWerewolf++;
+                // Set flags for running through the loop and determining if it should be over
+                ultraGood = false;
+                boolean good = true;
+
+                // Create a hashMap to count the amount of votes each player has
+                HashMap<Player, Integer> count = new HashMap<Player, Integer>();
+                for(Player player : server.currentPlayers) {
+                    // Put all non-werewolves into this HashMap
+                    if(!server.checkWerewolf(player)) {
+                        count.put(player, 0);
                     }
                 }
-            } else {
-                // Set their dead flag to true (not put them in the dead HashSet, so that the program knows who's newly dead)
-                // if they are not Cursed
-                dead.dead = true;
+
+                // Run through the werewolves' votes and talley up the corresponding player
+                for(Player player : werewolves.values()) {
+                    if(player != null) {
+                        count.replace(player, count.get(player)+1);
+                    } else {
+                        // If even one of the werewolves hasn't voted yet, continue and retry the loop
+                        good = false;
+                        break;
+                    }
+                }
+                if(!good) {
+                    continue;
+                }
+
+                // If it got here, that means all the werewolves have voted, so stop looking for their votes
+                ultraGood = true;
+                server.stopWaiting();
+                // Have the program sleep so the other threads can catch up
+                try {
+                    Thread.sleep(3000);
+                } catch(Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
+                // Find out who the player with the most votes is for the number of werewolf kills they need to make
+                int highest = -1;
+                Player dead = null;
+                for (Player player : count.keySet()) {
+                    if (count.get(player) > highest) {
+                        highest = count.get(player);
+                        dead = player;
+                    }
+                }
+
+                // Check if they are a Cursed, and if so, don't kill them, but set them to a werewolf for the next night
+                if (dead.card.cardName.contains("Cursed")) {
+                    for (Card card : server.cards) {
+                        if (card.cardName.contains("Cursed")) {
+                            ((CursedCard) card).isWerewolf++;
+                        }
+                    }
+                } else {
+                    // Set their dead flag to true (not put them in the dead HashSet, so that the program knows who's newly dead)
+                    // if they are not Cursed
+                    dead.dead = true;
+                }
+                // Print this for logging purposes
+                System.out.println("Chosen kill: " + dead.name);
+                for (Player player : werewolves.keySet()) {
+                    try {
+                        player.output.writeObject("chosen kill: " + dead.name + "\n");
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                break;
             }
-            // Print this for logging purposes
-            System.out.println("Werewolves' chosen kill: " + dead.name);
-            break;
         }
 
         try {

@@ -64,6 +64,9 @@ public class WerewolfServer implements Runnable {
     // The number of werewolf cards that are in the game
     int werewolfNum;
 
+    // Number of werewolf kills for the night
+    int werewolfKills;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -532,6 +535,9 @@ public class WerewolfServer implements Runnable {
                             continue;
                         }
 
+                        // Set the werewolf kills to 1
+                        werewolfKills = 1;
+
 
                         // The preCheck stuff (sort for preCheck order, then preCheck)
                         Card[] preCheckCards = preCheckSort(cards.clone());
@@ -666,6 +672,7 @@ public class WerewolfServer implements Runnable {
                                 stopWaiting();
                             }
                         }
+                        werewolfKills = 1;
 
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
                         sendToAllPlayers("\nNow everyone open your eyes.");
@@ -897,6 +904,7 @@ public class WerewolfServer implements Runnable {
                                     stopWaiting();
                                 }
                             }
+                            werewolfKills = 1;
 
                             // The night is over, so wake up everyone so that they can see who died, and they can determine who to kill for the day.
                             sendToAllPlayers("\nNow everyone open your eyes.");
@@ -1063,7 +1071,7 @@ public class WerewolfServer implements Runnable {
                 // werewolves. Grab the number after the x if that exists.
                 if(card.contains(" x")) {
                     // Set the card name as everything before the ' x'.
-                    cardName = card.substring(0, card.indexOf(" "));
+                    cardName = card.substring(0, card.indexOf("x") - 1);
                     // Get the number of cards, which is directly after the 'x'.
                     cardAmount = Integer.parseInt(card.substring(card.indexOf("x")+1));
                 } else {
@@ -1135,6 +1143,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a wolf man card.
                         tempCard = new WolfManCard(server);
                         tempCard2 = new WolfManCard(server);
+                    } else if(cardName.equalsIgnoreCase("wolf cub")) {
+                        // If the card is a wolf cub card.
+                        tempCard = new WolfCubCard(server);
+                        tempCard2 = new WolfCubCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1204,7 +1216,7 @@ public class WerewolfServer implements Runnable {
     // A helper method used by other cards, including the Werewolf card, to check if a player is a type of werewolf
     public boolean checkWerewolf(Player player) {
         return player.card.cardName.contains("Werewolf") || player.card.cardName.contains("Dire Wolf") ||
-                player.card.cardName.contains("Werewolf Cub") || player.card.cardName.contains("Wolf Man");
+                player.card.cardName.contains("Wolf Cub") || player.card.cardName.contains("Wolf Man");
     }
 
     // A helper method to sort for preCheck order
