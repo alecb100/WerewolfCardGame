@@ -769,7 +769,9 @@ public class WerewolfServer implements Runnable {
                                 }
 
                                 // Tell the players what kill this is
-                                sendToAllPlayers("\nWho is your kill #" + (j+1) + "?");
+                                for(Player player : currentPlayers) {
+                                    player.output.writeObject("\nWho is your kill #" + (j + 1) + "?");
+                                }
 
                                 // Set a flag so the server knows everyone is voting
                                 voting = true;
@@ -1156,6 +1158,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a lycan card.
                         tempCard = new LycanCard(server);
                         tempCard2 = new LycanCard(server);
+                    } else if(cardName.equalsIgnoreCase("hunter")) {
+                        // If the card is a hunter card.
+                        tempCard = new HunterCard(server);
+                        tempCard2 = new HunterCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

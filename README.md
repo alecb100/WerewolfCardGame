@@ -24,6 +24,7 @@
 - <b><u>Wolf Man</u></b> - The Wolf Man is the same as a normal werewolf. The only difference is that a seer does not see them as a werewolf.
 - <b><u>Wolf Cub</u></b> - The Wolf Cub is very similar to a normal werewolf. The only difference is that when they are killed, the wolves the next night are able to kill an additional person for that night. Apart from that, they have the same win conditions as a normal werewolf
 - <b><u>Lycan</u></b> - The Lycan is just like a villager, except that the Seer, and any similar card, sees the Lycan as a werewolf, despite being just like a villager. They win the same way normal villagers win, except for that one change.
+- <b><u>Hunter</u></b> - The Hunter is just like a normal villager, with the same win condition and everything. The only difference is that when they die, regardless of when they die, they get to bring someone to the afterlife with them, regardless of who it is.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:
