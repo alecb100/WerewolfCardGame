@@ -65,7 +65,7 @@ public class TroublemakerCard extends Card {
         // Tell everyone the troublemaker is waking up
         try {
             server.sendToAllPlayers("\nNow Troublemaker, wake up.");
-            server.sendToAllPlayers("Decide if you want to force the deaths of an extra person the next day or not. You can only use it once per game!");
+            server.sendToAllPlayers("Decide if you want to force the deaths of an extra person the next day or not. You can only use it once per game!\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
@@ -85,7 +85,7 @@ public class TroublemakerCard extends Card {
             if(!abilityUsed) {
                 // If the ability hasn't been used yet, ask if they want to use it
                 try {
-                    troublemaker.output.writeObject("Do you wish to use your ability? (yes or no)");
+                    troublemaker.output.writeObject("Do you wish to use your ability? (yes or no)\n");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
