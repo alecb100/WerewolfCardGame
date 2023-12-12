@@ -59,7 +59,11 @@ public class WolfCubCard extends Card {
         // Check all the werewolf cubs. If one is dead, add another kill to the amount of kills the werewolves can do
         for(Player player : server.dead) {
             if(player.card.cardName.contains("Wolf Cub") && !((WolfCubCard)(player.card)).deathAddition) {
-                server.werewolfKills++;
+                // Check if the werewolf kills for the next night are 0 already, and if they are that means they
+                // killed the Diseased the previous night, so the werewolf kills may not be updated
+                if(server.werewolfKills != 0) {
+                    server.werewolfKills++;
+                }
                 ((WolfCubCard)(player.card)).deathAddition = true;
             }
         }

@@ -89,11 +89,19 @@ public class WerewolfCard extends Card {
         // Run through this loop until all werewolves have chosen someone they want to kill for the amount of kills they can make
         for(Player player : werewolves.keySet()) {
             try {
-                player.output.writeObject("You must kill " + server.werewolfKills + ".\n");
+                // Check if there is more than 0 kills that must be made
+                if(server.werewolfKills != 0) {
+                    player.output.writeObject("You must kill " + server.werewolfKills + ".\n");
+                } else {
+                    // If there are 0, that means they killed the Diseased the last night
+                    player.output.writeObject("Because you killed the Diseased the last night, you are too sick to kill anyone this night.\n");
+                    Thread.sleep(3000);
+                }
             } catch(Exception e) {
                 System.out.println();
             }
         }
+
         for(int j = 0; j < server.werewolfKills; j++) {
             new Thread(this::sendToWerewolves).start();
             for(Player player : werewolves.keySet()) {
@@ -165,6 +173,16 @@ public class WerewolfCard extends Card {
                     // Set their dead flag to true (not put them in the dead HashSet, so that the program knows who's newly dead)
                     // if they are not Cursed
                     dead.dead = true;
+
+                    // Check if that player was Diseased, and if they were, set the diseased ability to true so they can't
+                    // kill anyone the following night
+                    if(dead.card.cardName.contains("Diseased")) {
+                        for (Card card : server.cards) {
+                            if (card instanceof DiseasedCard diseasedCard) {
+                                diseasedCard.diseasedAbility = true;
+                            }
+                        }
+                    }
                 }
                 // Print this for logging purposes
                 System.out.println("Chosen kill: " + dead.name);

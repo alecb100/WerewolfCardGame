@@ -1184,9 +1184,13 @@ public class WerewolfServer implements Runnable {
                         tempCard = new HunterCard(server);
                         tempCard2 = new HunterCard(server);
                     } else if(cardName.equalsIgnoreCase("mason")) {
-                        // If the card is a hunter card.
+                        // If the card is a mason card.
                         tempCard = new MasonCard(server);
                         tempCard2 = new MasonCard(server);
+                    } else if(cardName.equalsIgnoreCase("diseased")) {
+                        // If the card is a diseased card.
+                        tempCard = new DiseasedCard(server);
+                        tempCard2 = new DiseasedCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
