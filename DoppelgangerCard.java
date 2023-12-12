@@ -166,7 +166,7 @@ public class DoppelgangerCard extends Card {
                 server.sendToAllPlayers("If they had a first night action or an ability they use once and already use it,");
                 server.sendToAllPlayers("you can't access it, sorry. Your team has switched to that team and same with your");
                 server.sendToAllPlayers("win condition. Good luck!\n");
-                doppelganger.output.writeObject("Your new card is: " + chosenPlayer.card.cardName);
+                doppelganger.output.writeObject("Your new card is: " + chosenPlayer.card.cardName + "\n");
                 hasSwitched++;
                 doppelganger.card.cardName += " -> " + chosenPlayer.card.cardName;
                 doppelganger.card.team = chosenPlayer.card.team;
