@@ -188,7 +188,7 @@ public class WerewolfCard extends Card {
                 System.out.println("Chosen kill: " + dead.name);
                 for (Player player : werewolves.keySet()) {
                     try {
-                        player.output.writeObject("chosen kill: " + dead.name + "\n");
+                        player.output.writeObject("Chosen kill: " + dead.name + "\n");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
