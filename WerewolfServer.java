@@ -570,6 +570,9 @@ public class WerewolfServer implements Runnable {
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
 
+                        // Tell everyone to close their eyes
+                        sendToAllPlayers("Close your eyes!");
+
                         // Check how many werewolf cards are being played
                         werewolfNum = 0;
                         for(Card card : chooseCards) {
@@ -1220,6 +1223,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a prince card.
                         tempCard = new PrinceCard(server);
                         tempCard2 = new PrinceCard(server);
+                    } else if(cardName.equalsIgnoreCase("apprentice seer")) {
+                        // If the card is an apprentice seer card.
+                        tempCard = new ApprenticeSeerCard(server);
+                        tempCard2 = new ApprenticeSeerCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
