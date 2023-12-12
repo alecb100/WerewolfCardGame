@@ -45,7 +45,7 @@ public class MinionCard extends Card {
     public void firstNightWakeup() {
         try {
             // Tell everyone that the minion is waking up
-            server.sendToAllPlayers("Minion, wake up and see who the werewolves are. Remember, they don't know who you are.");
+            server.sendToAllPlayers("\nMinion, wake up and see who the werewolves are. Remember, they don't know who you are.");
             HashSet<Player> minions = new HashSet<Player>();
             HashSet<Player> werewolves = new HashSet<Player>();
             // Find out who all the werewolves are and who the minion is
@@ -65,7 +65,7 @@ public class MinionCard extends Card {
             }
             // Wait, and then tell everyone the minion is going back to sleep
             Thread.sleep(3000);
-            server.sendToAllPlayers("\nMinion, go back to sleep.");
+            server.sendToAllPlayers("\nMinion, go back to sleep.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
