@@ -27,6 +27,7 @@
 - <b><u>Hunter</u></b> - The Hunter is just like a normal villager, with the same win condition and everything. The only difference is that when they die, regardless of when they die, they get to bring someone to the afterlife with them, regardless of who it is.
 - <b><u>Mason</u></b> - The Masons are just like normal villagers. The only difference is that they wake up on the first night to see who the other Masons are. The Masons are on the villager team, so the people you see are your allies!
 - <b><u>Diseased</u></b> - The Diseased is just like a normal villager, except they can help the villagers even in death. If they are killed by the werewolves at night, then the next night the werewolves can't kill anyone. This overrides the Wolf Cub's ability to increase the wolf kills once they die.
+- <b><u>Prince</u></b> - The Prince is a villager, and potentially a very important villager, because they are one of the only roles that people are guaranteed to know. They are on the villager team but if they are voted to be eliminated during the day, their card is revealed and they are not killed. However, if the villagers vote to eliminate them after that, they do die.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:
@@ -39,3 +40,4 @@ There can only be one instance of the following cards in the game currently:
 - Dire Wolf
 - Hoodlum
 - Diseased
+- Prince

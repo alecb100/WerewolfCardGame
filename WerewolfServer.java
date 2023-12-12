@@ -877,11 +877,36 @@ public class WerewolfServer implements Runnable {
 
                             // Loops through all in the dead copy HashSet and alerts every one of their death and what card they were.
                             for(Player player : deadCopy) {
-                                sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
-                                currentPlayers.remove(player);
+                                // If the player is not a Prince, continue as normal
+                                if(!player.card.cardName.contains("Prince")) {
+                                    sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
+                                    currentPlayers.remove(player);
 
-                                // Tell that player they are dead
-                                player.output.writeObject("!!!!!YOU DIED!!!!!");
+                                    // Tell that player they are dead
+                                    player.output.writeObject("!!!!!YOU DIED!!!!!");
+                                } else {
+                                    // If the player is a Prince, get the Prince card the server uses
+                                    for(Card card : server.cards) {
+                                        if(card instanceof PrinceCard princeCard) {
+                                            // Check if their ability has already been used
+                                            if(princeCard.abilityUsed) {
+                                                // If it has, they die like normal
+                                                sendToAllPlayers("\n" + player.name + " has been chosen to be killed!\nThey were " + player.card.cardName + "!\n");
+                                                currentPlayers.remove(player);
+
+                                                // Tell that player they are dead
+                                                player.output.writeObject("!!!!!YOU DIED!!!!!");
+                                            } else {
+                                                // If it hasn't, the players are notified that they are the Prince and are not killed, this time
+                                                sendToAllPlayers("\n" + player.name + " is the Prince! Therefore they are not killed... this time.\n");
+                                                princeCard.abilityUsed = true;
+                                                player.dead = false;
+                                                dead.remove(player);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
                             }
 
                             // If the card has something it needs to check after all the deaths, like linked people, do it now
@@ -1191,6 +1216,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a diseased card.
                         tempCard = new DiseasedCard(server);
                         tempCard2 = new DiseasedCard(server);
+                    } else if(cardName.equalsIgnoreCase("prince")) {
+                        // If the card is a prince card.
+                        tempCard = new PrinceCard(server);
+                        tempCard2 = new PrinceCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

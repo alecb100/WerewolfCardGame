@@ -172,6 +172,16 @@ public class DoppelgangerCard extends Card {
                 doppelganger.card.team = chosenPlayer.card.team;
                 doppelganger.card.isSeenAsWerewolf = chosenPlayer.card.isSeenAsWerewolf;
 
+                // If their new card is the Prince, set the ability used to false
+                if(chosenPlayer.card.cardName.contains("Prince")) {
+                    for(Card card : server.cards) {
+                        if(card instanceof PrinceCard princeCard) {
+                            princeCard.abilityUsed = false;
+                            break;
+                        }
+                    }
+                }
+
                 // If there's information this card needs to know (like Dire Wolf or Hoodlum has), tell that to the Doppelganger immediately
                 String needToKnow = chosenPlayer.card.needToKnow(doppelganger);
                 if(!needToKnow.equals("")) {
