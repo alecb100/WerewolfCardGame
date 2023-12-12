@@ -281,7 +281,7 @@ public class WerewolfServer implements Runnable {
                         result += "'order':\t\tLists the order of the cards that wake up during the nights\n\t\t\t(does not include cards that only wake up during the first night)\n";
                         result += "'win':\t\t\tLists the order in which win conditions are checked\n";
                         result += "'WhoAmI':\t\tTells you what your card is again\n";
-                        result += "'needToKnow':\tTells you your card's need to know information. Not every card has some.\n";
+                        result += "'needToKnow':\tTells you your card's need to know information. Not every card has some. Will also say if you're linked to someone through Cupid.\n";
                     } else if(command.equalsIgnoreCase("players")) {
                         // If the command is players, display all alive players in the game
                         if(gameStart) {
@@ -417,10 +417,23 @@ public class WerewolfServer implements Runnable {
                             result += "\n\nThe game hasn't started yet, so you don't have a card\n";
                         }
                     } else if(command.equalsIgnoreCase("needToKnow")) {
+                        // Checks if they are linked to someone through Cupid
+                        result += "\n\n";
+                        for(Card card : cards) {
+                            if(card instanceof CupidCard cupidCard) {
+                                if(cupidCard.linked[0].equals(player)) {
+                                    result += "Through Cupid, you are linked to: " + cupidCard.linked[1];
+                                } else if(cupidCard.linked[1].equals(player)) {
+                                    result += "Through Cupid, you are linked to: " + cupidCard.linked[0];
+                                }
+                                break;
+                            }
+                        }
+
                         // Display the player's card's need to know information. Not too many cards have some
                         String needToKnow = player.card.needToKnow(player);
                         if(needToKnow.equals("")) {
-                            result += "\n\nYour card does not have any need to know information.\n";
+                            result += "\nYour card does not have any need to know information.\n";
                         } else {
                             result += "\n\n" + needToKnow + "\n";
                         }
