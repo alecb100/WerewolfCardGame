@@ -50,7 +50,7 @@ public class WerewolfServer implements Runnable {
 
     // A HashMap holding the player's votes during the day, initialized during the start of each day. The key is the player
     // who votes, and the value is the player they voted for.
-    HashMap<Player, Player> votes;
+    HashMap<Player, String> votes;
 
     // A boolean flag to let the server know everyone is voting during the day
     boolean voting;
@@ -69,6 +69,9 @@ public class WerewolfServer implements Runnable {
 
     // The idle times to use when a role requires input but no one alive is that role ([range, min time])
     int[] idleTimes;
+
+    // The timers for day, werewolves, and other nights. If number is -1, then timer is off
+    int[] timers;
 
     // main function which creates the server
     public static void main(String[] args) throws IOException {
@@ -303,8 +306,8 @@ public class WerewolfServer implements Runnable {
                                 result += "\n\nThe following players are currently alive in the game:\n\n";
                                 for(Player player : currentPlayers) {
                                     result += player.name;
-                                    if(votes.get(player) != null) {
-                                        result += " - Voted for " + votes.get(player).name;
+                                    if(!votes.get(player).equals("")) {
+                                        result += " - Voted for " + votes.get(player);
                                     } else {
                                         result += " - Hasn't voted yet";
                                     }
@@ -495,11 +498,18 @@ public class WerewolfServer implements Runnable {
             // Gets the reader to read from command line to start the game.
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-            boolean start = false;
+            boolean start;
 
+            // Set default values for idle times
             idleTimes = new int[2];
-            idleTimes[0] = 5000;
-            idleTimes[1] = 3000;
+            idleTimes[0] = 5000;    // Range is 5 seconds
+            idleTimes[1] = 3000;    // Minimum is 3 seconds
+
+            // Set default values for the timers
+            timers = new int[3];
+            timers[0] = 300000; // 5 minutes
+            timers[1] = 60000; // 1 minute
+            timers[2] = 30000; // 30 seconds
 
             // The infinite loop that goes on for as long as the server is up.
             while(true) {
@@ -516,8 +526,8 @@ public class WerewolfServer implements Runnable {
                         start = true;
                     } else if(input.contains("idle")) {
                         // Input was 'idle' so edit the idle time that roles do when none of them are alive
-                        int max = -1;
-                        int min = -1;
+                        int max;
+                        int min;
                         try {
                             // Get the times that were given
                             max = Integer.parseInt(input.substring(input.indexOf('=') + 1, input.indexOf(','))) * 1000;
@@ -533,8 +543,57 @@ public class WerewolfServer implements Runnable {
                             System.out.println("idle=<max time>,<min time>. Current max: " + ((idleTimes[0]+idleTimes[1])/1000) + ", min: " + (idleTimes[1]/1000) + "\n");
                         }
                         continue;
+                    } else if(input.contains("dayTimer")) {
+                        // Input was 'dayTimer' so edit the day voting timer
+                        int time;
+                        try {
+                            // Get the time that was given
+                            time = Integer.parseInt(input.substring(input.indexOf('=') + 1)) * 1000;
+                            if(time < 0) {
+                                throw new IllegalArgumentException();
+                            }
+                            // Set time
+                            timers[0] = time;
+                            System.out.println("Current time: " + (timers[0]/1000) + "s, " + (((double)timers[0]/1000)/60) + "min\n");
+                        } catch(Exception e) {
+                            System.out.println("dayTimer=<time (seconds) (0 for off)>. Current time: " + (timers[0]/1000) + "s, " + (((double)timers[0]/1000)/60) + "min\n");
+                        }
+                        continue;
+                    } else if(input.contains("werewolfTimer")) {
+                        // Input was 'werewolfTimer' so edit the day voting timer
+                        int time = -1;
+                        try {
+                            // Get the time that was given
+                            time = Integer.parseInt(input.substring(input.indexOf('=') + 1)) * 1000;
+                            if(time < 0) {
+                                throw new IllegalArgumentException();
+                            }
+                            // Set time
+                            timers[1] = time;
+                            System.out.println("Current time: " + (timers[1]/1000) + "s, " + (((double)timers[1]/1000)/60) + "min\n");
+                        } catch(Exception e) {
+                            System.out.println("dayTimer=<time (seconds) (0 for off)>. Current time: " + (timers[1]/1000) + "s, " + (((double)timers[1]/1000)/60) + "min\n");
+                        }
+                        continue;
+                    } else if(input.contains("nightTimer")) {
+                        // Input was 'nightTimer' so edit the day voting timer
+                        int time = -1;
+                        try {
+                            // Get the time that was given
+                            time = Integer.parseInt(input.substring(input.indexOf('=') + 1)) * 1000;
+                            if(time < 0) {
+                                throw new IllegalArgumentException();
+                            }
+                            // Set time
+                            timers[2] = time;
+                            System.out.println("Current time: " + (timers[2]/1000) + "s, " + (((double)timers[2]/1000)/60) + "min\n");
+                        } catch(Exception e) {
+                            System.out.println("dayTimer=<time (seconds) (0 for off)>. Current time: " + (timers[2]/1000) + "s, " + (((double)timers[2]/1000)/60) + "min\n");
+                        }
+                        continue;
                     } else {
-                        System.out.println("'start', 'idle=<max time (seconds)>,<min time (seconds)>'");
+                        System.out.println("'start', 'idle=<max time (seconds)>,<min time (seconds)>', 'dayTimer=<time (seconds) (0 for off)>'");
+                        System.out.println("'werewolfTimer=<time (seconds) (0 for off)>', 'nightTimer=<time (seconds) (0 for off)>'");
                         continue;
                     }
 
@@ -800,15 +859,17 @@ public class WerewolfServer implements Runnable {
 
                         // Run the infinite loop for the game. Every day, then every night at the end, until someone won.
                         while(true) {
-                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.\nThe number of people you must choose to kill is: " + amountOfDayKills + "\n");
+                            sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.");
+                            sendToAllPlayers("Type 'na', 'NA', or 'no one' to vote for no one.");
+                            sendToAllPlayers("The number of people you must choose to kill is: " + amountOfDayKills + "\n");
 
                             // Loop through the amount of kills there are that day
                             for(int j = 0; j < amountOfDayKills; j++) {
 
                                 // Create the HashMap that holds all alive players votes.
-                                votes = new HashMap<Player, Player>();
+                                votes = new HashMap<Player, String>();
                                 for (Player player : server.currentPlayers) {
-                                    votes.put(player, null);
+                                    votes.put(player, "");
                                 }
                                 // Tell the server it is waiting for all alive players' actions.
                                 for(Player player : currentPlayers) {
@@ -836,15 +897,18 @@ public class WerewolfServer implements Runnable {
                                     boolean good = true;
 
                                     // Create a count map that is used to find the most popular player to kill.
-                                    HashMap<Player, Integer> count = new HashMap<Player, Integer>();
+                                    HashMap<String, Integer> count = new HashMap<String, Integer>();
                                     for (Player player : server.currentPlayers) {
-                                        count.put(player, 0);
+                                        count.put(player.name, 0);
                                     }
+
+                                    // Put the option for no vote in there
+                                    count.put("no one", 0);
 
                                     // Step through all alive players and check to see if they voted. Additionally, talley
                                     // the player they voted for.
-                                    for (Player player : votes.values()) {
-                                        if (player != null) {
+                                    for (String player : votes.values()) {
+                                        if (!player.equals("")) {
                                             count.replace(player, count.get(player) + 1);
                                         } else {
                                             // If they did not vote, then that means the server can't continue so just quit
@@ -869,21 +933,36 @@ public class WerewolfServer implements Runnable {
 
                                     // Loop through the votes for the amount of kills necessary and get the highest player.
                                     int highest = -1;
-                                    Player dead2 = null;
-                                    for (Player player : count.keySet()) {
+                                    String dead2 = "";
+                                    for (String player : count.keySet()) {
                                         if (count.get(player) > highest) {
                                             highest = count.get(player);
                                             dead2 = player;
                                         }
                                     }
                                     // That player who was chosen is set to dead.
-                                    dead2.dead = true;
-                                    count.remove(dead2);
+                                    if(!dead2.equals("no one")) {
+                                        Player dead3 = null;
+                                        for (Player player : currentPlayers) {
+                                            if (player.name.equals(dead2)) {
+                                                dead3 = player;
+                                                break;
+                                            }
+                                        }
+                                        dead3.dead = true;
+                                        count.remove(dead2);
 
-                                    try {
-                                        server.sendToAllPlayers("Voted dead player #" + (j+1) + ": " + dead2.name + "\n");
-                                    } catch(Exception e) {
-                                        System.out.println(e.getMessage());
+                                        try {
+                                            server.sendToAllPlayers("Voted dead player #" + (j + 1) + ": " + dead3.name + "\n");
+                                        } catch (Exception e) {
+                                            System.out.println(e.getMessage());
+                                        }
+                                    } else {
+                                        try {
+                                            server.sendToAllPlayers("Voted dead player #" + (j + 1) + ": No one was chosen!\n");
+                                        } catch (Exception e) {
+                                            System.out.println(e.getMessage());
+                                        }
                                     }
                                 }
                             }
@@ -1115,15 +1194,24 @@ public class WerewolfServer implements Runnable {
                     }
                     // Make sure that the vote of a player is a valid player that is alive (can be themselves if they want). Also makes sure it doesn't send to all if
                     // it already sent to all.
-                    if(!server.gameActions.get(player.name).equals("") && Arrays.asList(possibilities).contains(gameActions.get(player.name))) {
+                    if(!server.gameActions.get(player.name).equals("") && (Arrays.asList(possibilities).contains(gameActions.get(player.name)) ||
+                            gameActions.get(player.name).equalsIgnoreCase("NA") || gameActions.get(player.name).equalsIgnoreCase("no one"))) {
                         try {
                             // Send their vote to all players.
-                            sendToAllPlayers(player.name + " voted: " + server.gameActions.get(player.name));
+                            if(!gameActions.get(player.name).equalsIgnoreCase("NA") && !gameActions.get(player.name).equalsIgnoreCase("no one")) {
+                                sendToAllPlayers(player.name + " voted: " + server.gameActions.get(player.name));
+                            } else {
+                                sendToAllPlayers(player.name + " voted for no one");
+                            }
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }
                         // Sets the last vote the player made to this vote. Also logs their vote.
-                        votes.replace(player, server.players.get(server.gameActions.get(player.name)));
+                        if(gameActions.get(player.name).equalsIgnoreCase("na")) {
+                            votes.replace(player, "no one");
+                        } else {
+                            votes.replace(player, gameActions.get(player.name));
+                        }
                         gameActions.replace(player.name, "");
                     } else if(!gameActions.get(player.name).equals("") && !Arrays.asList(possibilities).contains(gameActions.get(player.name))) {
                         // If the player's vote wasn't a valid player.
