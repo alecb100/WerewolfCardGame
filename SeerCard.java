@@ -139,7 +139,8 @@ public class SeerCard extends Card {
             }
         } else {
             // If there is no seer, wait a random amount of time so the other players don't realize there is no seer
-            int randomWait = server.rand.nextInt(5000) + 5000;
+            // The random time is the configured time
+            int randomWait = server.rand.nextInt(server.idleTimes[0]) + server.idleTimes[1];
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Seers, go back to sleep.");

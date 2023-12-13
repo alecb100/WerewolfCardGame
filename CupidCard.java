@@ -222,7 +222,8 @@ public class CupidCard extends Card {
             }
         } else {
             // If there is no cupid, wait a random amount of time so the other players don't realize there is no cupid
-            int randomWait = server.rand.nextInt(5000) + 6000;
+            // Random time is between the given idle times
+            int randomWait = server.rand.nextInt(server.idleTimes[0]) + server.idleTimes[1];
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Cupid, go back to sleep.\n");

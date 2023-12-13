@@ -67,6 +67,9 @@ public class WerewolfServer implements Runnable {
     // Number of werewolf kills for the night
     int werewolfKills;
 
+    // The idle times to use when a role requires input but no one alive is that role ([range, min time])
+    int[] idleTimes;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -494,6 +497,10 @@ public class WerewolfServer implements Runnable {
 
             boolean start = false;
 
+            idleTimes = new int[2];
+            idleTimes[0] = 5000;
+            idleTimes[1] = 3000;
+
             // The infinite loop that goes on for as long as the server is up.
             while(true) {
                 try {
@@ -503,8 +510,32 @@ public class WerewolfServer implements Runnable {
                     String input = br.readLine().trim();
 
                     // If the input wasn't 'start', continue the loop back at the start.
+                    // Or maybe it was another command to edit how the server runs. Either way, check
                     if (input.equalsIgnoreCase("start")) {
+                        // Input was 'start' so start the game
                         start = true;
+                    } else if(input.contains("idle")) {
+                        // Input was 'idle' so edit the idle time that roles do when none of them are alive
+                        int max = -1;
+                        int min = -1;
+                        try {
+                            // Get the times that were given
+                            max = Integer.parseInt(input.substring(input.indexOf('=') + 1, input.indexOf(','))) * 1000;
+                            min = Integer.parseInt(input.substring(input.indexOf(',') + 1)) * 1000;
+                            if(max < min || max < 0 || min < 0) {
+                                throw new IllegalArgumentException();
+                            }
+                            // Set first index to range and second index to min time
+                            idleTimes[0] = max - min;
+                            idleTimes[1] = min;
+                            System.out.println("Current max: " + ((idleTimes[0]+idleTimes[1])/1000) + ", min: " + (idleTimes[1]/1000) + "\n");
+                        } catch(Exception e) {
+                            System.out.println("idle=<max time>,<min time>. Current max: " + ((idleTimes[0]+idleTimes[1])/1000) + ", min: " + (idleTimes[1]/1000) + "\n");
+                        }
+                        continue;
+                    } else {
+                        System.out.println("'start', 'idle=<max time (seconds)>,<min time (seconds)>'");
+                        continue;
                     }
 
                     // If the server runner said start, and there are at least 5 players (Werewolf needs at minimum 5 players),

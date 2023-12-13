@@ -149,7 +149,8 @@ public class TroublemakerCard extends Card {
             }
         } else {
             // If the troublemaker wasn't found, wait a random amount of time
-            int randomWait = server.rand.nextInt(5000) + 5000;
+            // The random time is the configured time
+            int randomWait = server.rand.nextInt(server.idleTimes[0]) + server.idleTimes[1];
             try {
                 Thread.sleep(randomWait);
                 server.sendToAllPlayers("Troublemaker, go back to sleep.\n");

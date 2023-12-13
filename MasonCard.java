@@ -65,7 +65,7 @@ public class MasonCard extends Card {
             for(Player mason : masons) {
                 mason.output.writeObject("\nThe Masons are: " + masons + "\n");
             }
-            // Wait, and then tell everyone the minion is going back to sleep
+            // Wait, and then tell everyone the mason is going back to sleep
             Thread.sleep(3000);
             server.sendToAllPlayers("Masons, go back to sleep.");
         } catch(Exception e) {
