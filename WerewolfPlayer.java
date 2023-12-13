@@ -18,8 +18,8 @@ public class WerewolfPlayer {
             System.out.println("Invoke this program with <hostAddress> <Your Name>");
             return;
         }
-        if(args[1].contains(">")) {
-            System.out.println("You cannot use the character '>' in your name");
+        if(args[1].equalsIgnoreCase("na") || args[1].equals("no one")) {
+            System.out.println("You cannot name yourself 'na' or 'no one'");
             return;
         }
         try {
