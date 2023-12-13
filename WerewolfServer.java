@@ -158,6 +158,12 @@ public class WerewolfServer implements Runnable {
                 ObjectOutputStream output = new ObjectOutputStream(this.clientSocket.getOutputStream());
                 playerName = joinMessage.substring(0);
 
+                // Checks to see if the player is a name that's not allowed
+                if(playerName.equalsIgnoreCase("na") || playerName.equalsIgnoreCase("no one")) {
+                    output.writeObject("Invalid name");
+                    clientSocket.close();
+                }
+
                 // Checks through all already connected players and makes sure that that name is not already taken.
                 for(Player player : players.values()) {
                     if(player.name.equals(playerName)) {
@@ -660,9 +666,6 @@ public class WerewolfServer implements Runnable {
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
 
-                        // Tell everyone to close their eyes
-                        sendToAllPlayers("Close your eyes!");
-
                         // Check how many werewolf cards are being played
                         werewolfNum = 0;
                         for(Card card : chooseCards) {
@@ -755,6 +758,10 @@ public class WerewolfServer implements Runnable {
                         for(Player player : currentPlayers) {
                             player.output.writeObject("Your card: " + player.card.cardName);
                         }
+
+                        // Tell everyone to close their eyes
+                        sendToAllPlayers("Close your eyes!");
+                        Thread.sleep(3000);
 
                         // Set the amount of day kills to 1. The Troublemaker can decide to increase this to 2 only once
                         // every game, but it can be the first night if they so choose.
@@ -891,6 +898,20 @@ public class WerewolfServer implements Runnable {
                                 // Create a thread that continuously sends a player's valid vote to all other players.
                                 new Thread(this::sendAllVotes).start();
 
+                                // Check if the day timer is on, and if so, create the thread to keep the time
+                                Thread votingThread = null;
+                                if(timers[0] > 0) {
+                                    int time;
+                                    if(j > 0) {
+                                        time = 10000;
+                                    } else {
+                                        time = timers[0];
+                                    }
+
+                                    votingThread = new Thread(() -> server.timerHelper(time));
+                                    votingThread.start();
+                                }
+
                                 // While the flag is false, run through this code.
                                 while (!dayKillFlag) {
                                     // Set a temporary flag that checks if all players have chosen someone.
@@ -924,6 +945,11 @@ public class WerewolfServer implements Runnable {
 
                                     // If it got here, that means that all players have voted. Set the flag to true.
                                     dayKillFlag = true;
+
+                                    // Stop the timer if it's on
+                                    if(timers[0] > 0) {
+                                        votingThread.interrupt();
+                                    }
                                     // Wait 3 seconds to allow the threads created to help get player votes to end.
                                     Thread.sleep(3000);
                                     // Make sure the server is no longer waiting for any player.
@@ -1431,5 +1457,57 @@ public class WerewolfServer implements Runnable {
             }
         }
         return checkCards;
+    }
+
+    // The helper method to run the timer for day voting. It will run the timer for the given time, and then if it returns
+    // (the only way it doesn't is if the thread was interrupted), it will set all the player's votes who haven't voted
+    // to no one
+    public synchronized void timerHelper(int time) {
+        // Get all the players so everyone is aware of how much time is left
+        Player[] players2 = new Player[players.size()];
+        int i = 0;
+        for(Player player : players.values()) {
+            players2[i] = player;
+            i++;
+        }
+
+        // Call the timer method for the alive players and the time given
+        timer(time, players2);
+
+        // If it gets here, that means the players ran out of time, so set all who haven't voted to vote for no one
+        for(Player player : votes.keySet()) {
+            if(votes.get(player).equals("")) {
+                gameActions.replace(player.name, "no one");
+                try {
+                    Thread.sleep(500);
+                } catch(Exception e) {
+                    System.out.println();
+                }
+            }
+        }
+    }
+
+    // The timer for everything. Time is the amount of time, players are the players to tell when it's about to end
+    public synchronized void timer(int time, Player[] players) {
+        // Check line 894 and 936 <-----------------------------------------------------------------------------------------------------------------------
+        if(time < 0) {
+            throw new IllegalArgumentException("Timer must be above 0");
+        }
+        try {
+            if (time <= 10000) {
+                for(Player player : players) {
+                    player.output.writeObject("You have " + (time/1000) + " seconds to vote.");
+                }
+                Thread.sleep(time);
+            } else {
+                Thread.sleep(time - 10000);
+                for(Player player : players) {
+                    player.output.writeObject("You have 10 seconds left.");
+                }
+                Thread.sleep(10000);
+            }
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
