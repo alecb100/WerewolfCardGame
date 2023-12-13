@@ -53,10 +53,37 @@ public class ApprenticeSeerCard extends Card {
         return result;
     }
 
-    // There is no first night wakeup for this card
+    // Check to make sure there is a Seer in the first place (even if it's the Drunk)
     @Override
     public void firstNightWakeup() {
-        return;
+        // Check all currently alive players to see if one is a Seer
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Seer")) {
+                return;
+            }
+        }
+
+        // Check the Drunk card and see if it chose Seer as its card
+        boolean good = false;
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Drunk")) {
+                good = true;
+                break;
+            }
+        }
+        if(good) {
+            for (Card card : server.cards) {
+                if (card instanceof DrunkCard drunkCard) {
+                    if (drunkCard.chosenCard.cardName.contains("Seer")) {
+                        return;
+                    }
+                }
+            }
+        }
+
+        // If it gets here, that means there is no Seer card anywhere to be found
+        // Set the Apprentice to be promoted next night
+        promotion = 1;
     }
 
     // The night wakeup, which sets this card to the seer if it has seen that one has died
@@ -96,10 +123,39 @@ public class ApprenticeSeerCard extends Card {
     // night
     @Override
     public void checkAfterDeaths() {
+        // If promotion is not 0, no need to check anything
+        if(promotion != 0) {
+            return;
+        }
+
+        // Check to see if there is a dead Seer
         for(Player player : server.dead) {
-            if(player.card.cardName.contains("Seer") && promotion == 0) {
+            if(player.card.cardName.contains("Seer")) {
                 promotion = 1;
+                return;
+            }
+        }
+
+        // Check if there is a Drunk
+        boolean isDrunk = false;
+        for(Player player : server.dead) {
+            if(player.card.cardName.contains("Drunk")) {
+                isDrunk = true;
                 break;
+            }
+        }
+        // If there is no dead drunk then return
+        if(!isDrunk) {
+            return;
+        }
+
+        // If there is, check if its card was a Seer
+        for(Card card : server.cards) {
+            if(card instanceof DrunkCard drunkCard) {
+                if(drunkCard.chosenCard.cardName.contains("Seer")) {
+                    promotion = 1;
+                }
+                return;
             }
         }
     }
