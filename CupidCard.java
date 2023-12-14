@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.Set;
+
 // The Cupid card, which has the ability to link 2 people together. Once one of them dies, the other dies too
 public class CupidCard extends Card {
     Player[] linked;
@@ -144,6 +147,14 @@ public class CupidCard extends Card {
         // If there is a Cupid, tell them to pick 2 players
         if(cupid != null) {
             linked = new Player[2];
+
+            // Create the thread for the timer
+            Thread timer = null;
+            if(server.timers[2] > 0) {
+                timer = new Thread(() -> cupidTimerHelper(server.timers[2] + 10000));
+                timer.start();
+            }
+
             // Run through a 2 length loop of them picking people
             for (int i = 0; i < 2; i++) {
                 server.gameWaiting.replace(cupid.name, Boolean.TRUE);
@@ -185,6 +196,10 @@ public class CupidCard extends Card {
                         }
                     }
                 }
+            }
+            // Stop the timer
+            if(server.timers[2] > 0) {
+                timer.interrupt();
             }
 
             // Tell everyone the Cupid is falling back to sleep and that the 2 linked are waking up to see each other.
@@ -395,6 +410,52 @@ public class CupidCard extends Card {
             linked[1].card.team = "cupid";
             this.team = "cupid";
             this.winRank = 0;
+        }
+    }
+
+    // The method that deals with the timer
+    private synchronized void cupidTimerHelper(int time) {
+        // Get an array of the cupid
+        Player[] cupidArray = new Player[1];
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Cupid")) {
+                cupidArray[0] = player;
+                break;
+            }
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, cupidArray);
+
+        // If it gets here, that means the players ran out of time, so set all who haven't chosen to a random player
+        // Get a list of all the players in the game
+        HashSet<Player> potentials = new HashSet<Player>(server.currentPlayers);
+
+        // If the first player is null, set one
+        if(linked[0] == null) {
+            int random = server.rand.nextInt(potentials.size());
+            Player player = (Player) potentials.toArray()[random];
+            server.gameActions.replace(cupidArray[0].name, player.name);
+            try {
+                Thread.sleep(500);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        // Remove the player set as the first linked
+        potentials.remove(linked[0]);
+
+        // If the second linked is null, pick a random player
+        if(linked[1] == null) {
+            int random = server.rand.nextInt(potentials.size());
+            Player player = (Player) potentials.toArray()[random];
+            server.gameActions.replace(cupidArray[0].name, player.name);
+            try {
+                Thread.sleep(500);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

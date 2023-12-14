@@ -91,6 +91,13 @@ public class BodyguardCard extends Card {
             new Thread(this::sendToAllBodyguards).start();
             ultraGood = false;
             int count = 0;
+
+            // Create the thread for the timer
+            Thread timer = null;
+            if(server.timers[2] > 0) {
+                timer = new Thread(() -> bodyguardTimerHelper(server.timers[2]));
+                timer.start();
+            }
             while(true) {
                 // Run through the players currently alive and make sure it is a valid player
                 for(Player bodyguard : bodyguards.keySet()) {
@@ -126,6 +133,9 @@ public class BodyguardCard extends Card {
                     }
                     // Stop that thread
                     ultraGood = true;
+                    if(server.timers[2] > 0) {
+                        timer.interrupt();
+                    }
                     break;
                 }
             }
@@ -210,5 +220,32 @@ public class BodyguardCard extends Card {
     @Override
     public void preCheck() {
         return;
+    }
+
+    // The method that deals with the timer
+    private synchronized void bodyguardTimerHelper(int time) {
+        // Get an array of the bodyguards
+        Player[] bodyguardArray = new Player[bodyguards.size()];
+        int i = 0;
+        for(Player player : bodyguards.keySet()) {
+            bodyguardArray[i] = player;
+            i++;
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, bodyguardArray);
+
+        // If it gets here, that means the players ran out of time, so set all who haven't chosen to a random player
+        for(Player player : bodyguards.keySet()) {
+            if(bodyguards.get(player).equals("")) {
+                int random = server.rand.nextInt(server.currentPlayers.size());
+                server.gameActions.replace(player.name, server.currentPlayers.toArray()[random].toString());
+                try {
+                    Thread.sleep(500);
+                } catch(Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
     }
 }

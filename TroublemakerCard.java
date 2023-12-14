@@ -89,6 +89,14 @@ public class TroublemakerCard extends Card {
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
+
+                // Create the thread for the timer
+                Thread timer = null;
+                if(server.timers[2] > 0) {
+                    timer = new Thread(() -> troublemakerTimerHelper(server.timers[2]));
+                    timer.start();
+                }
+
                 // Continuously wait until they say yes or no
                 while(true) {
                     if(server.gameActions.get(troublemaker.name).equals("")) {
@@ -126,6 +134,12 @@ public class TroublemakerCard extends Card {
                         }
                     }
                 }
+
+                // Stop the timer
+                if(server.timers[2] > 0) {
+                    timer.interrupt();
+                }
+
                 // Tell everyone the troublemaker is going back to sleep
                 try {
                     server.sendToAllPlayers("Troublemaker, go back to sleep.\n");
@@ -177,6 +191,29 @@ public class TroublemakerCard extends Card {
         }
         if(cards > 1) {
             throw new IllegalArgumentException("There can't be more than 1 Troublemaker card.");
+        }
+    }
+
+    // The method that deals with the timer
+    private synchronized void troublemakerTimerHelper(int time) {
+        // Get an array of the troublemaker
+        Player[] troublemakerArray = new Player[1];
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Troublemaker")) {
+                troublemakerArray[0] = player;
+                break;
+            }
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, troublemakerArray);
+
+        // If it gets here, that means the players ran out of time, so tell the server no
+        server.gameActions.replace(troublemakerArray[0].name, "no");
+        try {
+            Thread.sleep(500);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

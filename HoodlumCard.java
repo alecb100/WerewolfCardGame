@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.HashSet;
 
 // The Hoodlum card, which is on a team of its own and wins when everyone they chose in the beginning is dead
 public class HoodlumCard extends Card {
@@ -80,6 +81,14 @@ public class HoodlumCard extends Card {
         // If there is a Hoodlum, tell them to pick the players
         if(hoodlum != null) {
             playerDeathWish = new Player[server.werewolfNum];
+
+            //Create the thread for the timer
+            Thread timer = null;
+            if(server.timers[2] > 0) {
+                timer = new Thread(() -> hoodlumTimerHelper(server.timers[2] + (10000*(server.werewolfNum-1))));
+                timer.start();
+            }
+
             // Run through a werewolf num length loop of them picking people
             for (int i = 0; i < server.werewolfNum; i++) {
                 server.gameWaiting.replace(hoodlum.name, Boolean.TRUE);
@@ -102,7 +111,7 @@ public class HoodlumCard extends Card {
                                 if (!goodChosen) {
                                     break;
                                 }
-                                // If it's a valid player, stop waiting for the Cupid
+                                // If it's a valid player, stop waiting for the Hoodlum
                                 if (player.name.equals(server.gameActions.get(hoodlum.name))) {
                                     server.gameWaiting.replace(hoodlum.name, Boolean.FALSE);
                                     playerDeathWish[i] = player;
@@ -132,6 +141,11 @@ public class HoodlumCard extends Card {
                     }
                 }
             }
+            // Stop the timer
+            if(server.timers[2] > 0) {
+                timer.interrupt();
+            }
+
             try {
                 Thread.sleep(3000);
                 server.sendToAllPlayers("Hoodlum, go back to sleep.\n");
@@ -203,5 +217,48 @@ public class HoodlumCard extends Card {
         result += "You want these people to die: " + Arrays.toString(hoodlumCard.playerDeathWish) + "\n";
 
         return result;
+    }
+
+    // The method that deals with the timer
+    private synchronized void hoodlumTimerHelper(int time) {
+        // Get an array of the cupid
+        Player[] hoodlumArray = new Player[1];
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Hoodlum")) {
+                hoodlumArray[0] = player;
+                break;
+            }
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, hoodlumArray);
+
+        // If it gets here, that means the players ran out of time, so set all who haven't chosen to a random player
+        // Get a list of all the players in the game
+        HashSet<Player> potentials = new HashSet<Player>(server.currentPlayers);
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Hoodlum")) {
+                potentials.remove(player);
+                break;
+            }
+        }
+
+        // Run through a loop for the amount of hoodlum players there needs to be
+        for(int i = 0; i < server.werewolfNum; i++) {
+            // If the first player is null, set one
+            if (playerDeathWish[i] == null) {
+                int random = server.rand.nextInt(potentials.size());
+                Player player = (Player) potentials.toArray()[random];
+                server.gameActions.replace(hoodlumArray[0].name, player.name);
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            // Remove the player set as the first linked
+            potentials.remove(playerDeathWish[i]);
+        }
     }
 }

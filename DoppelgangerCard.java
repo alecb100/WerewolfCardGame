@@ -1,3 +1,5 @@
+import java.util.HashSet;
+
 public class DoppelgangerCard extends Card {
     // Chosen player that the Doppelganger will take the role of
     Player chosenPlayer;
@@ -76,7 +78,7 @@ public class DoppelgangerCard extends Card {
     public void firstNightWakeup() {
         // Tell everyone that the doppelganger is waking up
         try {
-            server.sendToAllPlayers("Doppelganger, wake up and determine who you want to become after they die.\n");
+            server.sendToAllPlayers("\nDoppelganger, wake up and determine who you want to become after they die.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
@@ -98,6 +100,14 @@ public class DoppelgangerCard extends Card {
         // If there is a doppelganger, wait for the player to choose someone
         if(doppelganger != null) {
             Player choice = null;
+
+            // Create the thread for the timer
+            Thread timer = null;
+            if(server.timers[2] > 0) {
+                timer = new Thread(() -> doppelgangerTimerHelper(server.timers[2]));
+                timer.start();
+            }
+
             // Continue in this while loop until they choose someone
             while(true) {
                 if(!server.gameActions.get(doppelganger.name).equals("")) {
@@ -113,6 +123,10 @@ public class DoppelgangerCard extends Card {
                     // If it was a valid player, tell the doppelganger their choice and save it
                     if(choice != null) {
                         try {
+                            // Stop the timer
+                            if(server.timers[2] > 0) {
+                                timer.interrupt();
+                            }
                             doppelganger.output.writeObject("Player to become: " + choice.name);
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
@@ -275,5 +289,40 @@ public class DoppelgangerCard extends Card {
         }
 
         return result;
+    }
+
+    // The method that deals with the timer
+    private synchronized void doppelgangerTimerHelper(int time) {
+        // Get an array of the Doppelganger
+        Player[] doppelgangerArray = new Player[1];
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Doppelganger")) {
+                doppelgangerArray[0] = player;
+                break;
+            }
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, doppelgangerArray);
+
+        // If it gets here, that means the players ran out of time, so set all who haven't chosen to a random player
+        HashSet<Player> potentials = new HashSet<Player>(server.currentPlayers);
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Doppelganger")) {
+                potentials.remove(player);
+                break;
+            }
+        }
+
+        // Set the chosenPlayer as a random player
+        if(chosenPlayer == null) {
+            int random = server.rand.nextInt(potentials.size());
+            server.gameActions.replace(doppelgangerArray[0].name, potentials.toArray()[random].toString());
+            try {
+                Thread.sleep(500);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }

@@ -88,6 +88,14 @@ public class DireWolfCard extends Card {
 
         // Wait for the player to choose someone
         Player choice = null;
+
+        // Create the thread for the timer
+        Thread timer = null;
+        if(server.timers[2] > 0) {
+            timer = new Thread(() -> direWolfTimerHelper(server.timers[2]));
+            timer.start();
+        }
+
         // Continue in this while loop until they choose someone
         while(true) {
             if(!server.gameActions.get(direWolf.name).equals("")) {
@@ -102,6 +110,10 @@ public class DireWolfCard extends Card {
                 }
                 // If it was a valid player, tell the doppelganger their choice and save it
                 if(choice != null) {
+                    // Stop the timer
+                    if(server.timers[2] > 0) {
+                        timer.interrupt();
+                    }
                     try {
                         direWolf.output.writeObject("Your companion: " + choice.name);
                     } catch (Exception e) {
@@ -218,5 +230,39 @@ public class DireWolfCard extends Card {
         result += "\n";
 
         return result;
+    }
+
+    // The method that deals with the timer
+    private synchronized void direWolfTimerHelper(int time) {
+        // Get an array of the Dire Wolf
+        Player[] direWolfArray = new Player[1];
+        for(Player player : server.currentPlayers) {
+            if(player.card.cardName.contains("Dire Wolf")) {
+                direWolfArray[0] = player;
+                break;
+            }
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, direWolfArray);
+
+        // If it gets here, that means the players ran out of time, so set all who haven't chosen to a random player
+        HashSet<Player> potentials = new HashSet<Player>(server.currentPlayers);
+        for(Player player : server.currentPlayers) {
+            if(server.checkWerewolf(player)) {
+                potentials.remove(player);
+            }
+        }
+
+        // Set the companion as a random player
+        if(companion == null) {
+            int random = server.rand.nextInt(potentials.size());
+            server.gameActions.replace(direWolfArray[0].name, potentials.toArray()[random].toString());
+            try {
+                Thread.sleep(500);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
