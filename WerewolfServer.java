@@ -668,12 +668,39 @@ public class WerewolfServer implements Runnable {
 
                         // Check how many werewolf cards are being played
                         werewolfNum = 0;
+                        boolean hasWerewolfCard = false;
                         for(Card card : chooseCards) {
                             if(card.cardName.equals("Werewolf") || card.cardName.equals("Dire Wolf") ||
                             card.cardName.equals("Wolf Man") || card.cardName.equals("Wolf Cub")) {
                                 werewolfNum++;
+                                if(card.cardName.equals("Werewolf")) {
+                                    // Also check if there is a plain werewolf card. If there's not, the game will not work
+                                    // properly, so it will need to be added
+                                    hasWerewolfCard = true;
+                                }
                             }
                         }
+                        // If there is no plain werewolf card, add it to the cards HashSet so werewolf night actions can take place
+                        if(!hasWerewolfCard) {
+                            Card[] cardsClone = new Card[cards.length + 1];
+                            for(int k = 0; k < cards.length; k++) {
+                                cardsClone[k] = cards[k];
+                            }
+                            cardsClone[cards.length] = new WerewolfCard(server);
+                            cards = cardsClone;
+
+                            // Sort in order of rank for night wakeup.
+                            for(i = 0; i < cards.length - 1; i++) {
+                                for(int j = 0; j < cards.length - i - 1; j++) {
+                                    if(cards[j].ranking > cards[j+1].ranking) {
+                                        Card temp3 = cards[j];
+                                        cards[j] = cards[j + 1];
+                                        cards[j + 1] = temp3;
+                                    }
+                                }
+                            }
+                        }
+
 
                         // Set death check num
                         deathCheckNum = 1;
