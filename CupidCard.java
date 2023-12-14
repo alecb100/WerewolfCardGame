@@ -231,7 +231,7 @@ public class CupidCard extends Card {
                 }
                 Thread.sleep(3000);
                 // Tell everyone that the linked are going back to sleep
-                server.sendToAllPlayers("Linked, go back to sleep.\n");
+                server.sendToAllPlayers("\nLinked, go back to sleep.\n");
             } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -246,7 +246,7 @@ public class CupidCard extends Card {
                 server.sendToAllPlayers("other also dies and cannot be prevented. Your win conditions may have also been ");
                 server.sendToAllPlayers("overridden. It depends on what teams each of you were on before. Good luck!");
                 Thread.sleep(3000);
-                server.sendToAllPlayers("Linked, go back to sleep.\n");
+                server.sendToAllPlayers("\nLinked, go back to sleep.\n");
             } catch(Exception e) {
                 System.out.println(e.getMessage());
             }

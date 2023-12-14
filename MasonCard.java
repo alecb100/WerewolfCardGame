@@ -53,7 +53,7 @@ public class MasonCard extends Card {
     public void firstNightWakeup() {
         try {
             // Tell everyone that the masons are waking up
-            server.sendToAllPlayers("\nMasons, wake up and see who your other fellow Masons are. Remember, they are on your team!\n");
+            server.sendToAllPlayers("\nMasons, wake up and see who your other fellow Masons are. Remember, they are on your team!");
             HashSet<Player> masons = new HashSet<Player>();
             // Find out who all the masons are
             for(Player player : server.currentPlayers) {
@@ -67,7 +67,7 @@ public class MasonCard extends Card {
             }
             // Wait, and then tell everyone the mason is going back to sleep
             Thread.sleep(3000);
-            server.sendToAllPlayers("Masons, go back to sleep.");
+            server.sendToAllPlayers("\nMasons, go back to sleep.");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }

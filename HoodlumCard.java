@@ -13,7 +13,7 @@ public class HoodlumCard extends Card {
         this.ranking = 16;
         this.team = "hoodlum";
         this.cardName = "Hoodlum";
-        this.winRank = 2;
+        this.winRank = 1;
         this.firstNightOnly = true;
     }
 
@@ -58,7 +58,7 @@ public class HoodlumCard extends Card {
     @Override
     public void firstNightWakeup() {// Tell everyone that the Cupid is waking up
         try {
-            server.sendToAllPlayers("Hoodlum, wake up and choose " + server.werewolfNum + " people you want to be dead. ");
+            server.sendToAllPlayers("\nHoodlum, wake up and choose " + server.werewolfNum + " people you want to be dead. ");
             server.sendToAllPlayers("If all die, then you win. This is the only way that you can win.");
         } catch(Exception e) {
             System.out.println(e.getMessage());

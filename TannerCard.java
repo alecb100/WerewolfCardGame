@@ -7,7 +7,7 @@ public class TannerCard extends Card {
         this.server = server;
         this.team = "tanner";
         this.cardName = "Tanner";
-        this.winRank = 1;
+        this.winRank = 2;
     }
 
     // The help method for the Tanner card
