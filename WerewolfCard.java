@@ -2,11 +2,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 // The main Werewolf card, the main werewolf enemy in the game
 public class WerewolfCard extends Card {
     // A HashMap of the werewolves and their votes to kill
-    HashMap<Player, Player> werewolves;
+    ConcurrentHashMap<Player, String> werewolves;
 
     // A boolean for whether all the players have chosen a person to kill or not
     boolean ultraGood;
@@ -61,10 +62,10 @@ public class WerewolfCard extends Card {
     @Override
     public void nightWakeup() {
         // See how many werewolves there are
-        werewolves = new HashMap<Player, Player>();
+        werewolves = new ConcurrentHashMap<Player, String>();
         for (Player player : server.currentPlayers) {
             if(server.checkWerewolf(player)) {
-                werewolves.put(player, null);
+                werewolves.put(player, "");
             }
         }
 
@@ -77,7 +78,7 @@ public class WerewolfCard extends Card {
 
         // Tell the werewolves who the other werewolves are, but not what kind of werewolf they are
         try {
-            outputPrint("Werewolves: " + werewolves.keySet().toString());
+            outputPrint("Werewolves: " + werewolves.keySet());
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
@@ -102,7 +103,7 @@ public class WerewolfCard extends Card {
         for(int j = 0; j < server.werewolfKills; j++) {
             ultraGood = false;
             for(Player player : werewolves.keySet()) {
-                werewolves.replace(player, null);
+                werewolves.replace(player, "");
             }
 
             // Start the thread to help find who they chose to kill
@@ -127,7 +128,7 @@ public class WerewolfCard extends Card {
                 try {
                     player.output.writeObject("Who is your kill #" + (j+1) + "?");
                     server.gameWaiting.replace(player.name, Boolean.TRUE);
-                    werewolves.replace(player, null);
+                    werewolves.replace(player, "");
                 } catch(Exception e) {
                     System.out.println();
                 }
@@ -139,17 +140,17 @@ public class WerewolfCard extends Card {
                 boolean good = true;
 
                 // Create a hashMap to count the amount of votes each player has
-                HashMap<Player, Integer> count = new HashMap<Player, Integer>();
+                HashMap<String, Integer> count = new HashMap<String, Integer>();
                 for(Player player : server.currentPlayers) {
                     // Put all non-werewolves into this HashMap
                     if(!server.checkWerewolf(player)) {
-                        count.put(player, 0);
+                        count.put(player.name, 0);
                     }
                 }
 
                 // Run through the werewolves' votes and talley up the corresponding player
-                for(Player player : werewolves.values()) {
-                    if(player != null) {
+                for(String player : werewolves.values()) {
+                    if(!player.equals("")) {
                         count.replace(player, count.get(player)+1);
                     } else {
                         // If even one of the werewolves hasn't voted yet, continue and retry the loop
@@ -179,16 +180,22 @@ public class WerewolfCard extends Card {
 
                 // Find out who the player with the most votes is for the number of werewolf kills they need to make
                 int highest = -1;
-                Player dead = null;
-                for (Player player : count.keySet()) {
+                String dead = "";
+                for (String player : count.keySet()) {
                     if (count.get(player) > highest) {
                         highest = count.get(player);
                         dead = player;
                     }
                 }
+                Player temp = null;
+                for(Player player : server.currentPlayers) {
+                    if(dead.equals(player.name)) {
+                        temp = player;
+                    }
+                }
 
                 // Check if they are a Cursed, and if so, don't kill them, but set them to a werewolf for the next night
-                if (dead.card.cardName.contains("Cursed")) {
+                if (temp.card.cardName.contains("Cursed")) {
                     for (Card card : server.cards) {
                         if (card.cardName.contains("Cursed")) {
                             ((CursedCard) card).isWerewolf++;
@@ -197,11 +204,11 @@ public class WerewolfCard extends Card {
                 } else {
                     // Set their dead flag to true (not put them in the dead HashSet, so that the program knows who's newly dead)
                     // if they are not Cursed
-                    dead.dead = true;
+                    temp.dead = true;
 
                     // Check if that player was Diseased, and if they were, set the diseased ability to true so they can't
                     // kill anyone the following night
-                    if(dead.card.cardName.contains("Diseased")) {
+                    if(temp.card.cardName.contains("Diseased")) {
                         for (Card card : server.cards) {
                             if (card instanceof DiseasedCard diseasedCard) {
                                 diseasedCard.diseasedAbility = true;
@@ -210,10 +217,10 @@ public class WerewolfCard extends Card {
                     }
                 }
                 // Print this for logging purposes
-                System.out.println("Chosen kill: " + dead.name);
+                System.out.println("Chosen kill: " + temp.name);
                 for (Player player : werewolves.keySet()) {
                     try {
-                        player.output.writeObject("Chosen kill: " + dead.name + "\n");
+                        player.output.writeObject("Chosen kill: " + temp.name + "\n");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
@@ -255,7 +262,7 @@ public class WerewolfCard extends Card {
                         System.out.println(e.getMessage());
                     }
                     // Set the werewolves HashMap of that werewolves' choice
-                    werewolves.replace(player, server.players.get(server.gameActions.get(player.name)));
+                    werewolves.replace(player, server.gameActions.get(player.name));
                     // Reset the gameActions HashMap so that the players aren't told of the others' votes infinitely
                     server.gameActions.replace(player.name, "");
                 } else if(!server.gameActions.get(player.name).equals("") && !Arrays.asList(names).contains(server.gameActions.get(player.name))) {
@@ -323,7 +330,7 @@ public class WerewolfCard extends Card {
 
         // If it gets here, that means the players ran out of time, so set all who haven't voted to vote for a random player
         for(Player player : werewolves.keySet()) {
-            if(werewolves.get(player) == null) {
+            if(werewolves.get(player).equals("")) {
                 int random = server.rand.nextInt(names.size());
                 server.gameActions.replace(player.name, (String) names.toArray()[random]);
                 try {

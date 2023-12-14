@@ -1,8 +1,9 @@
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 // The class for the Bodyguard card, which protects a person from being killed during a night
 public class BodyguardCard extends Card {
-    HashMap<Player, Player> bodyguards;
+    ConcurrentHashMap<Player, String> bodyguards;
     boolean ultraGood;
 
     // The constructor for the bodyguard card
@@ -71,10 +72,10 @@ public class BodyguardCard extends Card {
             System.out.println(e.getMessage());
         }
         // Determine if there is a bodyguard or not and who they are
-        bodyguards = new HashMap<Player, Player>();
+        bodyguards = new ConcurrentHashMap<Player, String>();
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Bodyguard")) {
-                bodyguards.put(player, null);
+                bodyguards.put(player, "");
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
                     player.output.writeObject("Who do you wish to protect?");
@@ -94,10 +95,10 @@ public class BodyguardCard extends Card {
                 // Run through the players currently alive and make sure it is a valid player
                 for(Player bodyguard : bodyguards.keySet()) {
                     boolean checked = false;
-                    if (bodyguards.get(bodyguard) == null && !server.gameActions.get(bodyguard.name).equals("")) {
+                    if (bodyguards.get(bodyguard).equals("") && !server.gameActions.get(bodyguard.name).equals("")) {
                         for (Player player : server.currentPlayers) {
                             if (server.gameActions.get(bodyguard.name).equals(player.name)) {
-                                bodyguards.replace(bodyguard, player);
+                                bodyguards.replace(bodyguard, player.name);
                                 server.gameActions.replace(bodyguard.name, "");
                                 count++;
                             }
@@ -106,7 +107,7 @@ public class BodyguardCard extends Card {
                         // threads and things being updated after this
                         checked = true;
                     }
-                    if(checked && bodyguards.get(bodyguard) == null && !server.gameActions.get(bodyguard.name).equals("")) {
+                    if(checked && bodyguards.get(bodyguard).equals("") && !server.gameActions.get(bodyguard.name).equals("")) {
                         try {
                             bodyguard.output.writeObject("player not found.");
                         } catch(Exception e) {
@@ -161,17 +162,24 @@ public class BodyguardCard extends Card {
             // For each bodyguard
             for(Player bodyguard : bodyguards.keySet()) {
                 // If they asked a valid person and this method hasn't already saw that they did and dealt with it
-                if(bodyguards.get(bodyguard) != null && server.gameWaiting.get(bodyguard.name)) {
+                if(!bodyguards.get(bodyguard).equals("") && server.gameWaiting.get(bodyguard.name)) {
                     // Tell the server to stop waiting for this player and that their action is being dealt with
                     server.gameWaiting.replace(bodyguard.name, Boolean.FALSE);
                     // For each bodyguard again
                     for(Player bodyguard2 : bodyguards.keySet()) {
                         // Tell each of the original bodyguard's choice and the result
-                        bodyguards.get(bodyguard).dead = false;
+                        Player temp = null;
+                        for(Player player : server.currentPlayers) {
+                            if(player.name.equals(bodyguards.get(bodyguard))) {
+                                temp = player;
+                                break;
+                            }
+                        }
+                        temp.dead = false;
 
                         // If that player is Cursed and recently would become a werewolf (as in attacked this night), they
                         // do not become a werewolf
-                        if(bodyguards.get(bodyguard).card.cardName.contains("Cursed")) {
+                        if(temp.card.cardName.contains("Cursed")) {
                             for (Card card : server.cards) {
                                 if (card.cardName.contains("Cursed") && ((CursedCard) card).isWerewolf == 1) {
                                     ((CursedCard) card).isWerewolf--;
@@ -182,7 +190,7 @@ public class BodyguardCard extends Card {
 
                         // Tell all the other bodyguards who they protected
                         try {
-                            bodyguard2.output.writeObject(bodyguard.name + " protected " + bodyguards.get(bodyguard).name);
+                            bodyguard2.output.writeObject(bodyguard.name + " protected " + temp.name);
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }

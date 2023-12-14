@@ -19,22 +19,22 @@ public class WerewolfServer implements Runnable {
 
     // HashMap of strings, one for each player in the actual game, where their game actions are stored if the game asks
     // them for something
-    HashMap<String, String> gameActions;
+    ConcurrentHashMap<String, String> gameActions;
 
     // Whether the game has actually started or not. This can change what happens when new people join, among other things
     boolean gameStart = false;
 
     // HashMap similar to gameActions that holds boolean values that determine if the game is waiting for the specific player
-    HashMap<String, Boolean> gameWaiting;
+    ConcurrentHashMap<String, Boolean> gameWaiting;
 
     // HashSet of players that are playing but dead, initialized when game starts
-    HashSet<Player> dead;
+    Set<Player> dead;
 
     // HashSet of players that are playing and not dead, initialized when game starts
-    HashSet<Player> currentPlayers;
+    Set<Player> currentPlayers;
 
     // HashSet of cards with the correct number of duplicates that will be assigned to players, initialized on game start
-    HashSet<Card> chooseCards;
+    Set<Card> chooseCards;
 
     // Array of cards, one each, in the order of ranking, which determines when a certain card wakes up at night, if at all.
     // All cards are in here, including cards that may be taken out because there are more cards than players (so no player knows
@@ -50,7 +50,7 @@ public class WerewolfServer implements Runnable {
 
     // A HashMap holding the player's votes during the day, initialized during the start of each day. The key is the player
     // who votes, and the value is the player they voted for.
-    HashMap<Player, String> votes;
+    ConcurrentHashMap<Player, String> votes;
 
     // A boolean flag to let the server know everyone is voting during the day
     boolean voting;
@@ -615,12 +615,12 @@ public class WerewolfServer implements Runnable {
 
                         // Get all the players in the game situated by setting them all as in the alive HashSet and getting
                         // their gameActions and gameWaiting data structures ready.
-                        gameActions = new HashMap<String, String>();
-                        gameWaiting = new HashMap<String, Boolean>();
-                        currentPlayers = new HashSet<Player>();
+                        gameActions = new ConcurrentHashMap<String, String>();
+                        gameWaiting = new ConcurrentHashMap<String, Boolean>();
+                        currentPlayers = ConcurrentHashMap.newKeySet();
 
                         // Initialize the dead HashSet.
-                        dead = new HashSet<Player>();
+                        dead = ConcurrentHashMap.newKeySet();
 
                         int i = 0;
                         for(String name : server.players.keySet()) {
@@ -689,7 +689,8 @@ public class WerewolfServer implements Runnable {
                             Object[] tempCards = chooseCards.toArray();
 
                             // A copy of the chooseCards HashSet is created so that cards that are already used can be removed.
-                            HashSet<Card> tempCards2 = (HashSet<Card>) chooseCards.clone();
+                            Set<Card> tempCards2 = ConcurrentHashMap.newKeySet();
+                            tempCards2.addAll(chooseCards);
 
                             // Run through each player in the game and give them a random card.
                             for (Player player : currentPlayers) {
@@ -706,8 +707,9 @@ public class WerewolfServer implements Runnable {
                             HashSet<Card> werewolves = new HashSet<Card>();
 
                             // Just like in the section above where the card amount is equal to the player amount, make
-                            // a clone of the chooseCards HashSet.
-                            HashSet<Card> chooseCardsClone = (HashSet<Card>) chooseCards.clone();
+                            // a clone of the chooseCards Set.
+                            Set<Card> chooseCardsClone = ConcurrentHashMap.newKeySet();
+                            chooseCardsClone.addAll(chooseCards);
 
                             // For each card in chooseCards, find all that are werewolves of any kind (Werewolf, Wolf Man, Dire Wolf,
                             // Wolf Cub), and remove them so that extra cards can be removed and none of them are werewolves.
@@ -731,13 +733,12 @@ public class WerewolfServer implements Runnable {
 
                             // Add the werewolf cards back in to the chooseCards clone so that all of the remaining cards
                             // can be given out to all players.
-                            for(Card card : werewolves) {
-                                chooseCardsClone.add(card);
-                            }
+                            chooseCardsClone.addAll(werewolves);
 
                             // Assign the cards just like the if statement above all of this.
                             Object[] tempCards = chooseCardsClone.toArray();
-                            HashSet<Card> tempCards2 = (HashSet<Card>) chooseCardsClone.clone();
+                            Set<Card> tempCards2 = ConcurrentHashMap.newKeySet();
+                            tempCards2.addAll(chooseCardsClone);
                             for (Player player : currentPlayers) {
                                 int random = rand.nextInt(tempCards.length);
                                 player.card = (Card) tempCards[random];
@@ -874,7 +875,7 @@ public class WerewolfServer implements Runnable {
                             for(int j = 0; j < amountOfDayKills; j++) {
 
                                 // Create the HashMap that holds all alive players votes.
-                                votes = new HashMap<Player, String>();
+                                votes = new ConcurrentHashMap<Player, String>();
                                 for (Player player : server.currentPlayers) {
                                     votes.put(player, "");
                                 }
@@ -955,7 +956,8 @@ public class WerewolfServer implements Runnable {
                                     // Make sure the server is no longer waiting for any player.
                                     stopWaiting();
 
-                                    HashSet<Player> deadCopy = (HashSet<Player>) dead.clone();
+                                    Set<Player> deadCopy = ConcurrentHashMap.newKeySet();
+                                    deadCopy.addAll(dead);
 
                                     // Loop through the votes for the amount of kills necessary and get the highest player.
                                     int highest = -1;
@@ -1239,10 +1241,12 @@ public class WerewolfServer implements Runnable {
                             votes.replace(player, gameActions.get(player.name));
                         }
                         gameActions.replace(player.name, "");
-                    } else if(!gameActions.get(player.name).equals("") && !Arrays.asList(possibilities).contains(gameActions.get(player.name))) {
+                    } else if(!gameActions.get(player.name).equals("") && (!Arrays.asList(possibilities).contains(gameActions.get(player.name)) &&
+                            !gameActions.get(player.name).equalsIgnoreCase("NA") && !gameActions.get(player.name).equalsIgnoreCase("no one"))) {
                         // If the player's vote wasn't a valid player.
                         try {
                             player.output.writeObject("Not a valid player");
+                            System.out.println(player.name + ": " + gameActions.get(player.name));
                             // Replace the HashMap for the player that the server checks to see if anything was inputted.
                             server.gameActions.replace(player.name, "");
                         } catch(Exception e) {

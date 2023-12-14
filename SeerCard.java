@@ -1,10 +1,11 @@
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 // The class for the Seer card, who has the ability to see if 1 person is a werewolf or not every night
 public class SeerCard extends Card {
-    HashMap<Player, Player> seers;
+    ConcurrentHashMap<Player, String> seers;
     boolean ultraGood;
 
     // The constructor to make the seer card
@@ -68,15 +69,15 @@ public class SeerCard extends Card {
     public void nightWakeup() {
         // Tell everyone that the seers are waking up
         try {
-            server.sendToAllPlayers("Seers, wake up, and pick who you want to see.\n");
+            server.sendToAllPlayers("\nSeers, wake up, and pick who you want to see.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
         // Determine if there is a seer or not and who they are
-        seers = new HashMap<Player, Player>();
+        seers = new ConcurrentHashMap<Player, String>();
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Seer")) {
-                seers.put(player, null);
+                seers.put(player, "");
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
                     player.output.writeObject("Who do you wish to see?");
@@ -97,10 +98,10 @@ public class SeerCard extends Card {
                 // Run through the players currently alive and make sure it is a valid player
                 for(Player seer : seers.keySet()) {
                     boolean checked = false;
-                    if(seers.get(seer) == null && !server.gameActions.get(seer.name).equals("")) {
+                    if(seers.get(seer).equals("") && !server.gameActions.get(seer.name).equals("")) {
                         for(Player player : server.currentPlayers) {
                             if(server.gameActions.get(seer.name).equals(player.name)) {
-                                seers.replace(seer, player);
+                                seers.replace(seer, player.name);
                                 server.gameActions.replace(seer.name, "");
                                 count++;
                             }
@@ -109,7 +110,7 @@ public class SeerCard extends Card {
                         // threads and things being updated after this
                         checked = true;
                     }
-                    if(checked && seers.get(seer) == null && !server.gameActions.get(seer.name).equals("")) {
+                    if(checked && seers.get(seer).equals("") && !server.gameActions.get(seer.name).equals("")) {
                         try {
                             seer.output.writeObject("Player not found.");
                         } catch(Exception e) {
@@ -165,20 +166,27 @@ public class SeerCard extends Card {
             // For each seer
             for(Player seer : seers.keySet()) {
                 // If they asked a valid person and this method hasn't already saw that they did and dealt with it
-                if(seers.get(seer) != null && server.gameWaiting.get(seer.name)) {
+                if(!seers.get(seer).equals("") && server.gameWaiting.get(seer.name)) {
                     // Tell the server to stop waiting for this player and that their action is being dealt with
                     server.gameWaiting.replace(seer.name, Boolean.FALSE);
                     // For each seer again
                     for(Player seer2 : seers.keySet()) {
                         // Tell each of the original seer's choice and the result
                         String result = "";
-                        if(seers.get(seer).card.isSeenAsWerewolf) {
+                        Player temp = null;
+                        for(Player player : server.currentPlayers) {
+                            if(player.name.equals(seers.get(seer))) {
+                                temp = player;
+                                break;
+                            }
+                        }
+                        if(temp.card.isSeenAsWerewolf) {
                             result = seers.get(seer) + " IS a type of Werewolf.";
                         } else {
                             result = seers.get(seer) + " is NOT a type of Werewolf.";
                         }
                         try {
-                            seer2.output.writeObject(seer.name + " checked " + seers.get(seer).name + ": " + result);
+                            seer2.output.writeObject(seer.name + " checked " + temp.name + ": " + result);
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }
