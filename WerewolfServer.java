@@ -1489,7 +1489,6 @@ public class WerewolfServer implements Runnable {
 
     // The timer for everything. Time is the amount of time, players are the players to tell when it's about to end
     public synchronized void timer(int time, Player[] players) {
-        // Check line 894 and 936 <-----------------------------------------------------------------------------------------------------------------------
         if(time < 0) {
             throw new IllegalArgumentException("Timer must be above 0");
         }

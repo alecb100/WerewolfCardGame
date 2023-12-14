@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 // The main Werewolf card, the main werewolf enemy in the game
 public class WerewolfCard extends Card {
@@ -81,12 +82,7 @@ public class WerewolfCard extends Card {
             System.out.println(e.getMessage());
         }
 
-        // Wait for each werewolves' choice of kill
-        for(Player player : werewolves.keySet()) {
-            server.gameWaiting.replace(player.name, Boolean.TRUE);
-        }
-
-        // Run through this loop until all werewolves have chosen someone they want to kill for the amount of kills they can make
+        // Tell all werewolves the amount of kills they must make
         for(Player player : werewolves.keySet()) {
             try {
                 // Check if there is more than 0 kills that must be made
@@ -102,8 +98,31 @@ public class WerewolfCard extends Card {
             }
         }
 
+        // Run a for loop for the amount of kills the werewolves must make
         for(int j = 0; j < server.werewolfKills; j++) {
+            ultraGood = false;
+            for(Player player : werewolves.keySet()) {
+                werewolves.replace(player, null);
+            }
+
+            // Start the thread to help find who they chose to kill
             new Thread(this::sendToWerewolves).start();
+
+            // Start the thread for the timer, if there is one set
+            Thread werewolfVotingTimer = null;
+            if(server.timers[1] > 0) {
+                int time;
+                if(j > 0) {
+                    time = 10000;
+                } else {
+                    time = server.timers[1];
+                }
+
+                werewolfVotingTimer = new Thread(() -> werewolfTimerHelper(time));
+                werewolfVotingTimer.start();
+            }
+
+            // Tell all werewolves the kill # and get ready to accept their choice
             for(Player player : werewolves.keySet()) {
                 try {
                     player.output.writeObject("Who is your kill #" + (j+1) + "?");
@@ -113,10 +132,10 @@ public class WerewolfCard extends Card {
                     System.out.println();
                 }
             }
+            // Run through this loop until all werewolves have chosen someone they want to kill for the amount of kills they can make
             while(true) {
 
                 // Set flags for running through the loop and determining if it should be over
-                ultraGood = false;
                 boolean good = true;
 
                 // Create a hashMap to count the amount of votes each player has
@@ -144,6 +163,12 @@ public class WerewolfCard extends Card {
 
                 // If it got here, that means all the werewolves have voted, so stop looking for their votes
                 ultraGood = true;
+
+                // Stop the timer if it's on
+                if(server.timers[1] > 0) {
+                    werewolfVotingTimer.interrupt();
+                }
+
                 server.stopWaiting();
                 // Have the program sleep so the other threads can catch up
                 try {
@@ -272,6 +297,41 @@ public class WerewolfCard extends Card {
         }
         if(werewolfCards >= otherCards) {
             throw new IllegalArgumentException("There has to be more non-werewolf cards than werewolf cards.");
+        }
+    }
+
+    private synchronized void werewolfTimerHelper(int time) {
+        // Get an Array of the werewolves
+        Player[] werewolfArray = new Player[werewolves.size()];
+        int i = 0;
+        for(Player player : werewolves.keySet()) {
+            werewolfArray[i] = player;
+            i++;
+        }
+
+        // Call the timer method for the alive players and the time given
+        server.timer(time, werewolfArray);
+
+        // Get the names of all the possible players that could be chosen
+        HashSet<String> names = new HashSet<String>();
+        // Add each player, making sure they don't have their tower active and are not a werewolf
+        for(Player player : server.currentPlayers) {
+            if(!server.checkWerewolf(player) && !player.dead && !player.tower) {
+                names.add(player.name);
+            }
+        }
+
+        // If it gets here, that means the players ran out of time, so set all who haven't voted to vote for a random player
+        for(Player player : werewolves.keySet()) {
+            if(werewolves.get(player) == null) {
+                int random = server.rand.nextInt(names.size());
+                server.gameActions.replace(player.name, (String) names.toArray()[random]);
+                try {
+                    Thread.sleep(500);
+                } catch(Exception e) {
+                    System.out.println();
+                }
+            }
         }
     }
 }
