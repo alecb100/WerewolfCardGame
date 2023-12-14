@@ -266,9 +266,9 @@ public class WerewolfCard extends Card {
                     // Reset the gameActions HashMap so that the players aren't told of the others' votes infinitely
                     server.gameActions.replace(player.name, "");
                 } else if(!server.gameActions.get(player.name).equals("") && !Arrays.asList(names).contains(server.gameActions.get(player.name))) {
-                    // If the name wasn't found, tell that werewolf and that werewolf only that it's not a valid player
+                    // If the name wasn't found, say to every werewolf what they said because it was likely chat
                     try {
-                        player.output.writeObject("Not a valid player");
+                        outputPrint(player.name + " chat: " + server.gameActions.get(player.name));
                         server.gameActions.replace(player.name, "");
                     } catch(Exception e) {
                         System.out.println(e.getMessage());
