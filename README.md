@@ -30,6 +30,7 @@
 - <b><u>Prince</u></b> - The Prince is a villager, and potentially a very important villager, because they are one of the only roles that people are guaranteed to know. They are on the villager team but if they are voted to be eliminated during the day, their card is revealed and they are not killed. However, if the villagers vote to eliminate them after that, they do die.
 - <b><u>Apprentice Seer</u></b> - The Apprentice Seer is not a seer yet, they are a Seer in training. They are on the villagers team and will win when they do. Their ability comes into play when a Seer dies. When a Seer dies, they get promoted and become a full Seer. Only then will they be able to see if someone is a werewolf at night.
 - <b><u>Pacifist</u></b> - The Pacifist is exactly like a normal Villager. The only difference is during the day they cannot vote for a player, they must vote for no one.
+- <b><u>Village Idiot</u></b> - The Village Idiot is the same as a normal villager, except that they must vote for someone during the day. They are unable to vote for no one.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:

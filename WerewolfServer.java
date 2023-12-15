@@ -1250,7 +1250,7 @@ public class WerewolfServer implements Runnable {
                     // Make sure that the vote of a player is a valid player that is alive (can be themselves if they want). Also makes sure it doesn't send to all if
                     // it already sent to all.
                     if(!server.gameActions.get(player.name).equals("") && ((Arrays.asList(possibilities).contains(gameActions.get(player.name)) && !player.card.cardName.contains("Pacifist")) ||
-                            gameActions.get(player.name).equalsIgnoreCase("NA") || gameActions.get(player.name).equalsIgnoreCase("no one"))) {
+                            ((gameActions.get(player.name).equalsIgnoreCase("NA") || gameActions.get(player.name).equalsIgnoreCase("no one")) && !player.card.cardName.contains("Village Idiot")))) {
                         try {
                             // Send their vote to all players.
                             if(!gameActions.get(player.name).equalsIgnoreCase("NA") && !gameActions.get(player.name).equalsIgnoreCase("no one")) {
@@ -1284,6 +1284,14 @@ public class WerewolfServer implements Runnable {
                         gameActions.replace(player.name, "");
                         try {
                             player.output.writeObject("You're a pacifist! You have to vote for no one!");
+                        } catch(Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else if(!gameActions.get(player.name).equals("") && (gameActions.get(player.name).equalsIgnoreCase("NA") || gameActions.get(player.name).equalsIgnoreCase("no one")) &&
+                            player.card.cardName.contains("Village Idiot")) {
+                        gameActions.replace(player.name, "");
+                        try {
+                            player.output.writeObject("You're the Village Idiot! You have to vote for someone!");
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }
@@ -1415,6 +1423,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a pacifist card.
                         tempCard = new PacifistCard(server);
                         tempCard2 = new PacifistCard(server);
+                    } else if(cardName.equalsIgnoreCase("village idiot")) {
+                        // If the card is a village idiot card.
+                        tempCard = new VillageIdiotCard(server);
+                        tempCard2 = new VillageIdiotCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1519,8 +1531,21 @@ public class WerewolfServer implements Runnable {
 
         // If it gets here, that means the players ran out of time, so set all who haven't voted to vote for no one
         for(Player player : votes.keySet()) {
-            if(votes.get(player).equals("")) {
+            if(votes.get(player).equals("") && !player.card.cardName.contains("Village Idiot")) {
                 gameActions.replace(player.name, "no one");
+                try {
+                    Thread.sleep(500);
+                } catch(Exception e) {
+                    System.out.println();
+                }
+            } else if(votes.get(player).equals("") && player.card.cardName.contains("Village Idiot")) {
+                String[] names = new String[currentPlayers.size()];
+                for(i = 0; i < currentPlayers.size(); i++) {
+                    Player temp = (Player)currentPlayers.toArray()[i];
+                    names[i] = temp.name;
+                }
+                int random = rand.nextInt(currentPlayers.size());
+                gameActions.replace(player.name, names[random]);
                 try {
                     Thread.sleep(500);
                 } catch(Exception e) {
