@@ -108,7 +108,7 @@ public class DireWolfCard extends Card {
                         break;
                     }
                 }
-                // If it was a valid player, tell the doppelganger their choice and save it
+                // If it was a valid player, tell the dire wolf their choice and save it
                 if(choice != null) {
                     // Stop the timer
                     if(server.timers[2] > 0) {
