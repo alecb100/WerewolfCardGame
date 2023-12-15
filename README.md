@@ -36,6 +36,7 @@
 - <b><u>Tough Guy</u></b> - The Tough Guy is an interesting card. They are on the villagers team, but the special thing about them is if they are targeted by the werewolves at night, they don't die until the next night. This only applies to being targeted by the wolves. If they are targeted by any other role that night, they die like normal.
 - <b><u>Paranormal Investigator</u></b> - The Paranormal Investigator is similar to the Seer. They are on the villager team and wake up every night. However, where they differ is they can only use their ability once per game and they don't see one player. They choose a player they wish to see, but instead of seeing just them, they see them and their two neighbors. They will know if at least one of those 3 are a type of werewolf or not. Once they use their ability, they cannot use it for the rest of the game.
 - <b><u>Insomniac</u></b> - The Insomniac is just like the normal villager. The only difference is they are able to see if one of their neighbors woke up for any reason. They don't know which one woke up and they don't know if they woke up and took some sort of action or just woke up to see something.
+- <b><u>Witch</u></b> - The Witch is an interesting card. They can only use their ability once per game, where every night they wake up and see who is marked for death that night. They can choose to save one of those people, kill another player, or save their aiblity. However, if they choose to do either, they use their ability. After they use their ability, they can no longer see who is marked for death any more.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:
@@ -53,3 +54,4 @@ There can only be one instance of the following cards in the game currently:
 - Old Woman
 - Huntress
 - Paranormal Investigator
+- Witch

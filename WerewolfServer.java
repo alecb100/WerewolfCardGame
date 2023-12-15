@@ -1689,6 +1689,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is an insomniac card.
                         tempCard = new InsomniacCard(server);
                         tempCard2 = new InsomniacCard(server);
+                    } else if(cardName.equalsIgnoreCase("witch")) {
+                        // If the card is a witch card.
+                        tempCard = new WitchCard(server);
+                        tempCard2 = new WitchCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
