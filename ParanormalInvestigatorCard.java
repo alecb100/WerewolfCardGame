@@ -64,7 +64,7 @@ public class ParanormalInvestigatorCard extends Card {
     // The night wakeup method, which asks the investigator if they want to use their ability, in which case they give them a player
     @Override
     public void nightWakeup() {
-        // Tell everyone the troublemaker is waking up
+        // Tell everyone the investigator is waking up
         try {
             server.sendToAllPlayers("\nNow Paranormal Investigator, wake up.");
             server.sendToAllPlayers("Decide if you want to see if a player or one of their neighbors is a type of wolf. ");
@@ -73,7 +73,7 @@ public class ParanormalInvestigatorCard extends Card {
             System.out.println(e.getMessage());
         }
 
-        // Find the troublemaker, if they're still alive and there is one
+        // Find the investigator, if they're still alive and there is one
         Player investigator = null;
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Paranormal Investigator")) {
