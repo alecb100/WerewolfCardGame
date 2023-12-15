@@ -1606,6 +1606,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is an old woman card.
                         tempCard = new OldWomanCard(server);
                         tempCard2 = new OldWomanCard(server);
+                    } else if(cardName.equalsIgnoreCase("huntress")) {
+                        // If the card is a huntress card.
+                        tempCard = new HuntressCard(server);
+                        tempCard2 = new HuntressCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

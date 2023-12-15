@@ -32,6 +32,7 @@
 - <b><u>Pacifist</u></b> - The Pacifist is exactly like a normal Villager. The only difference is during the day they cannot vote for a player, they must vote for no one.
 - <b><u>Village Idiot</u></b> - The Village Idiot is the same as a normal villager, except that they must vote for someone during the day. They are unable to vote for no one.
 - <b><u>Old Woman</u></b> - The Old Woman is a weird card. They are on the villager team, but their ability is to silence 1 person every night. This person cannot be someone they previously silenced before, and they cannot silence themselves. Once a person is silenced, they cannot speak or vote during that day. Once everyone votes, it will appear like they still voted as the server will display a vote, but it didn't actually count. Once the old woman has exhausted all of her options for silencing, she will no longer be able to silence anyone.
+- <b><u>Huntress</u></b> - The Huntress is similar to the Hunter in that they can kill a player, but the timing of the kill is very different. Instead of killing someone after the Huntress dies, the Huntress can choose to kill anyone during the night. But they can only use the ability once. After they kill someone, they cannot kill anyone during subsequent nights. Just like the Hunter, they are on the villagers team.
 
 ## Single-Instance Only Cards
 There can only be one instance of the following cards in the game currently:
@@ -47,3 +48,4 @@ There can only be one instance of the following cards in the game currently:
 - Prince
 - Apprentice Seer
 - Old Woman
+- Huntress
