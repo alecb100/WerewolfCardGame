@@ -77,6 +77,9 @@ public class WerewolfServer implements Runnable {
     // the players use when connecting
     Player[] neighbors;
 
+    // A flag to check if the game is currently day or night
+    boolean isNight;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -798,6 +801,7 @@ public class WerewolfServer implements Runnable {
                         // Check how many werewolf cards are being played
                         werewolfNum = 0;
                         boolean hasWerewolfCard = false;
+                        boolean hasPlainVillagerCard = false;
                         for(Card card : chooseCards) {
                             if(card.cardName.equals("Werewolf") || card.cardName.equals("Dire Wolf") ||
                             card.cardName.equals("Wolf Man") || card.cardName.equals("Wolf Cub")) {
@@ -807,6 +811,8 @@ public class WerewolfServer implements Runnable {
                                     // properly, so it will need to be added
                                     hasWerewolfCard = true;
                                 }
+                            } else if(card.cardName.equals("Villager")) {
+                                hasPlainVillagerCard = true;
                             }
                         }
                         // If there is no plain werewolf card, add it to the cards HashSet so werewolf night actions can take place
@@ -816,6 +822,26 @@ public class WerewolfServer implements Runnable {
                                 cardsClone[k] = cards[k];
                             }
                             cardsClone[cards.length] = new WerewolfCard(server);
+                            cards = cardsClone;
+
+                            // Sort in order of rank for night wakeup.
+                            for(i = 0; i < cards.length - 1; i++) {
+                                for(int j = 0; j < cards.length - i - 1; j++) {
+                                    if(cards[j].ranking > cards[j+1].ranking) {
+                                        Card temp3 = cards[j];
+                                        cards[j] = cards[j + 1];
+                                        cards[j + 1] = temp3;
+                                    }
+                                }
+                            }
+                        }
+                        // If there is no plain villager card, add it to the cards HashSet so the win conditions will run without problem
+                        if(!hasPlainVillagerCard) {
+                            Card[] cardsClone = new Card[cards.length + 1];
+                            for(int k = 0; k < cards.length; k++) {
+                                cardsClone[k] = cards[k];
+                            }
+                            cardsClone[cards.length] = new VillagerCard(server);
                             cards = cardsClone;
 
                             // Sort in order of rank for night wakeup.
@@ -919,6 +945,9 @@ public class WerewolfServer implements Runnable {
                         // Make it clear to all players where the new game chat starts
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
+
+                        // Set the night flag to true
+                        isNight = true;
 
                         // Tell each player their card.
                         for(Player player : currentPlayers) {
@@ -1037,6 +1066,9 @@ public class WerewolfServer implements Runnable {
                             sendToAllPlayers("Now, you all need to discuss and pick a person each that you will kill.");
                             sendToAllPlayers("Type 'na', 'NA', or 'no one' to vote for no one.");
                             sendToAllPlayers("The number of people you must choose to kill is: " + amountOfDayKills + "\n");
+
+                            // Set the night flag as false
+                            isNight = false;
 
                             // Loop through the amount of kills there are that day
                             for(int j = 0; j < amountOfDayKills; j++) {
@@ -1277,6 +1309,9 @@ public class WerewolfServer implements Runnable {
                             }
 
                             sendToAllPlayers("---------------------------------------------------");
+
+                            // Set the night flag as true
+                            isNight = true;
 
                             // Now for the night again. This is the normal night, not the first night.
                             sendToAllPlayers("Now for the night. Everyone close your eyes.\n");
@@ -1610,6 +1645,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a huntress card.
                         tempCard = new HuntressCard(server);
                         tempCard2 = new HuntressCard(server);
+                    } else if(cardName.equalsIgnoreCase("tough guy")) {
+                        // If the card is a tough guy card.
+                        tempCard = new ToughGuyCard(server);
+                        tempCard2 = new ToughGuyCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");

@@ -198,6 +198,15 @@ public class BodyguardCard extends Card {
                             }
                         }
 
+                        // If that player is a tough guy and is set to die the next night, save them
+                        if(temp.card.cardName.contains("Tough Guy")) {
+                            for(Card card : server.cards) {
+                                if(card instanceof ToughGuyCard toughGuyCard && toughGuyCard.targeted.get(temp) < 2) {
+                                    toughGuyCard.targeted.replace(temp, 0);
+                                }
+                            }
+                        }
+
                         // Tell all the other bodyguards who they protected
                         try {
                             bodyguard2.output.writeObject(bodyguard.name + " protected " + temp.name);

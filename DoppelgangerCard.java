@@ -197,6 +197,16 @@ public class DoppelgangerCard extends Card {
                     }
                 }
 
+                // If their new card is Tough Guy, add them to the tough guy hashMap
+                if(chosenPlayer.card.cardName.contains("Tough Guy")) {
+                    for(Card card : server.cards) {
+                        if(card instanceof ToughGuyCard toughGuyCard) {
+                            toughGuyCard.targeted.put(doppelganger, 0);
+                            break;
+                        }
+                    }
+                }
+
                 // If there's information this card needs to know (like Dire Wolf or Hoodlum has), tell that to the Doppelganger immediately
                 String needToKnow = chosenPlayer.card.needToKnow(doppelganger);
                 if(!needToKnow.equals("")) {

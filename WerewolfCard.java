@@ -212,6 +212,21 @@ public class WerewolfCard extends Card {
                         for (Card card : server.cards) {
                             if (card instanceof DiseasedCard diseasedCard) {
                                 diseasedCard.diseasedAbility = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Check if the player is a tough guy, and if they are, check to see if they are about to die anyway
+                    // If they aren't, then tell the server that they will next night
+                    if(temp.card.cardName.contains("Tough Guy")) {
+                        for(Card card : server.cards) {
+                            if(card instanceof ToughGuyCard toughGuyCard) {
+                                if(toughGuyCard.targeted.get(temp) < 2) {
+                                    toughGuyCard.targeted.replace(temp, 1);
+                                    temp.dead = false;
+                                    break;
+                                }
                             }
                         }
                     }

@@ -110,6 +110,16 @@ public class DrunkCard extends Card {
                     drunk.card.cardName += " -> " + chosenCard.cardName;
                     drunk.card.team = chosenCard.team;
 
+                    // Check if the chosen card is Tough Guy, and if it is, add them to the tough guy hashMap
+                    if(chosenCard instanceof ToughGuyCard) {
+                        for(Card card : server.cards) {
+                            if(card instanceof ToughGuyCard toughGuyCard) {
+                                toughGuyCard.targeted.put(drunk, 0);
+                                break;
+                            }
+                        }
+                    }
+
                     // Check if there's a cupid, and if there is, call its cupid team assistance so that this new team change can be checked
                     for(Card card : server.cards) {
                         if(card instanceof CupidCard) {
