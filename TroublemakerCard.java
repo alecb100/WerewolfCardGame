@@ -156,7 +156,7 @@ public class TroublemakerCard extends Card {
                 int randomWait = server.rand.nextInt(5000) + 5000;
                 try {
                     Thread.sleep(randomWait);
-                    server.sendToAllPlayers("Troublemaker, go back to sleep.");
+                    server.sendToAllPlayers("Troublemaker, go back to sleep.\n");
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
