@@ -73,6 +73,10 @@ public class WerewolfServer implements Runnable {
     // The timers for day, werewolves, and other nights. If number is -1, then timer is off
     int[] timers;
 
+    // An array to hold neighbor information. It is a finicky command so make sure the names inputted are the same names
+    // the players use when connecting
+    Player[] neighbors;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -293,7 +297,8 @@ public class WerewolfServer implements Runnable {
                         result += "'order':\t\tLists the order of the cards that wake up during the nights\n\t\t\t(does not include cards that only wake up during the first night)\n";
                         result += "'win':\t\t\tLists the order in which win conditions are checked\n";
                         result += "'WhoAmI':\t\tTells you what your card is again\n";
-                        result += "'needToKnow':\tTells you your card's need to know information. Not every card has some. Will also say if you're linked to someone through Cupid.\n";
+                        result += "'needToKnow':\t\tTells you your card's need to know information. Not every card has some. Will also say if you're linked to someone through Cupid.\n";
+                        result += "'neighbors':\t\tTells the order of neighbors. Names next to each other are neighbors with each other (including the name at the top and bottom)\n";
                     } else if(command.equalsIgnoreCase("players")) {
                         // If the command is players, display all alive players in the game
                         if(gameStart) {
@@ -421,7 +426,7 @@ public class WerewolfServer implements Runnable {
                         } else {
                             result += "\n\nThe game has not started yet, and thus there are no cards to list the order\n";
                         }
-                    } else if(command.equalsIgnoreCase("WhoAmI")) {
+                    } else if(command.equalsIgnoreCase("WhoAmI") || command.equalsIgnoreCase("who am i")) {
                         // Display the player's card name, which can include -> if they are a team switcher
                         if(gameStart) {
                             result += "\n\nYour card is: " + player.card.cardName;
@@ -448,6 +453,16 @@ public class WerewolfServer implements Runnable {
                             result += "\nYour card does not have any need to know information.\n";
                         } else {
                             result += "\n\n" + needToKnow + "\n";
+                        }
+                    } else if(command.equalsIgnoreCase("neighbors")) {
+                        // The 'neighbors' command to give the order of neighbors, if it's not null
+                        result += "\n";
+                        if(neighbors != null) {
+                            for(Player player : neighbors) {
+                                result += player.name + "\n";
+                            }
+                        } else {
+                            result += "There are no neighbors specified!\n";
                         }
                     } else {
                         // If the command wasn't found, tell the player that
@@ -504,7 +519,7 @@ public class WerewolfServer implements Runnable {
             // Gets the reader to read from command line to start the game.
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-            boolean start;
+            boolean start = false;
 
             // Set default values for idle times
             idleTimes = new int[2];
@@ -597,9 +612,92 @@ public class WerewolfServer implements Runnable {
                             System.out.println("dayTimer=<time (seconds) (0 for off)>. Current time: " + (timers[2]/1000) + "s, " + (((double)timers[2]/1000)/60) + "min\n");
                         }
                         continue;
+                    } else if(input.contains("neighbors")) {
+                        // Input was 'neighbors' so create the neighbors Array that may be used by certain cards
+                        neighbors = new Player[players.size()];
+                        if(input.equals("neighbors")) {
+                            // If the input was JUST neighbors, then randomly create neighbors
+                            HashSet<Player> playersCopy = new HashSet<Player>();
+                            for(int i = 0; i < players.size(); i++) {
+                                // Get a copy of the players into a HashSet
+                                playersCopy.add((Player)players.values().toArray()[i]);
+                            }
+                            neighbors = new Player[playersCopy.size()];
+                            for(int i = 0; i < players.size(); i++) {
+                                // Randomly assign the players to a location in neighbors, removing them from teh copy HashSet
+                                int random = rand.nextInt(playersCopy.size());
+                                neighbors[i] = (Player)playersCopy.toArray()[random];
+                                playersCopy.remove(neighbors[i]);
+                            }
+                        } else {
+                            // If custom neighbors were given
+                            try {
+                                String temp = input.substring(input.indexOf("=") + 1);
+                                for (int i = 0; i < neighbors.length; i++) {
+                                    // Run through the length of neighbors, which is the amount of players currently in the server
+                                    try {
+                                        // If there are more players in the string given, get the next one
+                                        String temp2 = temp.substring(0, temp.indexOf(","));
+                                        for(Player player : players.values()) {
+                                            // Find the player that has that name
+                                            if(player.name.equals(temp2)) {
+                                                // Set them up at that location and get the next name
+                                                neighbors[i] = player;
+                                                try {
+                                                    temp = temp.substring(temp.indexOf(",") + 1);
+                                                } catch(Exception e) {
+                                                    // If there is no next name then that's it
+                                                    System.out.println();
+                                                }
+                                            }
+                                        }
+                                    } catch(IndexOutOfBoundsException e) {
+                                        // If this was the last name, then this is the last name and put it at the end
+                                        for(Player player : players.values()) {
+                                            // Find the player with that name
+                                            if(player.name.equals(temp)) {
+                                                neighbors[i] = player;
+                                                try {
+                                                    // Just in case, get the next name
+                                                    temp = temp.substring(temp.indexOf(",") + 1);
+                                                } catch(Exception ei) {
+                                                    System.out.println();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch(Exception e) {
+                                // Tell the server moderator how to call this method since they did it wrong
+                                System.out.println("neighbors=<name1>,<name2>,<name3>,...");
+                            }
+                        }
+
+                        // Verify that neighbors is correct (only 1 instance of each player is there
+                        if(neighbors != null) {
+                            // Create a HashMap of players
+                            HashMap<Player, Integer> counts = new HashMap<Player, Integer>();
+                            for(Player player : players.values()) {
+                                counts.put(player, 0);
+                            }
+                            // Count how many instances of each player is in the neighbors Array
+                            for(Player player : neighbors) {
+                                counts.replace(player, counts.get(player) + 1);
+                            }
+                            // Loop through count. If there is any player that does not equal 1, null out neighbors and tell
+                            // the server moderator
+                            for(int count : counts.values()) {
+                                if(count != 1) {
+                                    neighbors = null;
+                                    System.out.println("All players must show up once in neighbors.");
+                                    break;
+                                }
+                            }
+                        }
                     } else {
                         System.out.println("'start', 'idle=<max time (seconds)>,<min time (seconds)>', 'dayTimer=<time (seconds) (0 for off)>'");
                         System.out.println("'werewolfTimer=<time (seconds) (0 for off)>', 'nightTimer=<time (seconds) (0 for off)>'");
+                        System.out.println("'neighbors=<name separated by commas>'");
                         continue;
                     }
 
@@ -628,6 +726,37 @@ public class WerewolfServer implements Runnable {
                             gameActions.put(name, "");
                             gameWaiting.put(name, Boolean.FALSE);
                             i++;
+                        }
+
+                        // Check if neighbors were specified. If they were, check to make sure the neighbors in there
+                        // are the players in the game
+                        if(neighbors != null) {
+                            // Create a HashMap of players
+                            HashMap<Player, Integer> counts = new HashMap<Player, Integer>();
+                            for(Player player : currentPlayers) {
+                                counts.put(player, 0);
+                            }
+                            // Count how many instances of each player is in the neighbors Array
+                            for(Player player : neighbors) {
+                                counts.replace(player, counts.get(player) + 1);
+                            }
+                            // Loop through count. If there is any player that does not equal 1, null out neighbors and tell
+                            // the server moderator
+                            boolean goodNeighbors = true;
+                            for(int count : counts.values()) {
+                                if(count != 1) {
+                                    neighbors = null;
+                                    System.out.println("All players must show up once in neighbors.");
+                                    goodNeighbors = false;
+                                    break;
+                                }
+                            }
+
+                            // Cancel the game if the neighbors aren't correct
+                            if(!goodNeighbors) {
+                                gameStart = false;
+                                continue;
+                            }
                         }
 
                         // Read the cards that will be played with from the cards.txt file.
@@ -661,10 +790,6 @@ public class WerewolfServer implements Runnable {
 
                         // Set the start flag to true for the rest of the program.
                         gameStart = true;
-
-                        // Make it clear to all players where the new game chat starts
-                        sendToAllPlayers("================================");
-                        sendToAllPlayers("New Game!\n\n");
 
                         // Check how many werewolf cards are being played
                         werewolfNum = 0;
@@ -782,6 +907,10 @@ public class WerewolfServer implements Runnable {
                             continue;
                         }
 
+                        // Make it clear to all players where the new game chat starts
+                        sendToAllPlayers("================================");
+                        sendToAllPlayers("New Game!\n\n");
+
                         // Tell each player their card.
                         for(Player player : currentPlayers) {
                             player.output.writeObject("Your card: " + player.card.cardName);
@@ -891,6 +1020,8 @@ public class WerewolfServer implements Runnable {
                         for(Player player : currentPlayers) {
                             player.tower = false;
                         }
+
+                        sendToAllPlayers("---------------------------------------------------\n");
 
                         // Run the infinite loop for the game. Every day, then every night at the end, until someone won.
                         while(true) {
@@ -1109,6 +1240,8 @@ public class WerewolfServer implements Runnable {
                                 break;
                             }
 
+                            sendToAllPlayers("---------------------------------------------------");
+
                             // Now for the night again. This is the normal night, not the first night.
                             sendToAllPlayers("Now for the night. Everyone close your eyes.\n");
                             Thread.sleep(3000);
@@ -1183,6 +1316,8 @@ public class WerewolfServer implements Runnable {
                                 sendToAllPlayers("Winning players: " + winningPlayers);
                                 break;
                             }
+
+                            sendToAllPlayers("---------------------------------------------------\n");
                         }
 
                         // If it finally left that loop, that means the game is over, so set the game to not be going.
