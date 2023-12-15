@@ -151,7 +151,7 @@ public class DoppelgangerCard extends Card {
                 }
             }
         } else {
-            // If there is no bodyguard, wait a random amount of time so the other players don't realize there is no bodyguard
+            // If there is no doppelganger, wait a random amount of time so the other players don't realize there is no doppelganger
             // The random time is the idle time given
             int randomWait = server.rand.nextInt(server.idleTimes[0]) + server.idleTimes[1];
             try {
