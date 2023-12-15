@@ -317,8 +317,12 @@ public class WerewolfServer implements Runnable {
                                 result += "\n\nThe following players are currently alive in the game:\n\n";
                                 for(Player player : currentPlayers) {
                                     result += player.name;
-                                    if(!votes.get(player).equals("")) {
-                                        result += " - Voted for " + votes.get(player);
+                                    if(player.canVote) {
+                                        if (!votes.get(player).equals("")) {
+                                            result += " - Voted for " + votes.get(player);
+                                        } else {
+                                            result += " - Hasn't voted yet";
+                                        }
                                     } else {
                                         result += " - Hasn't voted yet";
                                     }
@@ -907,6 +911,11 @@ public class WerewolfServer implements Runnable {
                             continue;
                         }
 
+                        // Make sure everyone is able to vote
+                        for(Player player : currentPlayers) {
+                            player.canVote = true;
+                        }
+
                         // Make it clear to all players where the new game chat starts
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
@@ -1035,11 +1044,15 @@ public class WerewolfServer implements Runnable {
                                 // Create the HashMap that holds all alive players votes.
                                 votes = new ConcurrentHashMap<Player, String>();
                                 for (Player player : server.currentPlayers) {
-                                    votes.put(player, "");
+                                    if(player.canVote) {
+                                        votes.put(player, "");
+                                    }
                                 }
                                 // Tell the server it is waiting for all alive players' actions.
                                 for(Player player : currentPlayers) {
-                                    gameWaiting.replace(player.name, Boolean.TRUE);
+                                    if(player.canVote) {
+                                        gameWaiting.replace(player.name, Boolean.TRUE);
+                                    }
                                 }
 
                                 // Tell the players what kill this is
@@ -1079,7 +1092,9 @@ public class WerewolfServer implements Runnable {
                                     // Create a count map that is used to find the most popular player to kill.
                                     HashMap<String, Integer> count = new HashMap<String, Integer>();
                                     for (Player player : server.currentPlayers) {
-                                        count.put(player.name, 0);
+                                        if(player.canVote) {
+                                            count.put(player.name, 0);
+                                        }
                                     }
 
                                     // Put the option for no vote in there
@@ -1109,6 +1124,22 @@ public class WerewolfServer implements Runnable {
                                     if(timers[0] > 0) {
                                         votingThread.interrupt();
                                     }
+
+                                    // Tell all players that the people who can't vote voted for a random player, when in actuality they didn't
+                                    for(Player player : currentPlayers) {
+                                        if(!player.canVote) {
+                                            int randomWait = server.rand.nextInt(3000) + 2000;
+                                            Thread.sleep(randomWait);
+                                            int randomVote = rand.nextInt(currentPlayers.size() + 1);
+                                            if(randomVote != currentPlayers.size()) {
+                                                sendToAllPlayers(player.name + " voted: " + currentPlayers.toArray()[randomVote]);
+                                            } else {
+                                                sendToAllPlayers(player.name + " voted for no one");
+                                            }
+                                            Thread.sleep(1000);
+                                        }
+                                    }
+
                                     // Wait 3 seconds to allow the threads created to help get player votes to end.
                                     Thread.sleep(3000);
                                     // Make sure the server is no longer waiting for any player.
@@ -1161,6 +1192,11 @@ public class WerewolfServer implements Runnable {
                                 sendToAllPlayers("\n\nVoting is now over.\n\n");
                             } catch(Exception e) {
                                 System.out.println(e.getMessage());
+                            }
+
+                            // Allow all players to vote again
+                            for(Player player : currentPlayers) {
+                                player.canVote = true;
                             }
 
                             // A temporary dead HashSet is created to log the newly dead players.
@@ -1382,6 +1418,10 @@ public class WerewolfServer implements Runnable {
                     if(dayKillFlag) {
                         break;
                     }
+                    // If the currently checked player can't vote, skip this check
+                    if(!player.canVote) {
+                        continue;
+                    }
                     // Make sure that the vote of a player is a valid player that is alive (can be themselves if they want). Also makes sure it doesn't send to all if
                     // it already sent to all.
                     if(!server.gameActions.get(player.name).equals("") && ((Arrays.asList(possibilities).contains(gameActions.get(player.name)) && !player.card.cardName.contains("Pacifist")) ||
@@ -1562,6 +1602,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a village idiot card.
                         tempCard = new VillageIdiotCard(server);
                         tempCard2 = new VillageIdiotCard(server);
+                    } else if(cardName.equalsIgnoreCase("old woman")) {
+                        // If the card is an old woman card.
+                        tempCard = new OldWomanCard(server);
+                        tempCard2 = new OldWomanCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
