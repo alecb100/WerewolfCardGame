@@ -67,7 +67,7 @@ public class BodyguardCard extends Card {
     public void nightWakeup() {
         // Tell everyone that the bodyguard is waking up
         try {
-            server.sendToAllPlayers("Bodyguards, wake up, and determine who you want to protect. You can pick yourself.\n");
+            server.sendToAllPlayers("\nBodyguards, wake up, and determine who you want to protect. You can pick yourself.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
