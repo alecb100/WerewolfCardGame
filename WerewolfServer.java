@@ -102,6 +102,13 @@ public class WerewolfServer implements Runnable {
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
+        // Check if neighbors was set, and if so, unset it, but only if the game hasn't started yet
+        // This is because neighbors will point to a Player object that doesn't exist anymore. If it's started already,
+        // the player that this player WAS, would still be held in currentPlayers, so it can remain because it's the same
+        // player
+        if(neighbors != null && !gameStart) {
+            neighbors = null;
+        }
     }
 
     // A method to remove a person from teh player HashMap when they leave or disconnect. When disconnecting, if the game
@@ -113,6 +120,10 @@ public class WerewolfServer implements Runnable {
             sendToAllPlayers("\n" + playerName + " left the server.\n");
         } catch(Exception e) {
             System.out.println(e.getMessage());
+        }
+        // Check if neighbors was set, and if so, unset it
+        if(!gameStart && neighbors != null) {
+            neighbors = null;
         }
     }
 
@@ -466,7 +477,11 @@ public class WerewolfServer implements Runnable {
                         result += "\n";
                         if(neighbors != null) {
                             for(Player player : neighbors) {
-                                result += player.name + "\n";
+                                if(gameStart && !player.dead) {
+                                    result += player.name + "\n";
+                                } else if(!gameStart) {
+                                    result += player.name + "\n";
+                                }
                             }
                         } else {
                             result += "There are no neighbors specified!\n";
@@ -1400,6 +1415,8 @@ public class WerewolfServer implements Runnable {
                     } else if(server.players.size() < 5) {
                         System.out.println("We need more people. Need at least 5");
                     }
+                    start = false;
+                    gameStart = false;
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -1649,6 +1666,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a tough guy card.
                         tempCard = new ToughGuyCard(server);
                         tempCard2 = new ToughGuyCard(server);
+                    } else if(cardName.equalsIgnoreCase("paranormal investigator")) {
+                        // If the card is a paranormal investigator card.
+                        tempCard = new ParanormalInvestigatorCard(server);
+                        tempCard2 = new ParanormalInvestigatorCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1798,5 +1819,70 @@ public class WerewolfServer implements Runnable {
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    // A helper method to obtain the 2 neighbors of a player
+    public Player[] neighborHelper(Player player) {
+        if(neighbors == null) {
+            throw new IllegalArgumentException("Neighbors weren't specified.");
+        }
+
+        // Check if there's enough people alive for neighbors to give anything
+        int aliveCount = 0;
+        for(Player neighbor : neighbors) {
+            if(!neighbor.dead) {
+                aliveCount++;
+            }
+        }
+        if(aliveCount < 3) {
+            return new Player[]{player, player};
+        }
+
+        Player[] result = new Player[2];
+        // If the requested player is dead, return null
+        if(player.dead) {
+            return null;
+        }
+
+        // Find the location of the player in the neighbors array
+        int playerIndex = -1;
+        for(int i = 0; i < neighbors.length; i++) {
+            if(player == neighbors[i]) {
+                playerIndex = i;
+                break;
+            }
+        }
+        // If they couldn't be found, return null
+        if(playerIndex == -1) {
+            return null;
+        }
+
+        // Find the neighbor right below the player
+        int tempIndex = playerIndex - 1;
+        while(result[0] == null) {
+            if(tempIndex < 0) {
+                // Loop around to top if it went off the bottom
+                tempIndex = neighbors.length - 1;
+            }
+            if(!neighbors[tempIndex].dead) {
+                result[0] = neighbors[tempIndex];
+            }
+            tempIndex--;
+        }
+
+        // Find the neighbor right above the player
+        tempIndex = playerIndex + 1;
+        while(result[1] == null) {
+            if(tempIndex >= neighbors.length) {
+                // Loop around to the bottom if it went off the top
+                tempIndex = 0;
+            }
+            if(!neighbors[tempIndex].dead) {
+                result[1] = neighbors[tempIndex];
+            }
+            tempIndex++;
+        }
+
+        return result;
     }
 }
