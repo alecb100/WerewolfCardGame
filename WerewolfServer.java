@@ -1249,7 +1249,7 @@ public class WerewolfServer implements Runnable {
                     }
                     // Make sure that the vote of a player is a valid player that is alive (can be themselves if they want). Also makes sure it doesn't send to all if
                     // it already sent to all.
-                    if(!server.gameActions.get(player.name).equals("") && (Arrays.asList(possibilities).contains(gameActions.get(player.name)) ||
+                    if(!server.gameActions.get(player.name).equals("") && ((Arrays.asList(possibilities).contains(gameActions.get(player.name)) && !player.card.cardName.contains("Pacifist")) ||
                             gameActions.get(player.name).equalsIgnoreCase("NA") || gameActions.get(player.name).equalsIgnoreCase("no one"))) {
                         try {
                             // Send their vote to all players.
@@ -1276,6 +1276,14 @@ public class WerewolfServer implements Runnable {
                             System.out.println(player.name + ": " + gameActions.get(player.name));
                             // Replace the HashMap for the player that the server checks to see if anything was inputted.
                             server.gameActions.replace(player.name, "");
+                        } catch(Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else if(!gameActions.get(player.name).equals("") && Arrays.asList(possibilities).contains(gameActions.get(player.name)) &&
+                            player.card.cardName.contains("Pacifist")) {
+                        gameActions.replace(player.name, "");
+                        try {
+                            player.output.writeObject("You're a pacifist! You have to vote for no one!");
                         } catch(Exception e) {
                             System.out.println(e.getMessage());
                         }
@@ -1403,6 +1411,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is an apprentice seer card.
                         tempCard = new ApprenticeSeerCard(server);
                         tempCard2 = new ApprenticeSeerCard(server);
+                    } else if(cardName.equalsIgnoreCase("pacifist")) {
+                        // If the card is a pacifist card.
+                        tempCard = new PacifistCard(server);
+                        tempCard2 = new PacifistCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
