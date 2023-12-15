@@ -80,6 +80,9 @@ public class WerewolfServer implements Runnable {
     // A flag to check if the game is currently day or night
     boolean isNight;
 
+    // The HashSet to tell the server which cards to put in the game, which used to be in cards.txt
+    Set<String> cardsToBeAdded = ConcurrentHashMap.newKeySet();;
+
     // main function which creates the server
     public static void main(String[] args) throws IOException {
         new WerewolfServer();
@@ -362,19 +365,12 @@ public class WerewolfServer implements Runnable {
                             result += "\n\nThe following cards are currently in the game:\n\n";
 
                             // Set up the scanner for the file.
-                            File file = new File("cards.txt");
-                            Scanner scanner = null;
-                            try {
-                                scanner = new Scanner(file);
-                            } catch(Exception e) {
-                                System.out.println(e.getMessage());
-                            }
+                            Iterator<String> scanner = cardsToBeAdded.iterator();
                             // Scan every line and add that to the result string
-                            while(scanner.hasNextLine()) {
-                                result += scanner.nextLine();
+                            while(scanner.hasNext()) {
+                                result += scanner.next();
                                 result += "\n";
                             }
-                            scanner.close();
                         } else {
                             result += "\n\nThe game has not started yet, and thus there are no cards\n";
                         }
@@ -557,6 +553,9 @@ public class WerewolfServer implements Runnable {
             // The infinite loop that goes on for as long as the server is up.
             while(true) {
                 try {
+                    start = false;
+                    gameStart = false;
+
                     System.out.println("We are waiting to start. Type 'start' when ready");
 
                     // Wait for the person running the server to type 'start' to start the game.
@@ -716,10 +715,60 @@ public class WerewolfServer implements Runnable {
                                 }
                             }
                         }
+                    } else if(input.equals("cards")) {
+                        System.out.println();
+                        if(!cardsToBeAdded.isEmpty()) {
+                            System.out.print(cardsToBeAdded.toArray()[0]);
+                            for (int i = 1; i < cardsToBeAdded.size(); i++) {
+                                System.out.print("," + cardsToBeAdded.toArray()[i]);
+                            }
+                        } else {
+                            System.out.print("There are no added cards.");
+                        }
+                        System.out.println();
+                    } else if(input.contains("add")) {
+                        try {
+                            String cardToAdd = input.substring(input.indexOf("=") + 1);
+                            while(true) {
+                                try {
+                                    String temp = cardToAdd.substring(0, cardToAdd.indexOf(","));
+                                    cardsToBeAdded.add(temp.trim());
+                                } catch (IndexOutOfBoundsException e) {
+                                    cardsToBeAdded.add(cardToAdd.trim());
+                                    break;
+                                }
+                                cardToAdd = cardToAdd.substring(cardToAdd.indexOf(",")+1);
+                            }
+                        } catch(Exception e) {
+                            System.out.println("add=<card name>, <card name>,... (it can contain x<num>, like villagers x4 for instance)");
+                        }
+                        continue;
+                    } else if(input.contains("remove")) {
+                        if(input.equals("remove=all")) {
+                            cardsToBeAdded.clear();
+                        } else {
+                            try {
+                                String cardToRemove = input.substring(input.indexOf("=") + 1);
+                                while(true) {
+                                    try {
+                                        String temp = cardToRemove.substring(0, cardToRemove.indexOf(","));
+                                        cardsToBeAdded.remove(temp.trim());
+                                    } catch (IndexOutOfBoundsException e) {
+                                        cardsToBeAdded.remove(cardToRemove.trim());
+                                        break;
+                                    }
+                                    cardToRemove = cardToRemove.substring(cardToRemove.indexOf(",")+1);
+                                }
+                            } catch(Exception e) {
+                                System.out.println("add=<card name>, <card name>,... (it can contain x<num>, like villagers x4 for instance)");
+                            }
+                            continue;
+                        }
                     } else {
                         System.out.println("'start', 'idle=<max time (seconds)>,<min time (seconds)>', 'dayTimer=<time (seconds) (0 for off)>'");
                         System.out.println("'werewolfTimer=<time (seconds) (0 for off)>', 'nightTimer=<time (seconds) (0 for off)>'");
-                        System.out.println("'neighbors=<name separated by commas>'");
+                        System.out.println("'neighbors=<name separated by commas>', 'cards', 'add=<card name>,<card name>,...'");
+                        System.out.println("'remove=<card name>,<card name>,...' or 'remove=all'");
                         continue;
                     }
 
@@ -1545,15 +1594,14 @@ public class WerewolfServer implements Runnable {
         // Read all cards in the cards.txt file.
         private void readCards() throws FileNotFoundException {
             // Set up the scanner for the file.
-            File file = new File("cards.txt");
-            Scanner scanner = new Scanner(file);
+            Iterator<String> scanner = cardsToBeAdded.iterator();
 
             // Create multiple temp data structures for the cards.
             HashSet<Card> temp = new HashSet<Card>();
             HashSet<Card> temp2 = new HashSet<Card>();
             // Scan every line
-            while(scanner.hasNextLine()) {
-                String card = scanner.nextLine();
+            while(scanner.hasNext()) {
+                String card = scanner.next();
                 String cardName;
                 // If the card is in the file, that means there is at least 1 of them.
                 int cardAmount = 1;
@@ -1711,7 +1759,6 @@ public class WerewolfServer implements Runnable {
                 }
             }
             // Once the program gets here, all lines have been read in the cards.txt file, and thus all cards are grabbed.
-            scanner.close();
 
             // Initialize the chooseCards HashSet for players to be assigned cards.
             server.chooseCards = new HashSet<Card>();
