@@ -7,7 +7,7 @@ public class TroublemakerCard extends Card {
     public TroublemakerCard(WerewolfServer server) {
         this.server = server;
         this.nightWakeup = true;
-        this.ranking = 70;
+        this.ranking = 30;
         this.team = "villager";
         this.cardName = "Troublemaker";
         this.firstNightOnly = false;
