@@ -120,6 +120,7 @@ public class TroublemakerCard extends Card {
                         server.gameActions.replace(troublemaker.name, "");
                         try {
                             troublemaker.output.writeObject("Your ability has not been used.");
+                            Thread.sleep(3000);
                         } catch(Exception e){
                             System.out.println(e.getMessage());
                         }
