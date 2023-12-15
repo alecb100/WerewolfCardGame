@@ -77,6 +77,7 @@ public class BodyguardCard extends Card {
             if(player.card.cardName.contains("Bodyguard")) {
                 bodyguards.put(player, "");
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
+                player.tookNightAction = true;
                 try {
                     player.output.writeObject("Who do you wish to protect?");
                 } catch(Exception e) {

@@ -87,6 +87,7 @@ public class DoppelgangerCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Doppelganger")) {
                 doppelganger = player;
+                doppelganger.tookNightAction = true;
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
                     doppelganger.output.writeObject("Who do you want to become after they die?");
@@ -171,6 +172,7 @@ public class DoppelgangerCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Doppelganger")) {
                 doppelganger = player;
+                doppelganger.tookNightAction = true;
                 break;
             }
         }

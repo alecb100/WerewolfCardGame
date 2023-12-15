@@ -51,6 +51,7 @@ public class MinionCard extends Card {
             // Find out who all the werewolves are and who the minion is
             for(Player player : server.currentPlayers) {
                 if(player.card.cardName.contains("Minion")) {
+                    player.tookNightAction = true;
                     minions.add(player);
                 } else if(server.checkWerewolf(player)) {
                     werewolves.add(player);

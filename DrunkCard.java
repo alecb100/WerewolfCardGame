@@ -109,6 +109,7 @@ public class DrunkCard extends Card {
                     drunk.output.writeObject("Your new card is: " + chosenCard.cardName);
                     drunk.card.cardName += " -> " + chosenCard.cardName;
                     drunk.card.team = chosenCard.team;
+                    drunk.tookNightAction = true;
 
                     // Check if the chosen card is Tough Guy, and if it is, add them to the tough guy hashMap
                     if(chosenCard instanceof ToughGuyCard) {

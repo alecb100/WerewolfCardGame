@@ -71,6 +71,7 @@ public class DireWolfCard extends Card {
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
                     direWolf.output.writeObject("Who do you want to choose as your companion?");
+                    direWolf.tookNightAction = true;
                 } catch(Exception e) {
                     System.out.println(e.getMessage());
                 }

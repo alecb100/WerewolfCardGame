@@ -961,6 +961,11 @@ public class WerewolfServer implements Runnable {
                         sendToAllPlayers("================================");
                         sendToAllPlayers("New Game!\n\n");
 
+                        // Reset all the took night action flags
+                        for(Player player : server.currentPlayers) {
+                            player.tookNightAction = false;
+                        }
+
                         // Set the night flag to true
                         isNight = true;
 
@@ -996,6 +1001,11 @@ public class WerewolfServer implements Runnable {
                             }
                         }
                         werewolfKills = 1;
+
+                        // Reset all the took night action flags
+                        for(Player player : server.currentPlayers) {
+                            player.tookNightAction = false;
+                        }
 
                         // The night is over, so wake up everyone so that they can see who died and they can determine who to kill for the day.
                         sendToAllPlayers("\nNow everyone open your eyes.");
@@ -1344,6 +1354,11 @@ public class WerewolfServer implements Runnable {
                             }
                             werewolfKills = 1;
 
+                            // Reset all the took night action flags
+                            for(Player player : server.currentPlayers) {
+                                player.tookNightAction = false;
+                            }
+
                             // The night is over, so wake up everyone so that they can see who died, and they can determine who to kill for the day.
                             sendToAllPlayers("\nNow everyone open your eyes.");
 
@@ -1670,6 +1685,10 @@ public class WerewolfServer implements Runnable {
                         // If the card is a paranormal investigator card.
                         tempCard = new ParanormalInvestigatorCard(server);
                         tempCard2 = new ParanormalInvestigatorCard(server);
+                    } else if(cardName.equalsIgnoreCase("insomniac")) {
+                        // If the card is an insomniac card.
+                        tempCard = new InsomniacCard(server);
+                        tempCard2 = new InsomniacCard(server);
                     } else {
                         // If the card is not recognized, throw an error to jump out of here.
                         System.out.println("Card not recognized.");
@@ -1830,7 +1849,7 @@ public class WerewolfServer implements Runnable {
         // Check if there's enough people alive for neighbors to give anything
         int aliveCount = 0;
         for(Player neighbor : neighbors) {
-            if(!neighbor.dead) {
+            if(currentPlayers.contains(neighbor)) {
                 aliveCount++;
             }
         }
@@ -1864,7 +1883,7 @@ public class WerewolfServer implements Runnable {
                 // Loop around to top if it went off the bottom
                 tempIndex = neighbors.length - 1;
             }
-            if(!neighbors[tempIndex].dead) {
+            if(currentPlayers.contains(neighbors[tempIndex])) {
                 result[0] = neighbors[tempIndex];
             }
             tempIndex--;
@@ -1877,7 +1896,7 @@ public class WerewolfServer implements Runnable {
                 // Loop around to the bottom if it went off the top
                 tempIndex = 0;
             }
-            if(!neighbors[tempIndex].dead) {
+            if(currentPlayers.contains(neighbors[tempIndex])) {
                 result[1] = neighbors[tempIndex];
             }
             tempIndex++;

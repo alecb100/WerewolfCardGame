@@ -76,6 +76,7 @@ public class HuntressCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Huntress")) {
                 huntress = player;
+                huntress.tookNightAction = true;
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 break;
             }

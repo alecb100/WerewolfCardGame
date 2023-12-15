@@ -69,6 +69,7 @@ public class HoodlumCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Hoodlum")) {
                 hoodlum = player;
+                hoodlum.tookNightAction = true;
                 try {
                     hoodlum.output.writeObject("\nHoodlum, which " + server.werewolfNum + " players do you wish to choose? Put them each on separate lines please.");
                 } catch(Exception e) {

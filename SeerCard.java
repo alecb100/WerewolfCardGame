@@ -77,6 +77,7 @@ public class SeerCard extends Card {
         seers = new ConcurrentHashMap<Player, String>();
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Seer")) {
+                player.tookNightAction = true;
                 seers.put(player, "");
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {

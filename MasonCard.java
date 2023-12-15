@@ -59,6 +59,7 @@ public class MasonCard extends Card {
             for(Player player : server.currentPlayers) {
                 if(player.card.cardName.contains("Mason")) {
                     masons.add(player);
+                    player.tookNightAction = true;
                 }
             }
             // Tell all the Masons who each other are

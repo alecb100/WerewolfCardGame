@@ -65,6 +65,7 @@ public class WerewolfCard extends Card {
         werewolves = new ConcurrentHashMap<Player, String>();
         for (Player player : server.currentPlayers) {
             if(server.checkWerewolf(player)) {
+                player.tookNightAction = true;
                 werewolves.put(player, "");
             }
         }

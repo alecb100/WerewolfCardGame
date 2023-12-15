@@ -75,6 +75,7 @@ public class TroublemakerCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Troublemaker")) {
                 troublemaker = player;
+                troublemaker.tookNightAction = true;
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 break;
             }

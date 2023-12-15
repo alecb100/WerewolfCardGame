@@ -16,6 +16,8 @@ public class Player {
 
     public boolean canVote;
 
+    public boolean tookNightAction;
+
     public Player(String name, ObjectInputStream input, ObjectOutputStream output) {
         this.name = name;
         this.input = input;
@@ -23,6 +25,7 @@ public class Player {
         dead = false;
         tower = false;
         canVote = true;
+        tookNightAction = false;
     }
 
     @Override

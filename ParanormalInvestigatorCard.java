@@ -78,6 +78,7 @@ public class ParanormalInvestigatorCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Paranormal Investigator")) {
                 investigator = player;
+                investigator.tookNightAction = true;
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 break;
             }
@@ -115,7 +116,7 @@ public class ParanormalInvestigatorCard extends Card {
                         abilityUsed = true;
                         // Set the chosen person to dead
                         Player chosen = null;
-                        for(Player player : server.currentPlayers) { // ----------------------------------------------------
+                        for(Player player : server.currentPlayers) {
                             if(player.name.equals(server.gameActions.get(investigator.name))) {
                                 chosen = player;
                                 break;

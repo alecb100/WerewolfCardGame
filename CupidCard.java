@@ -158,6 +158,7 @@ public class CupidCard extends Card {
             // Run through a 2 length loop of them picking people
             for (int i = 0; i < 2; i++) {
                 server.gameWaiting.replace(cupid.name, Boolean.TRUE);
+                cupid.tookNightAction = true;
                 while(true) {
                     // If they made an action
                     if (!server.gameActions.get(cupid.name).equals("")) {

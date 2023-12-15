@@ -78,6 +78,7 @@ public class OldWomanCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Old Woman")) {
                 oldWoman = player;
+                oldWoman.tookNightAction = true;
                 server.gameWaiting.replace(player.name, Boolean.TRUE);
                 try {
                     oldWoman.output.writeObject("Who do you want to silence the next day?");

@@ -99,6 +99,7 @@ public class CursedCard extends Card {
         for(Player player : server.currentPlayers) {
             if(player.card.cardName.contains("Cursed")) {
                 cursed = player;
+                cursed.tookNightAction = true;
                 break;
             }
         }
