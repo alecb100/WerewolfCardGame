@@ -366,7 +366,7 @@ public class WerewolfServer implements Runnable {
                             result += "\n\nThe following cards are currently in the game:\n\n";
 
                             // Set up the scanner for the file.
-                            File file = new File("cards.txt");
+                            File file = new File("main/cards.txt");
                             Scanner scanner = null;
                             try {
                                 scanner = new Scanner(file);
@@ -1549,7 +1549,7 @@ public class WerewolfServer implements Runnable {
         // Read all cards in the cards.txt file.
         private void readCards() throws FileNotFoundException {
             // Set up the scanner for the file.
-            File file = new File("cards.txt");
+            File file = new File("main/cards.txt");
             Scanner scanner = new Scanner(file);
 
             // Create multiple temp data structures for the cards.
