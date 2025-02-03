@@ -4,13 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Updated some text during game execution and altered checkAfterDeath in Card.java to make it better for cards like the Hunter, Cupid, etc. Also updated Werewolf card to check for werewolf sympathizers for game wins as well as updated Tanner card to check for people on tanner team rather than people who have the Tanner card so that it's easier for cards like Cupid, who override their win condition">
-      <change afterPath="$PROJECT_DIR$/CupidCard.java" afterDir="false" />
+    <list default="true" id="b677f1f6-6d44-44ad-9ad9-b7538c649459" name="Changes" comment="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SeerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/SeerCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WerewolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/WerewolfServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cards.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cards.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ApprenticeSeerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/ApprenticeSeerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BodyguardCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/BodyguardCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CupidCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/CupidCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CursedCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/CursedCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DireWolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/DireWolfCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiseasedCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/DiseasedCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DoppelgangerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/DoppelgangerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrunkCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/DrunkCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HoodlumCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/HoodlumCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/HunterCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HuntressCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/HuntressCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InsomniacCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/InsomniacCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LycanCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/LycanCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MasonCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/MasonCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MinionCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/MinionCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OldWomanCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/OldWomanCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PacifistCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/PacifistCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ParanormalInvestigatorCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/ParanormalInvestigatorCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrinceCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/PrinceCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SeerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/SeerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TannerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/TannerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToughGuyCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/ToughGuyCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TroublemakerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/TroublemakerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VillageIdiotCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/VillageIdiotCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VillagerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/VillagerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WerewolfCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/WerewolfCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WerewolfPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/WerewolfPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WerewolfServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/WerewolfServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WitchCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/WitchCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WolfCubCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/WolfCubCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WolfManCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/Cards/WolfManCard.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,23 +73,44 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
   <component name="ProjectId" id="2YmJ2rESnA2ERWt0bkLq6j5xYt0" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/alecc/Desktop/Alec's Stuff/Programs/WerewolfCardGameMaven&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.WerewolfServer.executor": "Debug",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/alecc/OneDrive/Documents/School Stuff/ECE/ECE492 Java/ECE492Hw/src/ChatRoomClient.java",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -69,6 +119,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1701124618188</updated>
+      <workItem from="1738618245793" duration="1113000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1701124681453</created>
@@ -133,78 +184,39 @@
       <option name="project" value="LOCAL" />
       <updated>1701379380394</updated>
     </task>
-    <task id="LOCAL-00010" summary="Created the commands as well as made some updates to the Card structure, including the firstNightOnly flag for cards, to help in displaying commands. Also restructured some of the text in the day game cycle.">
-      <created>1701398267163</created>
+    <task id="LOCAL-00010" summary="Fixed merge issues and fully implemented and tested the Cupid card">
+      <created>1701841858293</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1701398267163</updated>
+      <updated>1701841858293</updated>
     </task>
-    <task id="LOCAL-00011" summary="Commented WerewolfCard.java as well as removed some unnecessary data structures. Also moved the checkWerewolves method to the server so it can be used by all classes.">
-      <created>1701627350937</created>
+    <task id="LOCAL-00011" summary="Added some more comments to Cupid, Villager, and Werewolf cards">
+      <created>1701842334706</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1701627350937</updated>
+      <updated>1701842334706</updated>
     </task>
-    <task id="LOCAL-00012" summary="Created the Tanner as well as refactored code in the Villager card, the abstract Card class, and the WerewolfServer">
-      <created>1701629081637</created>
+    <task id="LOCAL-00012" summary="Fixed a typo in Cupid's win conditions">
+      <created>1701842636641</created>
       <option name="number" value="00012" />
       <option name="presentableId" value="LOCAL-00012" />
       <option name="project" value="LOCAL" />
-      <updated>1701629081637</updated>
+      <updated>1701842636641</updated>
     </task>
-    <task id="LOCAL-00013" summary="Added the WhoAmI command that tells what your card is again (only if the game has started)">
-      <created>1701629496757</created>
+    <task id="LOCAL-00013" summary="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated">
+      <created>1701843211621</created>
       <option name="number" value="00013" />
       <option name="presentableId" value="LOCAL-00013" />
       <option name="project" value="LOCAL" />
-      <updated>1701629496757</updated>
+      <updated>1701843211621</updated>
     </task>
-    <task id="LOCAL-00014" summary="Fixed an issue with the sorting when reading cards">
-      <created>1701632747571</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1701632747571</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Changed the text for some of the commands">
-      <created>1701633260257</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1701633260257</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Created the bodyguard card and commented it">
-      <created>1701633292620</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1701633292620</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Created the troublmaker card and updated the server to use it. Also fixed an issue in the bodyguard card">
-      <created>1701644169383</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1701644169383</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Created the Seer card and updated the server to create it. Also fixed an issue in the bodyguard card">
-      <created>1701646049609</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1701646049609</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Updated some text during game execution and altered checkAfterDeath in Card.java to make it better for cards like the Hunter, Cupid, etc. Also updated Werewolf card to check for werewolf sympathizers for game wins as well as updated Tanner card to check for people on tanner team rather than people who have the Tanner card so that it's easier for cards like Cupid, who override their win condition">
-      <created>1701809884760</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1701809884760</updated>
-    </task>
-    <option name="localTasksCounter" value="20" />
+    <option name="localTasksCounter" value="14" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
@@ -215,16 +227,17 @@
     <MESSAGE value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class." />
     <MESSAGE value="Changed some messages sent to players into logging messages that only the server sees. Also created the abstract method for help in the Abstract Card class. Fixed some misc issues." />
     <MESSAGE value="Added many comments to WerewolfServer.java so that someone can follow along in the program." />
-    <MESSAGE value="Created the commands as well as made some updates to the Card structure, including the firstNightOnly flag for cards, to help in displaying commands. Also restructured some of the text in the day game cycle." />
-    <MESSAGE value="Commented WerewolfCard.java as well as removed some unnecessary data structures. Also moved the checkWerewolves method to the server so it can be used by all classes." />
-    <MESSAGE value="Created the Tanner as well as refactored code in the Villager card, the abstract Card class, and the WerewolfServer" />
-    <MESSAGE value="Added the WhoAmI command that tells what your card is again (only if the game has started)" />
-    <MESSAGE value="Fixed an issue with the sorting when reading cards" />
-    <MESSAGE value="Changed the text for some of the commands" />
-    <MESSAGE value="Created the bodyguard card and commented it" />
-    <MESSAGE value="Created the troublmaker card and updated the server to use it. Also fixed an issue in the bodyguard card" />
-    <MESSAGE value="Created the Seer card and updated the server to create it. Also fixed an issue in the bodyguard card" />
-    <MESSAGE value="Updated some text during game execution and altered checkAfterDeath in Card.java to make it better for cards like the Hunter, Cupid, etc. Also updated Werewolf card to check for werewolf sympathizers for game wins as well as updated Tanner card to check for people on tanner team rather than people who have the Tanner card so that it's easier for cards like Cupid, who override their win condition" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated some text during game execution and altered checkAfterDeath in Card.java to make it better for cards like the Hunter, Cupid, etc. Also updated Werewolf card to check for werewolf sympathizers for game wins as well as updated Tanner card to check for people on tanner team rather than people who have the Tanner card so that it's easier for cards like Cupid, who override their win condition" />
+    <MESSAGE value="Fixed merge issues and fully implemented and tested the Cupid card" />
+    <MESSAGE value="Added some more comments to Cupid, Villager, and Werewolf cards" />
+    <MESSAGE value="Fixed a typo in Cupid's win conditions" />
+    <MESSAGE value="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minion card was created and tested, cupid turning minion into villager was tested, and some outputs were updated" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="((WerewolfServer)((GameRunner)this).server).cards" custom="WerewolfServer.GameRunner,WerewolfServer" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

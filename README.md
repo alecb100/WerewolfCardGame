@@ -1,4 +1,4 @@
-# Cards Created
+# main.Cards Created
 
 - <b><u>Villager</u></b> - The plain Villager is the default card in the Werewolf game. Usually this card outnumbers all other cards. Every day, the villagers wake up and try to find out which one of their neighbors are werewolves. At the end of every day, they choose one person to kill. There are many other cards that are on the villager team, including the Seer, Hunter, etc. They win once they have killed all of the werewolves. There can still be people alive that are on the werewolf team (like the minion), but the actual werewolves must be dead. These include the plain Werewolf, the Wolf Man, the Dire Wolf, and the Werewolf Cub.
 - <b><u>Werewolf</u></b> - This is the plain Werewolf, the main werewolf of the game. They wake up every night and choose one person to kill (doing that every night). They win by eliminating enough villagers so that the amount of alive werewolves or their sympathizers equal or is greater than the amount of alive villagers. There are other werewolves in the game, including the Dire Wolf, the Wolf Man, and the Werewolf Cub. They also have helpers, such as the minion, who do not actually count as werewolves but are on the werewolves team.
@@ -38,7 +38,7 @@
 - <b><u>Insomniac</u></b> - The Insomniac is just like the normal villager. The only difference is they are able to see if one of their neighbors woke up for any reason. They don't know which one woke up and they don't know if they woke up and took some sort of action or just woke up to see something.
 - <b><u>Witch</u></b> - The Witch is an interesting card. They can only use their ability once per game, where every night they wake up and see who is marked for death that night. They can choose to save one of those people, kill another player, or save their aiblity. However, if they choose to do either, they use their ability. After they use their ability, they can no longer see who is marked for death any more.
 
-## Single-Instance Only Cards
+## Single-Instance Only main.Cards
 There can only be one instance of the following cards in the game currently:
 - Tanner
 - Troublemaker

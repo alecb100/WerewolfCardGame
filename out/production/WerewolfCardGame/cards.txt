@@ -1,3 +1,4 @@
 werewolves x1
-villagers x3
+villagers x2
 minion
+cupid
